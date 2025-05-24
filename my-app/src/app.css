@@ -158,3 +158,29 @@ black: #0D0D0D
 .TopNavNotActive, .topNavDisabledButton{
   box-shadow: inset 0 -4px 6px -4px rgba(0, 0, 0, 0.8);
 }
+
+.SearchButton {
+  font-family: Fontin-Regular;
+  font-size: 30px;
+}
+
+.accordionTrigger span {
+  /* margin-top: 5px; */
+  /* font-size: 26px; */
+}
+
+.accordionTrigger:hover {
+  /* background-color: black; */
+}
+
+.accordionTrigger span:hover {
+  /* color: white; */
+}
+
+.accordionContentContainer {
+  width: 100% !important;
+}
+
+.jewelResultRowButton {
+  width: 100%;
+}

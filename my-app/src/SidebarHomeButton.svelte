@@ -69,7 +69,7 @@
     class='h-12 sidebarButton'
     variant='link'
     href='/'>
-    <img class="mr-4 thLogo" src={THBlackLogo}>
+    <img class="mr-4 thLogo" src={THBlackLogo} alt='go away'/>
     <span class='sidebarHomeButtonText'>Timeless Historian</span>
 </Button>
 
