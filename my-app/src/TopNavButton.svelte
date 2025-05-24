@@ -5,14 +5,9 @@
     import { page } from '$app/stores';
     import { derived, get } from 'svelte/store';
 
-    // let isActive = derived(page, ($page) =>
-    //     $page.url.pathname === props.url
-    // );
     let url = props.url;
-    // const isActive = derived($page.url.pathname === '/');
-    const isActive = () => $page.url.pathname === url;
+    const isActive = () => $page.url.pathname.startsWith(url);
 
-    // const isActive = derived(page, ($page) => $page.url.pathname === props.url)
 </script>
 
 <Button
@@ -23,6 +18,5 @@
     )}
     href={props.url}
     >
-    <!-- {$isActive} -->
     {props.label}
 </Button>

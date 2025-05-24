@@ -147,11 +147,11 @@ export function parse_jewel_mf_mods(jewel_text) {
                         '4% increased Totem Damage per 10 Devotion'];
 
     if (!m) {
-        return []
+        return ['Error', 'Error']
     } else if (m.length !== 3) {
-        return []
+        return ['Error', 'Error']
     } else if (!mf_mods.includes(m[1]) || !mf_mods.includes(m[2])) {
-        return []
+        return ['Error', 'Error']
     } else {
         return [m[1], m[2]]
     }

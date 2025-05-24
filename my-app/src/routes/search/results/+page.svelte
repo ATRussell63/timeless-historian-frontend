@@ -6,20 +6,22 @@
     import JewelDrawing from "../../../jewelDrawing.svelte";
     import { Button } from '$lib/components/ui/button/index.js';
     import Separator from "$lib/components/ui/separator/separator.svelte";
+    import Switch from "$lib/components/ui/switch/switch.svelte";
+    import * as Select from '$lib/components/ui/select'
+    import ChevronLeft from "lucide-svelte/icons/chevron-left";
 
     let hoverData = $state(null);
     let selectedJewel = $state(null);
+    let minMatchingMFMods = $state(0);
+    let matchGeneral = $state(false);
 
     let { body, response } = $search_result;
     response = response[0].results;
-    // console.log(body);
+    let displayedResponse = $state($state.snapshot(response));
 
     function totalResults(results) {
-        // console.log(results)
         let count = 0;
         Object.keys(results).forEach(league => {
-            // console.log(league)
-            // console.log(results[league])
             results[league].forEach(entry => {
                 count++;
             })
@@ -47,42 +49,134 @@
         return top
     }
 
+    function topLeague(results) {
+        let all = {}
+        let top = { name: '', count: 0}
+        Object.keys(results).forEach(league => {
+            all[league] = results[league].length
+            if (all[league] > top.count) {
+                top = { name: league, count: all[league] }
+            }
+        })
+        return top
+    }
+
+    function topSocket(results) {
+        let all = {}
+        let top = { value: {}, count: 0 }
+        Object.keys(results).forEach(league => {
+            results[league].forEach(entry => {
+                if (!Object.keys(all).includes(entry.socket.name)) {
+                    all[entry.socket.name] = 1;
+                } else {
+                    all[entry.socket.name]++;
+                }
+
+                if (all[entry.socket.name] > top.count) {
+                    top = { value: entry.socket, count: all[entry.socket.name]}
+                }
+            })
+        })
+
+        console.log(all)
+        return top
+    }
+
+    function applyFilters(general, minMatches) {
+        console.log(`gen ${general}, mf ${minMatches}`)
+
+        let results = $state.snapshot(response);
+        Object.keys(results).forEach(league => {
+            results[league] = results[league].filter((jewel) => {
+                let mf = jewel.mf_mods_match_count >= minMatches
+                let gen = true
+                if (general) {
+                    gen = jewel.general_match
+                }
+                return mf && gen
+            })
+        })
+        displayedResponse = results
+    }
+
     // console.log(data);
 </script>
-<h1 class='my-5 ml-2' style='font-size: 28px;'>Results Summary</h1>
+
+<!-- Title row -->
+<div class='mb-2 flex flex-row items-center justify-between'>
+    <div class='flex items-center'>
+        <span class='contentTitle'>Search Results - </span>
+            <div class='queryDetail'>
+                <span class='queryHeaderLabel'>Type: </span><span class='queryHeader'>{body.jewel_type}</span>
+            </div>
+            <div class='queryDetail'>
+                <span class='queryHeaderLabel'>General: </span><span class='queryHeader'>{body.general}</span>
+            </div>
+            <div class='queryDetail'>
+                <span class='queryHeaderLabel'>Seed: </span><span class='queryHeader'>{body.seed}</span>
+            </div>
+            {#if body.jewel_type === 'Militant Faith'}
+            <div class='queryDetail'>
+                <span class='queryHeaderLabel'>Devotion Mods: </span><span class='queryHeader'>{body.mf_mods[0]}, {body.mf_mods[1]}</span>
+            </div>
+            {/if}
+    </div>
+    <Button class='pl-1 ml-5' variant='ghost' href='/search'><ChevronLeft class='h-5'/><span style='text-decoration: underline; font-family: Roboto;'>Back to Search</span></Button>
+</div>
+
+<!-- Results Summary -->
 <Card.Root>
     <!-- <Card.Header>
         <Card.Title></Card.Title>
     </Card.Header> -->
     <Card.Content class='flex flex-row justify-between'>
-        <div style='width: 50%;' class=''>
-            <h1>Query for:</h1>
-            <p>Type: {body.jewel_type}</p>
-            <p>General: {body.general}</p>
-            <p>Seed: {body.seed}</p>
-            {#if body.jewel_type === 'Militant Faith'}
-            <p>Additional Mods: {body.mf_mods[0]}</p>
-            <p>{body.mf_mods[1]}</p>
-            {/if}
-        </div>
-        <Separator orientation='vertical' class=''/>
-        <div style='width: 50%;' class='pl-5'>
+        <div>
             <h1>Stats</h1>
             <p>Total Matches:</p><p>{totalResults(response)}</p>
             <p>
                 Top General: <span style={topAttr(response, 'general').name === body.general ? 'color: green;' : 'color: red;'}>{topAttr(response, 'general').name} ({topAttr(response, 'general').count})</span>
             </p>
-            <p>Top Ascendancy: <span>{topAttr(response, 'class_name').name} ({topAttr(response, 'class_name').count})</span></p>
+            <p>Top Ascendancy: <span>{topAttr(response, 'ascendancy_name').name} ({topAttr(response, 'ascendancy_name').count})</span></p>
+            <p>Top Socket: <span>{topSocket(response).value.name} ({topSocket(response).count})</span></p>
+            <p>Top League: <span>{topLeague(response).name} ({topLeague(response).count})</span></p>
         </div>
     </Card.Content>
 </Card.Root>
 
 <Card.Root class='mt-5'>
     <Card.Title>
-        Filters
+        Only Show Results with:
     </Card.Title>
     <Card.Content>
-
+        <div>
+            <span>Matching General</span>
+            <Switch 
+                bind:checked={matchGeneral}
+                onCheckedChange={(v) => {
+                    applyFilters(v, minMatchingMFMods);
+                    matchGeneral = v;
+                }}
+            />
+        </div>
+        {#if body.jewel_type === 'Militant Faith'}
+        <div>
+            <span>Minimum Matching Devotion Modifiers</span>
+            <Select.Root 
+                selected={minMatchingMFMods}
+                onSelectedChange={(v) => {
+                    v && (minMatchingMFMods = v.value) && (applyFilters(matchGeneral, v.value))
+                }}>
+                <Select.Trigger>
+                    {minMatchingMFMods}
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Item value=0>0</Select.Item>
+                    <Select.Item value=1>1</Select.Item>
+                    <Select.Item value=2>2</Select.Item>
+                </Select.Content>
+            </Select.Root>
+        </div>
+        {/if}
     </Card.Content>
 </Card.Root>
 
@@ -90,7 +184,7 @@
 <ScrollArea class='h-[800px] w-[300px] rounded-md border'>
     <p>RESULTS</p>
     <Accordion.Root class="">
-        {#each Object.entries(response) as [key, value]}
+        {#each Object.entries(displayedResponse) as [key, value]}
         <Accordion.Item value={`item-${key}`}>
             <Accordion.Trigger class='leagueAccordionTrigger my-4' >
                 <span>{key} - {value.length}</span>
@@ -100,8 +194,6 @@
                 <div class="">
                     <Button onmouseenter={() => {
                         hoverData = jewel;
-
-                        // console.log(hoverData?.character_name)
                     }}
 
                     onmouseleave={() => {
@@ -111,16 +203,14 @@
                         } else {
                             hoverData = null;
                         }
-                        // console.log(hoverData?.character_name)
                     }}
 
                     onclick={() => {
                         selectedJewel = jewel;
-                        // console.log(hoverData?.character_name)
                     }}
                     class="jewelResultRowButton rounded-none flex justify-between py-10">
                     <div><span>{jewel.character_name}</span></div>
-                    <div class='flex flex-col items-end'><p>Level {jewel.character_level}</p><p> {jewel.class_name}</p></div>    
+                    <div class='flex flex-col items-end'><p>Level {jewel.character_level}</p><p> {jewel.ascendancy_name}</p></div>    
                         
                     </Button>
                 </div>
@@ -148,14 +238,3 @@
 </div>
 
 </div>
-
-<!-- 
-
-More for results summary
-
-
-
-- most common jewel slot
-- 
-
--->
