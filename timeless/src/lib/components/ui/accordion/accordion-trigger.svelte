@@ -10,7 +10,7 @@
 <AccordionPrimitive.Header {level} class="flex accordionTrigger">
 	<AccordionPrimitive.Trigger
 		class={cn(
-			"flex flex-1 items-center justify-center py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
+			"flex flex-1 items-center justify-center py-4 px-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
 			className
 		)}
 		{...$$restProps}

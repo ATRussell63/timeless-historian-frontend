@@ -99,13 +99,12 @@
         displayedResponse = results
     }
 
-    // console.log(data);
 </script>
 
 <!-- Title row -->
 <div class='mb-2 flex flex-row items-center justify-between'>
     <div class='flex items-center'>
-        <span class='contentTitle'>Search Results - </span>
+        <span class='contentTitle'>Results Summary - </span>
             <div class='queryDetail'>
                 <span class='queryHeaderLabel'>Type: </span><span class='queryHeader'>{body.jewel_type}</span>
             </div>
@@ -125,13 +124,12 @@
 </div>
 
 <!-- Results Summary -->
-<Card.Root>
-    <!-- <Card.Header>
-        <Card.Title></Card.Title>
-    </Card.Header> -->
+<Card.Root class='transparentBackground'>
+    <Card.Header>
+        <Card.Title class='cardTitle'>Stats</Card.Title>
+    </Card.Header>
     <Card.Content class='flex flex-row justify-between'>
-        <div>
-            <h1>Stats</h1>
+        <!-- <div>
             <p>Total Matches:</p><p>{totalResults(response)}</p>
             <p>
                 Top General: <span style={topAttr(response, 'general').name === body.general ? 'color: green;' : 'color: red;'}>{topAttr(response, 'general').name} ({topAttr(response, 'general').count})</span>
@@ -139,17 +137,22 @@
             <p>Top Ascendancy: <span>{topAttr(response, 'ascendancy_name').name} ({topAttr(response, 'ascendancy_name').count})</span></p>
             <p>Top Socket: <span>{topSocket(response).value.name} ({topSocket(response).count})</span></p>
             <p>Top League: <span>{topLeague(response).name} ({topLeague(response).count})</span></p>
-        </div>
+        </div> -->
     </Card.Content>
 </Card.Root>
 
-<Card.Root class='mt-5'>
-    <Card.Title>
-        Only Show Results with:
-    </Card.Title>
-    <Card.Content>
-        <div>
-            <span>Matching General</span>
+
+
+<div class='flex flex-row mt-5'>
+<div class='flex flex-col'>
+<p class='contentTitle'>Browser</p>
+<Card.Root class='mt-5 p-4'>
+    <!-- <Card.Title class='cardTitle mb-6'>
+        Filters
+    </Card.Title> -->
+    <Card.Content class='flex flex-col p-0 gap-4'>
+        <div class='flex flex-row justify-between items-center'>
+            <span class='searchParamLabel mr-4'>Matching General Only</span>
             <Switch 
                 bind:checked={matchGeneral}
                 onCheckedChange={(v) => {
@@ -159,17 +162,18 @@
             />
         </div>
         {#if body.jewel_type === 'Militant Faith'}
-        <div>
-            <span>Minimum Matching Devotion Modifiers</span>
+        <div class='flex flex-row justify-between items-center'>
+            <span class='searchParamLabel mr-4'>Min. Matching Devotion Mods</span>
             <Select.Root 
                 selected={minMatchingMFMods}
                 onSelectedChange={(v) => {
                     v && (minMatchingMFMods = v.value) && (applyFilters(matchGeneral, v.value))
                 }}>
-                <Select.Trigger>
+                <Select.Trigger
+                class='flex flex-row justify-center w-12'>
                     {minMatchingMFMods}
                 </Select.Trigger>
-                <Select.Content>
+                <Select.Content class='flex flex-row justify-center w-12'>
                     <Select.Item value=0>0</Select.Item>
                     <Select.Item value=1>1</Select.Item>
                     <Select.Item value=2>2</Select.Item>
@@ -179,11 +183,10 @@
         {/if}
     </Card.Content>
 </Card.Root>
-
-<div class='flex flex-row mt-5'>
-<ScrollArea class='h-[800px] w-[300px] rounded-md border'>
-    <p>RESULTS</p>
-    <Accordion.Root class="">
+<!-- <div class='transparentBackground'> -->
+    <!-- min-h-[1000px] basis-[300px] -->
+<ScrollArea class='max-h-[1000px] rounded-md border mt-5'>
+    <Accordion.Root>
         {#each Object.entries(displayedResponse) as [key, value]}
         <Accordion.Item value={`item-${key}`}>
             <Accordion.Trigger class='leagueAccordionTrigger my-4' >
@@ -221,7 +224,8 @@
         {/each}
     </Accordion.Root>
 </ScrollArea>
-
+<!-- </div> -->
+</div>
 
 
 <div>
