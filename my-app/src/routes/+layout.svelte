@@ -45,6 +45,9 @@ let { children } = $props();</script>
 	main {
 		background-color: white;
 		margin-top: 20px;
+		background-image: url('$lib/images/EternalSymbol.svg');
+		background-size: 180% 180%;
+		background-position: bottom 50% left 50%;
 	}
 
 	footer {

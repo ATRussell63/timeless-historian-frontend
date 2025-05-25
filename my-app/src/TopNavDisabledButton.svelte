@@ -5,6 +5,3 @@
     let props = $props();
 </script>
 <Button class="topNavButton topNavDisabledButton bg-white text-black px-4 rounded-t-sm rounded-b-none" disabled={true}>{props.label}</Button>
-<style>
-
-</style>

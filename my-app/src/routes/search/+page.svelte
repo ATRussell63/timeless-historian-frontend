@@ -78,12 +78,14 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
     }
 </script>
 
+<!-- TODO - put a banner image demonstrating the hover over a jewel? -->
+
 <span class='contentTitle'>Search</span>
 <div class='flex flex-row mt-2'>
 <div class='mr-10 flex-1'>
 <Card.Root class=''>
     <Card.Header>
-        <Card.Title>Hover your jewel in-game and Ctrl-C to copy it, then paste into the field below.</Card.Title>
+        <Card.Title class='cardTitle'>Hover your jewel in-game and Ctrl-C to copy it, then paste into the field below</Card.Title>
     </Card.Header>
     <Card.Content>
         <Textarea class='h-[300px]' placeholder='Ctrl + V to paste here' bind:value={text_input}></Textarea>
@@ -93,23 +95,23 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 <div class='basis-1/3'>
 <Card.Root >
     <Card.Header>
-        <Card.Title>Search Params</Card.Title>
+        <Card.Title class='cardTitle'>Search Params</Card.Title>
     </Card.Header>
     <Card.Content>
         <div class='flex flex-row justify-between'>
             <span class='searchParamLabel'>Jewel Type: </span>
             <span class='searchParam'>{jewel_type}</span>
         </div>
-        <div class='flex flex-row justify-between'>
+        <div class='flex flex-row mt-2 justify-between'>
             <span class='searchParamLabel'>General: </span>
             <span class='searchParam'>{general}</span>
         </div>
-        <div class='flex flex-row justify-between'>
+        <div class='flex flex-row mt-2 justify-between'>
             <span class='searchParamLabel'>Seed: </span>
             <span class='searchParam'>{seed}</span>
         </div>
         {#if jewel_type === 'Militant Faith'}
-        <div class='flex flex-row justify-between'>
+        <div class='flex flex-row mt-2 justify-between'>
             <div>
                 <span class='searchParamLabel'>Devotion Mods: </span>
             </div>

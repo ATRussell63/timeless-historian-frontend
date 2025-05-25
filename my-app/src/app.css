@@ -212,6 +212,7 @@ black: #0D0D0D
 .contentTitle {
   font-family: Fontin-SmallCaps;
   font-size: 34px;
+  margin-left: 5px;
 }
 
 .queryHeaderLabel {
@@ -220,11 +221,13 @@ black: #0D0D0D
 
 .queryHeader {
   font-family: Roboto;
+  font-size: 14px;
   margin-left: 5px;
 }
 
 .queryDetail {
   margin-left: 10px;
+  font-size: 14px;
 }
 
 .searchParamLabel {
@@ -234,4 +237,13 @@ black: #0D0D0D
 .searchParam {
   font-family: Roboto;
   margin-left: 5px;
+}
+
+.cardTitle {
+  font-family: Roboto-Bold;
+  font-weight: 500;
+}
+
+.transparentBackground {
+  background-color: rgba(255, 255, 255, 0.6);
 }
