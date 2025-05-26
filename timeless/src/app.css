@@ -346,6 +346,10 @@ black: #0D0D0D
   font-family: Fontin-Bold;
 }
 
+.fontinSmallCaps {
+  font-family: Fontin-SmallCaps;
+}
+
 .tradeSearch {
   font-family: Fontin-SmallCaps;
   font-size: 18px;
@@ -359,4 +363,8 @@ black: #0D0D0D
 .resultsSummaryTitle {
   font-family: Fontin-SmallCaps;
   font-size: 24px;
+}
+
+.roboto {
+  font-family: Roboto;
 }

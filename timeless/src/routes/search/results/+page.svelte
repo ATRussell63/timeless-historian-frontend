@@ -1,19 +1,19 @@
 <script>
     import { search_result } from "../../../store";
-    import * as Card from '$lib/components/ui/card';
+    import * as Card from "$lib/components/ui/card";
     import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
-    import * as Accordion from '$lib/components/ui/accordion';
+    import * as Accordion from "$lib/components/ui/accordion";
     import JewelDrawing from "../../../jewelDrawing.svelte";
-    import { Button } from '$lib/components/ui/button/index.js';
+    import { Button } from "$lib/components/ui/button/index.js";
     import Separator from "$lib/components/ui/separator/separator.svelte";
     import Switch from "$lib/components/ui/switch/switch.svelte";
-    import * as Select from '$lib/components/ui/select'
+    import * as Select from "$lib/components/ui/select";
     import ChevronLeft from "lucide-svelte/icons/chevron-left";
     // import { Chart,  A,  Dropdown, DropdownItem, Popover } from "flowbite-svelte";
     import ResultChart from "../../../ResultChart.svelte";
-    import { ArrowLeft } from 'lucide-svelte';
+    import { ArrowLeft } from "lucide-svelte";
     import JewelDetailsCard from "../../../JewelDetailsCard.svelte";
-    import { Badge } from '$lib/components/ui/badge';
+    import { Badge } from "$lib/components/ui/badge";
 
     let hoverData = $state(null);
     let selectedJewel = $state(null);
@@ -25,28 +25,30 @@
     response = response[0].results;
     let displayedResponse = $state($state.snapshot(response));
 
-    let selectedTradeLeague = $state(Object.keys(response).find(key => response[key].is_active));
+    let selectedTradeLeague = $state(
+        Object.keys(response).find((key) => response[key].is_active),
+    );
 
     // trade site always redirects you to your preferred league but we need an initial value
     if (!selectedTradeLeague) {
-        selectedTradeLeague = 'Settlers';
+        selectedTradeLeague = "Settlers";
     }
 
     function totalResults(results) {
         let count = 0;
-        Object.keys(results).forEach(league => {
-            results[league].jewels.forEach(entry => {
+        Object.keys(results).forEach((league) => {
+            results[league].jewels.forEach((entry) => {
                 count++;
-            })
-        })
+            });
+        });
         return count;
     }
 
     function topAttr(results, attr) {
         let values = {};
-        let top = { name: '', count: 0 }
-        Object.keys(results).forEach(league => {
-            results[league].jewels.forEach(entry => {
+        let top = { name: "", count: 0 };
+        Object.keys(results).forEach((league) => {
+            results[league].jewels.forEach((entry) => {
                 if (!Object.keys(values).includes(entry[attr])) {
                     values[entry[attr]] = 1;
                 } else {
@@ -54,31 +56,31 @@
                 }
 
                 if (values[entry[attr]] > top.count) {
-                    top = { name: entry[attr], count: values[entry[attr]] }
+                    top = { name: entry[attr], count: values[entry[attr]] };
                 }
-            })
-        })
+            });
+        });
 
-        return top
+        return top;
     }
 
     function topLeague(results) {
-        let all = {}
-        let top = { name: '', count: 0}
-        Object.keys(results).forEach(league => {
-            all[league] = results[league].jewels.length
+        let all = {};
+        let top = { name: "", count: 0 };
+        Object.keys(results).forEach((league) => {
+            all[league] = results[league].jewels.length;
             if (all[league] > top.count) {
-                top = { name: league, count: all[league] }
+                top = { name: league, count: all[league] };
             }
-        })
-        return top
+        });
+        return top;
     }
 
     function topSocket(results) {
-        let all = {}
-        let top = { value: {}, count: 0 }
-        Object.keys(results).forEach(league => {
-            results[league].jewels.forEach(entry => {
+        let all = {};
+        let top = { value: {}, count: 0 };
+        Object.keys(results).forEach((league) => {
+            results[league].jewels.forEach((entry) => {
                 if (!Object.keys(all).includes(entry.socket.name)) {
                     all[entry.socket.name] = 1;
                 } else {
@@ -86,28 +88,31 @@
                 }
 
                 if (all[entry.socket.name] > top.count) {
-                    top = { value: entry.socket, count: all[entry.socket.name]}
+                    top = {
+                        value: entry.socket,
+                        count: all[entry.socket.name],
+                    };
                 }
-            })
-        })
+            });
+        });
 
         // console.log(all)
-        return top
+        return top;
     }
 
     function getSocketCounts(results) {
-       let all = {}
-        Object.keys(results).forEach(league => {
-            results[league].jewels.forEach(entry => {
+        let all = {};
+        Object.keys(results).forEach((league) => {
+            results[league].jewels.forEach((entry) => {
                 if (!Object.keys(all).includes(entry.socket.name)) {
                     all[entry.socket.name] = 1;
                 } else {
                     all[entry.socket.name]++;
                 }
-            })
-        })
-        all = sortObjectByValue(all)
-        return all
+            });
+        });
+        all = sortObjectByValue(all);
+        return all;
     }
 
     function applyFilters() {
@@ -116,22 +121,24 @@
         // league filters
         if (hardcoreOnly === true) {
             results = Object.fromEntries(
-                Object.entries(results).filter(([key, value]) => value.hardcore)
-            )
+                Object.entries(results).filter(
+                    ([key, value]) => value.hardcore,
+                ),
+            );
         }
 
         // jewel filters
-        Object.keys(results).forEach(league => {
+        Object.keys(results).forEach((league) => {
             results[league].jewels = results[league].jewels.filter((jewel) => {
-                let mf = jewel.mf_mods_match_count >= minMatchingMFMods
-                let gen = true
+                let mf = jewel.mf_mods_match_count >= minMatchingMFMods;
+                let gen = true;
                 if (matchGeneral) {
-                    gen = jewel.general_match
+                    gen = jewel.general_match;
                 }
-                return mf && gen
-            })
-        })
-        displayedResponse = results
+                return mf && gen;
+            });
+        });
+        displayedResponse = results;
     }
 
     function sortObjectByValue(obj) {
@@ -148,18 +155,18 @@
     }
 
     function getAttrCounts(results, attr) {
-        let all = {}
-        Object.keys(results).forEach(league => {
-            results[league].jewels.forEach(entry => {
+        let all = {};
+        Object.keys(results).forEach((league) => {
+            results[league].jewels.forEach((entry) => {
                 if (!Object.keys(all).includes(entry[attr])) {
                     all[entry[attr]] = 1;
                 } else {
                     all[entry[attr]]++;
                 }
-            })
-        })
-        all = sortObjectByValue(all)
-        return all
+            });
+        });
+        all = sortObjectByValue(all);
+        return all;
     }
 
     function openTradeLink(mode) {
@@ -167,207 +174,244 @@
         console.log(`got ${league}, ${mode}`);
 
         const generalToModIdMap = {
-            Asenath: 'explicit.pseudo_timeless_jewel_asenath',
-            Balbala: 'explicit.pseudo_timeless_jewel_balbala',
-            Nasima: 'explicit.pseudo_timeless_jewel_nasima', 
-            Cadiro: 'explicit.pseudo_timeless_jewel_cadiro', 
-            Caspiro: 'explicit.pseudo_timeless_jewel_caspiro', 
-            Victario: 'explicit.pseudo_timeless_jewel_victario', 
-            Ahuana: 'explicit.pseudo_timeless_jewel_ahuana', 
-            Doryani: 'explicit.pseudo_timeless_jewel_doryani', 
-            Xibaqua: 'explicit.pseudo_timeless_jewel_xibaqua', 
-            Akoya: 'explicit.pseudo_timeless_jewel_akoya', 
-            Kaom: 'explicit.pseudo_timeless_jewel_kaom', 
-            Rakiata: 'explicit.pseudo_timeless_jewel_rakiata', 
-            Avarius: 'explicit.pseudo_timeless_jewel_avarius', 
-            Dominus: 'explicit.pseudo_timeless_jewel_dominus', 
-            Maxarius: 'explicit.pseudo_timeless_jewel_maxarius',
-        }
+            Asenath: "explicit.pseudo_timeless_jewel_asenath",
+            Balbala: "explicit.pseudo_timeless_jewel_balbala",
+            Nasima: "explicit.pseudo_timeless_jewel_nasima",
+            Cadiro: "explicit.pseudo_timeless_jewel_cadiro",
+            Caspiro: "explicit.pseudo_timeless_jewel_caspiro",
+            Victario: "explicit.pseudo_timeless_jewel_victario",
+            Ahuana: "explicit.pseudo_timeless_jewel_ahuana",
+            Doryani: "explicit.pseudo_timeless_jewel_doryani",
+            Xibaqua: "explicit.pseudo_timeless_jewel_xibaqua",
+            Akoya: "explicit.pseudo_timeless_jewel_akoya",
+            Kaom: "explicit.pseudo_timeless_jewel_kaom",
+            Rakiata: "explicit.pseudo_timeless_jewel_rakiata",
+            Avarius: "explicit.pseudo_timeless_jewel_avarius",
+            Dominus: "explicit.pseudo_timeless_jewel_dominus",
+            Maxarius: "explicit.pseudo_timeless_jewel_maxarius",
+        };
 
         const typeToGeneralsMap = {
-            Brutal_Restraint: ['Asenath', 'Balbala', 'Nasima'],
-            Elegant_Hubris: ['Cadiro', 'Caspiro', 'Victario'],
-            Glorious_Vanity: ['Ahuana', 'Doryani', 'Xibaqua'],
-            Lethal_Pride: ['Akoya', 'Kaom', 'Rakiata'],
-            Militant_Faith: ['Avarius', 'Dominus', 'Maxarius'],
-        }
+            Brutal_Restraint: ["Asenath", "Balbala", "Nasima"],
+            Elegant_Hubris: ["Cadiro", "Caspiro", "Victario"],
+            Glorious_Vanity: ["Ahuana", "Doryani", "Xibaqua"],
+            Lethal_Pride: ["Akoya", "Kaom", "Rakiata"],
+            Militant_Faith: ["Avarius", "Dominus", "Maxarius"],
+        };
 
         let seedFilter = {
-            type: 'count',
+            type: "count",
             filters: [
                 {
                     value: {
                         min: body.seed,
-                        max: body.seed
+                        max: body.seed,
                     },
-                    id: generalToModIdMap[body.general]
-                }
+                    id: generalToModIdMap[body.general],
+                },
             ],
             value: {
-                'min': 1
-            }
-        }
+                min: 1,
+            },
+        };
 
-        if (mode == 'seed') {
-            seedFilter.filters = typeToGeneralsMap[body.jewel_type.replace(' ', '_')].map((general) => {
+        if (mode == "seed") {
+            seedFilter.filters = typeToGeneralsMap[
+                body.jewel_type.replace(" ", "_")
+            ].map((general) => {
                 return {
                     value: {
                         min: body.seed,
-                        max: body.seed
+                        max: body.seed,
                     },
-                    id: generalToModIdMap[general]
-                }
-            })
+                    id: generalToModIdMap[general],
+                };
+            });
         }
 
         let queryObj = {
             query: {
                 status: {
-                    option: 'online'
+                    option: "online",
                 },
-                stats: [seedFilter]
+                stats: [seedFilter],
             },
             sort: {
-                price: 'asc'
-            }
-        }
+                price: "asc",
+            },
+        };
 
-        if (body.jewel_type === 'Militant Faith' && mode === 'exact') {
+        if (body.jewel_type === "Militant Faith" && mode === "exact") {
             // add mf mods to query
-            console.log('adding mf mods')
+            console.log("adding mf mods");
             function devoModMap(devoMod) {
-                switch(devoMod) {
-                    case '4% increased Totem Damage per 10 Devotion':
+                switch (devoMod) {
+                    case "4% increased Totem Damage per 10 Devotion":
                         return "explicit.stat_2566390555";
-                    case '4% increased Brand Damage per 10 Devotion':
+                    case "4% increased Brand Damage per 10 Devotion":
                         return "explicit.stat_2697019412";
-                    case 'Channelling Skills deal 4% increased Damage per 10 Devotion':
+                    case "Channelling Skills deal 4% increased Damage per 10 Devotion":
                         return "explicit.stat_970844066";
-                    case '4% increased Area Damage per 10 Devotion':
+                    case "4% increased Area Damage per 10 Devotion":
                         return "explicit.stat_1724614884";
-                    case '4% increased Elemental Damage per 10 Devotion':
+                    case "4% increased Elemental Damage per 10 Devotion":
                         return "explicit.stat_3103189267";
-                    case '+2% to all Elemental Resistances per 10 Devotion':
+                    case "+2% to all Elemental Resistances per 10 Devotion":
                         return "explicit.stat_1910205563";
-                    case '3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion':
+                    case "3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion":
                         return "explicit.stat_1810368194";
-                    case '4% reduced Elemental Ailment Duration on you per 10 Devotion':
+                    case "4% reduced Elemental Ailment Duration on you per 10 Devotion":
                         return "explicit.stat_730530528";
-                    case '4% reduced Duration of Curses on you per 10 Devotion':
+                    case "4% reduced Duration of Curses on you per 10 Devotion":
                         return "explicit.stat_4235333770";
-                    case '1% increased Minion Attack and Cast Speed per 10 Devotion':
+                    case "1% increased Minion Attack and Cast Speed per 10 Devotion":
                         return "explicit.stat_3808469650";
-                    case 'Minions have +60 to Accuracy Rating per 10 Devotion':
+                    case "Minions have +60 to Accuracy Rating per 10 Devotion":
                         return "explicit.stat_2830135449";
-                    case 'Regenerate 0.6 Mana per Second per 10 Devotion':
+                    case "Regenerate 0.6 Mana per Second per 10 Devotion":
                         return "explicit.stat_2042813020";
-                    case '1% reduced Mana Cost of Skills per 10 Devotion':
+                    case "1% reduced Mana Cost of Skills per 10 Devotion":
                         return "explicit.stat_3293275880";
-                    case '1% increased effect of Non-Curse Auras per 10 Devotion':
+                    case "1% increased effect of Non-Curse Auras per 10 Devotion":
                         return "explicit.stat_2585926696";
-                    case '3% increased Defences from Equipped Shield per 10 Devotion':
+                    case "3% increased Defences from Equipped Shield per 10 Devotion":
                         return "explicit.stat_2803981661";
                     default:
-                        throw new Error('Mod was not found in map!');
+                        throw new Error("Mod was not found in map!");
                 }
             }
 
             const mf_filters = body.mf_mods.map((mod) => {
-                    let filter = {
-                        id: devoModMap(mod),
-                    }
-                    // console.log(filter)
-                    return filter;
-                })
+                let filter = {
+                    id: devoModMap(mod),
+                };
+                // console.log(filter)
+                return filter;
+            });
             // console.log(mf_filters)
             const devoFilter = {
-                type: 'count',
+                type: "count",
                 filters: mf_filters,
                 value: {
-                    'min': 2
-                }
-            }
+                    min: 2,
+                },
+            };
             // console.log(devoFilter)
-            queryObj.query.stats.push(devoFilter)
+            queryObj.query.stats.push(devoFilter);
         }
 
-        let url = 'http://www.pathofexile.com/trade/search/' + league.replace(' ', '') + '/?q=' + encodeURIComponent(JSON.stringify(queryObj))
+        let url =
+            "http://www.pathofexile.com/trade/search/" +
+            league.replace(" ", "") +
+            "/?q=" +
+            encodeURIComponent(JSON.stringify(queryObj));
         console.log(JSON.stringify(queryObj));
-        window.open(url, '_blank');
+        window.open(url, "_blank");
     }
 
     function numMatchingDevoMods(minDevoCount) {
         let count = 0;
-        Object.keys(response).forEach(league => {
+        Object.keys(response).forEach((league) => {
             response[league].jewels.forEach((jewel) => {
                 if (jewel.mf_mods_match_count >= minDevoCount) {
                     count++;
                 }
-            })
-        })
+            });
+        });
         return count;
     }
 
     function numExactMatch() {
         let count = 0;
-        Object.keys(response).forEach(league => {
+        Object.keys(response).forEach((league) => {
             response[league].jewels.forEach((jewel) => {
                 if (jewel.mf_mods_match_count == 2 && jewel.general_match) {
                     count++;
                 }
-            })
-        })
+            });
+        });
         return count;
     }
-
 </script>
 
 <!-- Title row -->
-<div class='mb-2 flex flex-row items-center justify-between'>
-    <div class='flex items-center'>
-        <span class='contentTitle'>Results Summary - </span>
-            <div class='queryDetail'>
-                <span class='queryHeaderLabel'>Type: </span><span class='queryHeader'>{body.jewel_type}</span>
+<div class="mb-2 flex flex-row items-center justify-between">
+    <div class="flex items-center">
+        <span class="contentTitle">Results Summary - </span>
+        <div class="queryDetail">
+            <span class="queryHeaderLabel">Type: </span><span
+                class="queryHeader">{body.jewel_type}</span
+            >
+        </div>
+        <div class="queryDetail">
+            <span class="queryHeaderLabel">General: </span><span
+                class="queryHeader">{body.general}</span
+            >
+        </div>
+        <div class="queryDetail">
+            <span class="queryHeaderLabel">Seed: </span><span
+                class="queryHeader">{body.seed}</span
+            >
+        </div>
+        {#if body.jewel_type === "Militant Faith"}
+            <div class="queryDetail">
+                <span class="queryHeaderLabel">Devotion Mods: </span><span
+                    class="queryHeader"
+                    >{body.mf_mods[0]}, {body.mf_mods[1]}</span
+                >
             </div>
-            <div class='queryDetail'>
-                <span class='queryHeaderLabel'>General: </span><span class='queryHeader'>{body.general}</span>
-            </div>
-            <div class='queryDetail'>
-                <span class='queryHeaderLabel'>Seed: </span><span class='queryHeader'>{body.seed}</span>
-            </div>
-            {#if body.jewel_type === 'Militant Faith'}
-            <div class='queryDetail'>
-                <span class='queryHeaderLabel'>Devotion Mods: </span><span class='queryHeader'>{body.mf_mods[0]}, {body.mf_mods[1]}</span>
-            </div>
-            {/if}
+        {/if}
     </div>
-    <Button class='pl-1 ml-5' variant='ghost' href='/search'><ChevronLeft class='h-5'/><span style='text-decoration: underline; font-family: Roboto;'>Back to Search</span></Button>
+    <Button class="pl-1 ml-5" variant="ghost" href="/search"
+        ><ChevronLeft class="h-5" /><span
+            style="text-decoration: underline; font-family: Roboto;"
+            >Back to Search</span
+        ></Button
+    >
 </div>
 
 <!-- Results Summary -->
-<Card.Root class='transparentBackground'>
+<Card.Root class="transparentBackground">
     <!-- <Card.Header> -->
-        <!-- <Card.Title class='cardTitle'>Stats</Card.Title> -->
+    <!-- <Card.Title class='cardTitle'>Stats</Card.Title> -->
     <!-- </Card.Header> -->
-    <Card.Content class='flex flex-row justify-start'>
-        <div class='flex flex-col p-3 mr-3'>
+    <Card.Content class="flex flex-row justify-start">
+        <div class="flex flex-col p-3 mr-3">
             <div>
-            <p class='resultsSummaryTitle mb-3'>Breakdown</p>
-            <p class='resultsSummaryText mb-4'>Total Results: {totalResults(response)} </p>
-            <div class='ml-5'>
-            <p class='resultsSummaryText mb-2'>Of the search results:</p>
-            <!-- <p class='resultsSummaryText'>• {totalResults(response)} jewels found had a matching seed</p> -->
-             <div class='flex flex-col gap-1'>
-            {#if body.jewel_type === 'Militant Faith'}
-            <p class='resultsSummaryText'>• {topAttr(response, 'general').count} jewels had a matching general</p>
-            <p class='resultsSummaryText'>• {numMatchingDevoMods(1)} jewels had at least 1 matching devotion modifier</p>
-            <p class='resultsSummaryText'>• {numMatchingDevoMods(2)} jewels matched both devotion modifiers</p>
-            <p class='resultsSummaryText'>• {numExactMatch()} jewels were an exact match</p>
-            {:else}
-            <p class='resultsSummaryText'>• {topAttr(response, 'general').count} jewels were an exact match</p>
-            {/if}
-            </div>
-            </div>
+                <p class="resultsSummaryTitle mb-3">Breakdown</p>
+                <p class="resultsSummaryText mb-4">
+                    Total Results: {totalResults(response)}
+                </p>
+                <div class="ml-5">
+                    <p class="resultsSummaryText mb-2">
+                        Of the search results:
+                    </p>
+                    <!-- <p class='resultsSummaryText'>• {totalResults(response)} jewels found had a matching seed</p> -->
+                    <div class="flex flex-col gap-1">
+                        {#if body.jewel_type === "Militant Faith"}
+                            <p class="resultsSummaryText">
+                                • {topAttr(response, "general").count} jewels had
+                                a matching general
+                            </p>
+                            <p class="resultsSummaryText">
+                                • {numMatchingDevoMods(1)} jewels had at least 1
+                                matching devotion modifier
+                            </p>
+                            <p class="resultsSummaryText">
+                                • {numMatchingDevoMods(2)} jewels matched both devotion
+                                modifiers
+                            </p>
+                            <p class="resultsSummaryText">
+                                • {numExactMatch()} jewels were an exact match
+                            </p>
+                        {:else}
+                            <p class="resultsSummaryText">
+                                • {topAttr(response, "general").count} jewels were
+                                an exact match
+                            </p>
+                        {/if}
+                    </div>
+                </div>
             </div>
 
             <!-- Waste of time but if they ever change the site I guess we can go back to using this -->
@@ -389,22 +433,56 @@
                     {/each}
                 </Select.Content>
             </Select.Root> -->
-            <div class='mt-auto mb-3'>
-                <p class='resultsSummaryTitle'>Search on Official Trade Site:</p>
+            <div class="mt-auto mb-3">
+                <p class="resultsSummaryTitle">
+                    Search on Official Trade Site:
+                </p>
             </div>
-            <div class='flex flex-row gap-2'>
-            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('seed')}>Any General</Button>
-            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('general')}>Match General</Button>
-            {#if body.jewel_type === 'Militant Faith'}
-            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('exact')}>Match General + Devo Mods</Button>
-            {/if}
+            <div class="flex flex-row gap-2">
+                <Button
+                    class="tradeSearch"
+                    disabled={!selectedTradeLeague}
+                    on:click={() => openTradeLink("seed")}>Any General</Button
+                >
+                <Button
+                    class="tradeSearch"
+                    disabled={!selectedTradeLeague}
+                    on:click={() => openTradeLink("general")}
+                    >Match General</Button
+                >
+                {#if body.jewel_type === "Militant Faith"}
+                    <Button
+                        class="tradeSearch"
+                        disabled={!selectedTradeLeague}
+                        on:click={() => openTradeLink("exact")}
+                        >Match General + Devo Mods</Button
+                    >
+                {/if}
             </div>
         </div>
-        <Separator orientation='vertical' class='mx-auto'></Separator>
-        <div class='flex flex-row ml-3 mr-6 gap-8'>
-        <ResultChart values={Object.values(getAttrCounts(response, 'general'))} labels={Object.keys(getAttrCounts(response, 'general'))} theme='legion' title={'Top General: ' + topAttr(response, 'general').name} />
-        <ResultChart values={Object.values(getAttrCounts(response, 'ascendancy_name'))} labels={Object.keys(getAttrCounts(response, 'ascendancy_name'))} theme='legion' title={'Top Ascendancy: ' + topAttr(response, 'ascendancy_name').name} />
-        <ResultChart values={Object.values(getSocketCounts(response))} labels={Object.keys(getSocketCounts(response))} theme='legion' title={'Top Socket: ' + topSocket(response).value.name} />
+        <Separator orientation="vertical" class="mx-auto"></Separator>
+        <div class="flex flex-row ml-3 mr-6 gap-8">
+            <ResultChart
+                values={Object.values(getAttrCounts(response, "general"))}
+                labels={Object.keys(getAttrCounts(response, "general"))}
+                theme="legion"
+                title={"Top General: " + topAttr(response, "general").name}
+            />
+            <ResultChart
+                values={Object.values(
+                    getAttrCounts(response, "ascendancy_name"),
+                )}
+                labels={Object.keys(getAttrCounts(response, "ascendancy_name"))}
+                theme="legion"
+                title={"Top Ascendancy: " +
+                    topAttr(response, "ascendancy_name").name}
+            />
+            <ResultChart
+                values={Object.values(getSocketCounts(response))}
+                labels={Object.keys(getSocketCounts(response))}
+                theme="legion"
+                title={"Top Socket: " + topSocket(response).value.name}
+            />
         </div>
         <!-- <div>
             <p>Total Matches:</p><p>{totalResults(response)}</p>
@@ -418,131 +496,170 @@
     </Card.Content>
 </Card.Root>
 
-<div class='flex flex-row justify-start mt-5'>
-    <p class='contentTitle'>Results Browser</p>
+<div class="flex flex-row justify-start mt-5">
+    <p class="contentTitle">Results Browser</p>
 </div>
 
-<div class='flex flex-row mt-5 justify-between h-[1200px]'>
-<div class='flex flex-col h-full w-[378px]'>
-<Card.Root class='p-4'>
-    <Card.Content class='flex flex-col p-0 gap-4'>
-        <div class='flex flex-row justify-between items-center'>
-            <span class='searchParamLabel mr-4'>Hardcore Leagues Only</span>
-            <Switch 
-                bind:checked={hardcoreOnly}
-                onCheckedChange={(v) => {
-                    hardcoreOnly = v;
-                    applyFilters();
-                }}
-            />
-        </div>
-        <div class='flex flex-row justify-between items-center'>
-            <span class='searchParamLabel mr-4'>Matching General Only</span>
-            <Switch 
-                bind:checked={matchGeneral}
-                onCheckedChange={(v) => {
-                    matchGeneral = v;
-                    applyFilters();
-                }}
-            />
-        </div>
-        {#if body.jewel_type === 'Militant Faith'}
-        <div class='flex flex-row justify-between items-center'>
-            <span class='searchParamLabel mr-10'>Min. Matching Devotion Mods</span>
-            <Select.Root 
-                selected={minMatchingMFMods}
-                onSelectedChange={(v) => {
-                    minMatchingMFMods = v.value
-                    applyFilters()
-                }}>
-                <Select.Trigger
-                class='flex flex-row justify-center w-12'>
-                    {minMatchingMFMods}
-                </Select.Trigger>
-                <Select.Content class='flex flex-row justify-center w-12'>
-                    <Select.Item value=0>0</Select.Item>
-                    <Select.Item value=1>1</Select.Item>
-                    <Select.Item value=2>2</Select.Item>
-                </Select.Content>
-            </Select.Root>
-        </div>
-        {/if}
-    </Card.Content>
-</Card.Root>
-<ScrollArea class='h-full rounded-md border mt-5'>
-    <Accordion.Root>
-        {#each Object.entries(displayedResponse) as [key, value]}
-        <Accordion.Item value={`item-${value.league_id}`}>
-            <Accordion.Trigger class='leagueAccordionTrigger my-4' >
-                <span style='font-family: Fontin-SmallCaps; font-size: 20px;'>{key} ({value.jewels.length})</span>
-            </Accordion.Trigger>
-            <Accordion.Content class='flex flex-col items-center'>
-                {#each value.jewels as jewel}
-                <div class="">
-                    <Button onmouseenter={() => {
-                        hoverData = jewel;
-                    }}
-
-                    onmouseleave={() => {
-                        if (selectedJewel) {
-                            hoverData = selectedJewel;
-
-                        } else {
-                            hoverData = null;
-                        }
-                    }}
-
-                    onclick={() => {
-                        selectedJewel = jewel;
-                    }}
-                    class="jewelResultRowButton rounded-none flex justify-between py-10">
-                    
-                    <div class='flex flex-col items-start gap-2'><span class='multiLang' style='font-size: 18px;'>{jewel.character_name}</span><p class='fontin'>Level {jewel.character_level} {jewel.ascendancy_name}</p></div>
-                    <div class='flex flex-col items-end gap-2'>
-                        <Badge variant='secondary' >Week {jewel.start_week}{jewel.start_week === jewel.end_week ? '' : ' - ' + jewel.end_week}</Badge>
-                        {#if jewel['vip'] && jewel['vip'] !== ''}
-                        <Badge variant='secondary' >{jewel.vip}</Badge>
-                        {/if}
-                    </div>    
-                        
-                    </Button>
+<div class="flex flex-row mt-5 justify-between h-[1200px]">
+    <div class="flex flex-col h-full w-[400px]">
+        <Card.Root class="p-4">
+            <Card.Content class="flex flex-col p-0 gap-4">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="searchParamLabel mr-4"
+                        >Hardcore Leagues Only</span
+                    >
+                    <Switch
+                        bind:checked={hardcoreOnly}
+                        onCheckedChange={(v) => {
+                            hardcoreOnly = v;
+                            applyFilters();
+                        }}
+                    />
                 </div>
+                <div class="flex flex-row justify-between items-center">
+                    <span class="searchParamLabel mr-4"
+                        >Matching General Only</span
+                    >
+                    <Switch
+                        bind:checked={matchGeneral}
+                        onCheckedChange={(v) => {
+                            matchGeneral = v;
+                            applyFilters();
+                        }}
+                    />
+                </div>
+                {#if body.jewel_type === "Militant Faith"}
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="searchParamLabel mr-10"
+                            >Min. Matching Devotion Mods</span
+                        >
+                        <Select.Root
+                            selected={minMatchingMFMods}
+                            onSelectedChange={(v) => {
+                                minMatchingMFMods = v.value;
+                                applyFilters();
+                            }}
+                        >
+                            <Select.Trigger
+                                class="flex flex-row justify-center w-12"
+                            >
+                                {minMatchingMFMods}
+                            </Select.Trigger>
+                            <Select.Content
+                                class="flex flex-row justify-center w-12"
+                            >
+                                <Select.Item value="0">0</Select.Item>
+                                <Select.Item value="1">1</Select.Item>
+                                <Select.Item value="2">2</Select.Item>
+                            </Select.Content>
+                        </Select.Root>
+                    </div>
+                {/if}
+            </Card.Content>
+        </Card.Root>
+        <ScrollArea class="h-full rounded-md border mt-5">
+            <Accordion.Root>
+                {#each Object.entries(displayedResponse) as [key, value]}
+                    <Accordion.Item value={`item-${value.league_id}`}>
+                        <Accordion.Trigger class="leagueAccordionTrigger my-4">
+                            <span
+                                style="font-family: Fontin-SmallCaps; font-size: 20px;"
+                                >{key} ({value.jewels.length})</span
+                            >
+                        </Accordion.Trigger>
+                        <Accordion.Content class="flex flex-col items-center">
+                            {#each value.jewels as jewel}
+                                <div class="">
+                                    <Button
+                                        onmouseenter={() => {
+                                            hoverData = jewel;
+                                        }}
+                                        onmouseleave={() => {
+                                            if (selectedJewel) {
+                                                hoverData = selectedJewel;
+                                            } else {
+                                                hoverData = null;
+                                            }
+                                        }}
+                                        onclick={() => {
+                                            selectedJewel = jewel;
+                                        }}
+                                        class="jewelResultRowButton rounded-none flex justify-between py-10"
+                                    >
+                                        <div
+                                            class="flex flex-col items-start gap-2"
+                                        >
+                                            <span
+                                                class="multiLang"
+                                                style="font-size: 18px;"
+                                                >{jewel.character_name}</span
+                                            >
+                                            <p class="fontin">
+                                                Level {jewel.character_level}
+                                                {jewel.ascendancy_name}
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="flex flex-col items-end gap-2"
+                                        >
+                                            <Badge variant="secondary"
+                                                >Week {jewel.start_week}{jewel.start_week ===
+                                                jewel.end_week
+                                                    ? ""
+                                                    : " - " +
+                                                      jewel.end_week}</Badge
+                                            >
+                                            {#if jewel["vip"] && jewel["vip"] !== ""}
+                                                <Badge variant="secondary"
+                                                    >{jewel.vip}</Badge
+                                                >
+                                            {/if}
+                                        </div>
+                                    </Button>
+                                </div>
+                            {/each}
+                        </Accordion.Content>
+                    </Accordion.Item>
                 {/each}
-                
-            </Accordion.Content>
-        </Accordion.Item>
-        {/each}
-    </Accordion.Root>
-</ScrollArea>
-<!-- </div> -->
-</div>
+            </Accordion.Root>
+        </ScrollArea>
+        <!-- </div> -->
+    </div>
 
+    <!-- <div class='flex-col flex-auto ml-5 h-full'> -->
+    <Card.Root class="flex flex-col flex-auto self-stretch ml-5 h-full">
+        <Card.Content class="flex flex-row h-full justify-center">
+            {#if hoverData}
+                <div
+                    class="flex flex-col flex-auto w-full flex items-center justify-between"
+                >
+                    <JewelDetailsCard data={hoverData}></JewelDetailsCard>
+                    <Separator class="mb-2"></Separator>
+                    <JewelDrawing
+                        drawData={hoverData?.drawing}
+                        w={900}
+                        h={900}
+                    />
+                </div>
+            {:else if Object.keys(response).length > 0}
+                <div class="flex flex-row items-center justify-center">
+                    <ArrowLeft class="h-12 w-12" /><span
+                        class="ml-3"
+                        style="font-family: Fontin-SmallCaps; font-size: 60px;"
+                        >Select a league to view results</span
+                    >
+                </div>
+            {:else}
+                <div class="flex flex-row items-center justify-center">
+                    <span
+                        class="ml-5"
+                        style="font-family: Fontin-SmallCaps; font-size: 60px;"
+                        >No Results Found</span
+                    >
+                </div>
+            {/if}
+        </Card.Content>
+    </Card.Root>
 
-<!-- <div class='flex-col flex-auto ml-5 h-full'> -->
-<Card.Root class='flex flex-col flex-auto self-stretch ml-5 h-full'>
-    <Card.Content class='flex flex-row h-full justify-center'>
-        
-        {#if hoverData}
-        <div class='flex flex-col flex-auto w-full flex items-center justify-between'>
-        <JewelDetailsCard data={hoverData}></JewelDetailsCard>
-        <Separator class='mb-6'></Separator>
-        <JewelDrawing drawData={hoverData?.drawing} w={900} h={900}/>
-        </div>
-        {:else}
-        
-        {#if Object.keys(response).length > 0}
-        <div class='flex flex-row items-center justify-center'>
-        <ArrowLeft class='h-12 w-12'/><span class='ml-3' style='font-family: Fontin-SmallCaps; font-size: 60px;'>Select a league to view results</span>
-        </div>
-        {:else}
-        <div class='flex flex-row items-center justify-center'>
-        <span class='ml-5' style='font-family: Fontin-SmallCaps; font-size: 60px;'>No Results Found</span>
-        </div>
-        {/if}
-        {/if}
-    </Card.Content>
-</Card.Root>
-
-<!-- </div> -->
-
+    <!-- </div> -->
 </div>
