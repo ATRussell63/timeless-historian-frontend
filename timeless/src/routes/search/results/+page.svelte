@@ -25,6 +25,13 @@
     response = response[0].results;
     let displayedResponse = $state($state.snapshot(response));
 
+    let selectedTradeLeague = $state(Object.keys(response).find(key => response[key].is_active));
+
+    // trade site always redirects you to your preferred league but we need an initial value
+    if (!selectedTradeLeague) {
+        selectedTradeLeague = 'Settlers';
+    }
+
     function totalResults(results) {
         let count = 0;
         Object.keys(results).forEach(league => {
@@ -84,7 +91,7 @@
             })
         })
 
-        console.log(all)
+        // console.log(all)
         return top
     }
 
@@ -155,7 +162,163 @@
         return all
     }
 
-    
+    function openTradeLink(mode) {
+        const league = selectedTradeLeague;
+        console.log(`got ${league}, ${mode}`);
+
+        const generalToModIdMap = {
+            Asenath: 'explicit.pseudo_timeless_jewel_asenath',
+            Balbala: 'explicit.pseudo_timeless_jewel_balbala',
+            Nasima: 'explicit.pseudo_timeless_jewel_nasima', 
+            Cadiro: 'explicit.pseudo_timeless_jewel_cadiro', 
+            Caspiro: 'explicit.pseudo_timeless_jewel_caspiro', 
+            Victario: 'explicit.pseudo_timeless_jewel_victario', 
+            Ahuana: 'explicit.pseudo_timeless_jewel_ahuana', 
+            Doryani: 'explicit.pseudo_timeless_jewel_doryani', 
+            Xibaqua: 'explicit.pseudo_timeless_jewel_xibaqua', 
+            Akoya: 'explicit.pseudo_timeless_jewel_akoya', 
+            Kaom: 'explicit.pseudo_timeless_jewel_kaom', 
+            Rakiata: 'explicit.pseudo_timeless_jewel_rakiata', 
+            Avarius: 'explicit.pseudo_timeless_jewel_avarius', 
+            Dominus: 'explicit.pseudo_timeless_jewel_dominus', 
+            Maxarius: 'explicit.pseudo_timeless_jewel_maxarius',
+        }
+
+        const typeToGeneralsMap = {
+            Brutal_Restraint: ['Asenath', 'Balbala', 'Nasima'],
+            Elegant_Hubris: ['Cadiro', 'Caspiro', 'Victario'],
+            Glorious_Vanity: ['Ahuana', 'Doryani', 'Xibaqua'],
+            Lethal_Pride: ['Akoya', 'Kaom', 'Rakiata'],
+            Militant_Faith: ['Avarius', 'Dominus', 'Maxarius'],
+        }
+
+        let seedFilter = {
+            type: 'count',
+            filters: [
+                {
+                    value: {
+                        min: body.seed,
+                        max: body.seed
+                    },
+                    id: generalToModIdMap[body.general]
+                }
+            ],
+            value: {
+                'min': 1
+            }
+        }
+
+        if (mode == 'seed') {
+            seedFilter.filters = typeToGeneralsMap[body.jewel_type.replace(' ', '_')].map((general) => {
+                return {
+                    value: {
+                        min: body.seed,
+                        max: body.seed
+                    },
+                    id: generalToModIdMap[general]
+                }
+            })
+        }
+
+        let queryObj = {
+            query: {
+                status: {
+                    option: 'online'
+                },
+                stats: [seedFilter]
+            },
+            sort: {
+                price: 'asc'
+            }
+        }
+
+        if (body.jewel_type === 'Militant Faith' && mode === 'exact') {
+            // add mf mods to query
+            console.log('adding mf mods')
+            function devoModMap(devoMod) {
+                switch(devoMod) {
+                    case '4% increased Totem Damage per 10 Devotion':
+                        return "explicit.stat_2566390555";
+                    case '4% increased Brand Damage per 10 Devotion':
+                        return "explicit.stat_2697019412";
+                    case 'Channelling Skills deal 4% increased Damage per 10 Devotion':
+                        return "explicit.stat_970844066";
+                    case '4% increased Area Damage per 10 Devotion':
+                        return "explicit.stat_1724614884";
+                    case '4% increased Elemental Damage per 10 Devotion':
+                        return "explicit.stat_3103189267";
+                    case '+2% to all Elemental Resistances per 10 Devotion':
+                        return "explicit.stat_1910205563";
+                    case '3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion':
+                        return "explicit.stat_1810368194";
+                    case '4% reduced Elemental Ailment Duration on you per 10 Devotion':
+                        return "explicit.stat_730530528";
+                    case '4% reduced Duration of Curses on you per 10 Devotion':
+                        return "explicit.stat_4235333770";
+                    case '1% increased Minion Attack and Cast Speed per 10 Devotion':
+                        return "explicit.stat_3808469650";
+                    case 'Minions have +60 to Accuracy Rating per 10 Devotion':
+                        return "explicit.stat_2830135449";
+                    case 'Regenerate 0.6 Mana per Second per 10 Devotion':
+                        return "explicit.stat_2042813020";
+                    case '1% reduced Mana Cost of Skills per 10 Devotion':
+                        return "explicit.stat_3293275880";
+                    case '1% increased effect of Non-Curse Auras per 10 Devotion':
+                        return "explicit.stat_2585926696";
+                    case '3% increased Defences from Equipped Shield per 10 Devotion':
+                        return "explicit.stat_2803981661";
+                    default:
+                        throw new Error('Mod was not found in map!');
+                }
+            }
+
+            const mf_filters = body.mf_mods.map((mod) => {
+                    let filter = {
+                        id: devoModMap(mod),
+                    }
+                    // console.log(filter)
+                    return filter;
+                })
+            // console.log(mf_filters)
+            const devoFilter = {
+                type: 'count',
+                filters: mf_filters,
+                value: {
+                    'min': 2
+                }
+            }
+            // console.log(devoFilter)
+            queryObj.query.stats.push(devoFilter)
+        }
+
+        let url = 'http://www.pathofexile.com/trade/search/' + league.replace(' ', '') + '/?q=' + encodeURIComponent(JSON.stringify(queryObj))
+        console.log(JSON.stringify(queryObj));
+        window.open(url, '_blank');
+    }
+
+    function numMatchingDevoMods(minDevoCount) {
+        let count = 0;
+        Object.keys(response).forEach(league => {
+            response[league].jewels.forEach((jewel) => {
+                if (jewel.mf_mods_match_count >= minDevoCount) {
+                    count++;
+                }
+            })
+        })
+        return count;
+    }
+
+    function numExactMatch() {
+        let count = 0;
+        Object.keys(response).forEach(league => {
+            response[league].jewels.forEach((jewel) => {
+                if (jewel.mf_mods_match_count == 2 && jewel.general_match) {
+                    count++;
+                }
+            })
+        })
+        return count;
+    }
 
 </script>
 
@@ -186,15 +349,63 @@
     <!-- <Card.Header> -->
         <!-- <Card.Title class='cardTitle'>Stats</Card.Title> -->
     <!-- </Card.Header> -->
-    <Card.Content class='flex flex-row justify-between'>
-        <div class='w-150'>
-            <p>Total Results: </p>
-            
+    <Card.Content class='flex flex-row justify-start'>
+        <div class='flex flex-col p-3 mr-3'>
+            <div>
+            <p class='resultsSummaryTitle mb-3'>Breakdown</p>
+            <p class='resultsSummaryText mb-4'>Total Results: {totalResults(response)} </p>
+            <div class='ml-5'>
+            <p class='resultsSummaryText mb-2'>Of the search results:</p>
+            <!-- <p class='resultsSummaryText'>• {totalResults(response)} jewels found had a matching seed</p> -->
+             <div class='flex flex-col gap-1'>
+            {#if body.jewel_type === 'Militant Faith'}
+            <p class='resultsSummaryText'>• {topAttr(response, 'general').count} jewels had a matching general</p>
+            <p class='resultsSummaryText'>• {numMatchingDevoMods(1)} jewels had at least 1 matching devotion modifier</p>
+            <p class='resultsSummaryText'>• {numMatchingDevoMods(2)} jewels matched both devotion modifiers</p>
+            <p class='resultsSummaryText'>• {numExactMatch()} jewels were an exact match</p>
+            {:else}
+            <p class='resultsSummaryText'>• {topAttr(response, 'general').count} jewels were an exact match</p>
+            {/if}
+            </div>
+            </div>
+            </div>
+
+            <!-- Waste of time but if they ever change the site I guess we can go back to using this -->
+            <!-- <Select.Root 
+            selected={selectedTradeLeague}
+            onSelectedChange={(v) => {
+                    selectedTradeLeague = v.value
+                }}>
+                <Select.Trigger>
+                    <Select.Value placeholder="Select a League"></Select.Value>
+                </Select.Trigger>
+                <Select.Content>
+                    {#each Object.entries(response) as [key, value]}
+                        {#if value.is_active === true}
+                        <Select.Item value={key}>
+                            {key}
+                        </Select.Item>
+                        {/if}
+                    {/each}
+                </Select.Content>
+            </Select.Root> -->
+            <div class='mt-auto mb-3'>
+                <p class='resultsSummaryTitle'>Search on Official Trade Site:</p>
+            </div>
+            <div class='flex flex-row gap-2'>
+            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('seed')}>Any General</Button>
+            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('general')}>Match General</Button>
+            {#if body.jewel_type === 'Militant Faith'}
+            <Button class='tradeSearch' disabled={!selectedTradeLeague} on:click={() => openTradeLink('exact')}>Match General + Devo Mods</Button>
+            {/if}
+            </div>
         </div>
-        <Separator orientation='vertial'></Separator>
+        <Separator orientation='vertical' class='mx-auto'></Separator>
+        <div class='flex flex-row ml-3 mr-6 gap-8'>
         <ResultChart values={Object.values(getAttrCounts(response, 'general'))} labels={Object.keys(getAttrCounts(response, 'general'))} theme='legion' title={'Top General: ' + topAttr(response, 'general').name} />
         <ResultChart values={Object.values(getAttrCounts(response, 'ascendancy_name'))} labels={Object.keys(getAttrCounts(response, 'ascendancy_name'))} theme='legion' title={'Top Ascendancy: ' + topAttr(response, 'ascendancy_name').name} />
         <ResultChart values={Object.values(getSocketCounts(response))} labels={Object.keys(getSocketCounts(response))} theme='legion' title={'Top Socket: ' + topSocket(response).value.name} />
+        </div>
         <!-- <div>
             <p>Total Matches:</p><p>{totalResults(response)}</p>
             <p>
@@ -263,7 +474,7 @@
         {#each Object.entries(displayedResponse) as [key, value]}
         <Accordion.Item value={`item-${value.league_id}`}>
             <Accordion.Trigger class='leagueAccordionTrigger my-4' >
-                <span>{key} - {value.jewels.length}</span>
+                <span style='font-family: Fontin-SmallCaps; font-size: 20px;'>{key} ({value.jewels.length})</span>
             </Accordion.Trigger>
             <Accordion.Content class='flex flex-col items-center'>
                 {#each value.jewels as jewel}
@@ -307,27 +518,31 @@
 </div>
 
 
-<div class='flex-col flex-auto ml-5 h-full'>
-<Card.Root class='flex flex-col flex-auto self-stretch h-full'>
-    <Card.Content class='flex flex-col items-center'>
-        <div class='flex-col flex-auto w-full flex items-center justify-center'>
+<!-- <div class='flex-col flex-auto ml-5 h-full'> -->
+<Card.Root class='flex flex-col flex-auto self-stretch ml-5 h-full'>
+    <Card.Content class='flex flex-row h-full justify-center'>
+        
         {#if hoverData}
+        <div class='flex flex-col flex-auto w-full flex items-center justify-between'>
         <JewelDetailsCard data={hoverData}></JewelDetailsCard>
-        <Separator></Separator>
-        <JewelDrawing drawData={hoverData?.drawing} w={800} h={800}/>
+        <Separator class='mb-6'></Separator>
+        <JewelDrawing drawData={hoverData?.drawing} w={900} h={900}/>
+        </div>
         {:else}
-        <div class='flex flex-row mt-[30%] items-center'>
+        
         {#if Object.keys(response).length > 0}
-        <ArrowLeft class='h-15 w-15'/><span class='ml-5' style='font-family: Fontin-SmallCaps; font-size: 60px;'>Select a league to view results</span>
+        <div class='flex flex-row items-center justify-center'>
+        <ArrowLeft class='h-12 w-12'/><span class='ml-3' style='font-family: Fontin-SmallCaps; font-size: 60px;'>Select a league to view results</span>
+        </div>
         {:else}
+        <div class='flex flex-row items-center justify-center'>
         <span class='ml-5' style='font-family: Fontin-SmallCaps; font-size: 60px;'>No Results Found</span>
-        {/if}
         </div>
         {/if}
-        </div>
+        {/if}
     </Card.Content>
 </Card.Root>
 
-</div>
+<!-- </div> -->
 
 </div>

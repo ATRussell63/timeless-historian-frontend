@@ -6,18 +6,18 @@ import {Button} from '$lib/components/ui/button';
 
 let { children } = $props();</script>
 
-<div class='app pt-5'>
+<div class='app'>
 <TopNav></TopNav>
 <div class="grid grid-cols-12 min-h-screen">
   <!-- Left Margin -->
   <div class="col-span-2 relative">
-    <div class="absolute right-0 top-4">
+    <div class="absolute right-0">
       <Sidebar/>
     </div>
   </div>
 
   <!-- Main Content -->
-  <main class="col-span-8 px-6 py-4 rounded-t-xl">
+  <main class="col-span-8 px-6 pt-3 rounded-t-xl" style='margin-top: 0px;'>
     <!-- Your main content here -->
 	 {@render children()}
     <!-- <h1 class="text-2xl font-bold">Main Content Area</h1> -->
@@ -29,10 +29,8 @@ let { children } = $props();</script>
     <!-- Right margin content if needed -->
   </div>
 </div>
-<footer>
-	<p>
-		Contact: timeless_auditor@gmail.com | This website is not fan-made and not affiliated with Grinding Gear Games | Fontin (PoE Font) created by <a href="https://www.exljbris.com">exljbris</a>
-	</p>
+<footer class='flex flex-row justify-center gap-2'>
+	<span>Contact: timeless_auditor@gmail.com</span><span>|</span>This website is fan-made and is not affiliated with Grinding Gear Games<span>|</span><span>Fontin (PoE Font) created by <a target="_blank" rel="noopener noreferrer" href="https://www.exljbris.com">exljbris</a></span>
 </footer>
 </div>
 
@@ -53,9 +51,6 @@ let { children } = $props();</script>
 	footer {
 		background-color: #0D0D0D;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
 		padding: 8px;
 		font-size: 12px;
 		color: white;

@@ -1,6 +1,7 @@
 <script>
     import Separator from '$lib/components/ui/separator/separator.svelte';
     import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+    import Badge from '$lib/components/ui/badge/badge.svelte';
     import { ExternalLink } from 'lucide-svelte';
     import * as Card from '$lib/components/ui/card';
     import Ascendant from '$lib/images/classes/Ascendant.png';
@@ -50,10 +51,10 @@
     }
 </script>
 
-<div class='flex flex-row w-full h-[370px]'>
+<div class='flex flex-row w-full h-full mb-5'>
 <div class='flex-col w-[55%]'>
 <div class='flex-row flex-auto w-full flex items-center justify-start'>
-<img class='border-2 border-black rounded-sm border-solid' alt={data.ascendancy_name} src={imgMap[data.ascendancy_name]} />
+<img class='border-2 border-black rounded-sm border-solid mt-3 h-24' alt={data.ascendancy_name} src={imgMap[data.ascendancy_name]} />
 <div class='flex flex-col ml-4'>
     <div class='flex flex-row items-end'>
         <a target="_blank" rel="noopener noreferrer" class='multiLang' style='font-size: 36px;' 
@@ -61,33 +62,37 @@
         >{data.character_name}</a>
         <ExternalLink class='w-5 h-5 ml-1 mb-3'/>
     </div>
-    <p style='font-family:Fontin-Italic; margin-top: -9px;'>{data.account_name}</p>
-<Separator class='' />
+    <div class='flex flex-row'>
+        <p style='font-family:Fontin-Italic; margin-top: -3px;'>{data.account_name}</p>
+        {#if data.vip}
+        <Badge class='ml-3' style='margin-top: -3px;'>{data.vip}</Badge>
+        {/if}
+    </div>
+<Separator class='mt-1' />
 <div class='flex flex-row justify-between gap-5'>
 <p class='fontin'>Level {data.character_level} {data.ascendancy_name}</p><p class='fontin'>{data.league_name} League Rank #{data.ladder_rank}</p>
 </div>
 </div>
 </div>
 <div class='flex-row'>
-<p>Pee pees sucked</p>
+<p>Last Scan: </p>
+<p>First Equipped: </p>
+<p>Equipped in socket: </p>
+<p>General: </p>
 </div>
 </div>
 <Separator orientation='vertical'></Separator>
-<div class='flex flex-col'>
-    <Card.Root>
-        <Card.Header>
-            <Card.Title class='cardTitle'>
-                Stats Granted by {data.jewel_type}
-            </Card.Title>
-        </Card.Header>
-        <Card.Content class='px-8'>
-            <ScrollArea class='border p-4 h-[120px]'>
+<div class='flex flex-col px-6 w-[45%]'>
+        <p class='cardTitle pl-2 mb-3'>
+            Stats Granted by {data.jewel_type}
+        </p>
+        <div class='pl-6 w-full'>
+            <ScrollArea class='p-4 border rounded-sm h-[200px] w-full'>
             {#each data.drawing.jewel_stats as stat}
                 <p style='font-family: Roboto;'>{stat}</p>
             {/each}
             </ScrollArea>
-        </Card.Content>
-    </Card.Root>
+        </div>
 </div>
 </div>
 

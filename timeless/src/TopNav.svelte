@@ -4,9 +4,12 @@
     import TopNavDisabledButton from "./TopNavDisabledButton.svelte";
 </script>
 
-<nav class="bg-white text-white px-4 pt-10 pb-0 flex items-center justify-between">
+<nav class="bg-white text-white px-4 pt-10 pb-0 flex items-center justify-center">
     <!-- Centered Buttons -->
-    <div class="absolute left-1/2 transform -translate-x-1/2 flex space-x-4">
+     <!-- class="absolute left-1/2 transform -translate-x-1/2 flex space-x-4" -->
+    <div class='mr-auto'>
+    </div>
+    <div class='flex flex-row pb-0 gap-4'>
       <TopNavButton label='Search' url='/search'/>
       <TopNavButton label='Browse' url='/browse'/>
       <TopNavDisabledButton label='Bulk (Coming Soon)'></TopNavDisabledButton>

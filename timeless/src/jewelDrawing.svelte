@@ -48,7 +48,7 @@
     let stage = null;
 
     function drawJewel() {
-        const SCALE_FACTOR = 0.2;
+        const SCALE_FACTOR = 0.24;
         const NODE_SIZE = 256;
         const TT_FONT_BODY = '#8183BF';
         const TT_FONT_TITLE = '#F8E5C9';
@@ -94,7 +94,6 @@
             switch(dim) {
                 case 'x':
                     return (stage.width() / 2) + (n * SCALE_FACTOR);
-                    break;
                 case 'y':
                     return (stage.height() / 2) + (n * SCALE_FACTOR);
             }

@@ -10,9 +10,9 @@
             '#009933', // templar
             '#CC3333', // vaal
             // '#46268C', // legion purple
-            '#7D5CF2',
+            '#7D5CF2', //lavender
             '#CC6633', // karui
-            '#CCCCCC',  // eternal
+            // '#CCCCCC',  // eternal
             '#FF9933', // maraketh
         ]
     }

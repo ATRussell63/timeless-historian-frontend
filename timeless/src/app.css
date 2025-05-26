@@ -345,3 +345,18 @@ black: #0D0D0D
 .fontinBold {
   font-family: Fontin-Bold;
 }
+
+.tradeSearch {
+  font-family: Fontin-SmallCaps;
+  font-size: 18px;
+}
+
+.resultsSummaryText {
+  font-family: Roboto;
+  font-size: 18px;
+}
+
+.resultsSummaryTitle {
+  font-family: Fontin-SmallCaps;
+  font-size: 24px;
+}
