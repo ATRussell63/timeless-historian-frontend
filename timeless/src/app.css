@@ -152,6 +152,74 @@ black: #0D0D0D
   src: url('/fonts/Roboto-SemiBold.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Roboto-Light';
+  font-style: normal;
+  src: url('/fonts/Roboto-Light.ttf') format('truetype');
+}
+
+/* Russian support */
+@font-face {
+  font-family: 'Vollkorn';
+  font-style: normal;
+  src: url('/fonts/Vollkorn-Medium.ttf') format('truetype');
+  unicode-range: U+0400-04FF; /* Cyrillic */
+}
+
+/* :lang(ru) {
+  font-family: 'Vollkorn';
+} */
+
+/* Korean support */
+@font-face {
+  font-family: 'Hahmlet';
+  font-style: normal;
+  src: url('/fonts/Hahmlet-Medium.ttf') format('truetype');
+  unicode-range: U+1100-11FF, U+AC00-D7AF; /* Hangul */
+}
+
+/* :lang(ko) {
+  font-family: 'DoHyeon';
+} */
+
+/* Thai support */
+@font-face {
+  font-family: 'Kanit';
+  font-style: normal;
+  src: url('/fonts/Kanit-Medium.ttf') format('truetype');
+  unicode-range: U+0E00-0E7F; /* Thai */
+}
+
+/* :lang(th) {
+  font-family: 'Kanit';
+} */
+
+/* Japanese support */
+@font-face {
+  font-family: 'Kosugi';
+  font-style: normal;
+  src: url('/fonts/Kosugi-Regular.ttf') format('truetype');
+  unicode-range: U+3040-309F, U+30A0-30FF, U+4E00-9FAF; /* Hiragana, Katakana, Kanji */
+}
+
+/* :lang(ja) {
+  font-family: 'Kosugi';
+} */
+
+/* Chinese support */
+@font-face {
+  font-family: 'NotoSansSC';
+  font-style: normal;
+  src: url('/fonts/NotoSansSC-Medium.ttf') format('truetype');
+  unicode-range: U+4E00-9FFF; /* CJK Unified Ideographs (Simplified Chinese, shared with Japanese) */
+}
+
+/* :lang(zh) {
+  font-family: 'NotoSansSC';
+} */
+
+/* TODO - font subsetting? */
+
 .topNavButton {
   font-family: Fontin-SmallCaps;
   font-size: 32px;
@@ -253,4 +321,27 @@ black: #0D0D0D
 
 .transparentBackground {
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+.chartTooltipWrapper {
+  background-color: white;
+}
+
+.chartTooltipText {
+  font-family: Roboto-Light;
+  color: black;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.multiLang {
+  font-family: 'Vollkorn', 'Hahmlet', 'Kanit', 'Kosugi', 'NotoSansSC', 'Fontin-SmallCaps', sans-serif;
+}
+
+.fontin {
+  font-family: Fontin;
+}
+
+.fontinBold {
+  font-family: Fontin-Bold;
 }

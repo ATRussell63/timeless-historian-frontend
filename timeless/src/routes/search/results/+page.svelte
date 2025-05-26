@@ -9,11 +9,17 @@
     import Switch from "$lib/components/ui/switch/switch.svelte";
     import * as Select from '$lib/components/ui/select'
     import ChevronLeft from "lucide-svelte/icons/chevron-left";
+    // import { Chart,  A,  Dropdown, DropdownItem, Popover } from "flowbite-svelte";
+    import ResultChart from "../../../ResultChart.svelte";
+    import { ArrowLeft } from 'lucide-svelte';
+    import JewelDetailsCard from "../../../JewelDetailsCard.svelte";
+    import { Badge } from '$lib/components/ui/badge';
 
     let hoverData = $state(null);
     let selectedJewel = $state(null);
     let minMatchingMFMods = $state(0);
     let matchGeneral = $state(false);
+    let hardcoreOnly = $state(false);
 
     let { body, response } = $search_result;
     response = response[0].results;
@@ -22,7 +28,7 @@
     function totalResults(results) {
         let count = 0;
         Object.keys(results).forEach(league => {
-            results[league].forEach(entry => {
+            results[league].jewels.forEach(entry => {
                 count++;
             })
         })
@@ -33,7 +39,7 @@
         let values = {};
         let top = { name: '', count: 0 }
         Object.keys(results).forEach(league => {
-            results[league].forEach(entry => {
+            results[league].jewels.forEach(entry => {
                 if (!Object.keys(values).includes(entry[attr])) {
                     values[entry[attr]] = 1;
                 } else {
@@ -53,7 +59,7 @@
         let all = {}
         let top = { name: '', count: 0}
         Object.keys(results).forEach(league => {
-            all[league] = results[league].length
+            all[league] = results[league].jewels.length
             if (all[league] > top.count) {
                 top = { name: league, count: all[league] }
             }
@@ -65,7 +71,7 @@
         let all = {}
         let top = { value: {}, count: 0 }
         Object.keys(results).forEach(league => {
-            results[league].forEach(entry => {
+            results[league].jewels.forEach(entry => {
                 if (!Object.keys(all).includes(entry.socket.name)) {
                     all[entry.socket.name] = 1;
                 } else {
@@ -82,15 +88,37 @@
         return top
     }
 
-    function applyFilters(general, minMatches) {
-        console.log(`gen ${general}, mf ${minMatches}`)
-
-        let results = $state.snapshot(response);
+    function getSocketCounts(results) {
+       let all = {}
         Object.keys(results).forEach(league => {
-            results[league] = results[league].filter((jewel) => {
-                let mf = jewel.mf_mods_match_count >= minMatches
+            results[league].jewels.forEach(entry => {
+                if (!Object.keys(all).includes(entry.socket.name)) {
+                    all[entry.socket.name] = 1;
+                } else {
+                    all[entry.socket.name]++;
+                }
+            })
+        })
+        all = sortObjectByValue(all)
+        return all
+    }
+
+    function applyFilters() {
+        let results = $state.snapshot(response);
+
+        // league filters
+        if (hardcoreOnly === true) {
+            results = Object.fromEntries(
+                Object.entries(results).filter(([key, value]) => value.hardcore)
+            )
+        }
+
+        // jewel filters
+        Object.keys(results).forEach(league => {
+            results[league].jewels = results[league].jewels.filter((jewel) => {
+                let mf = jewel.mf_mods_match_count >= minMatchingMFMods
                 let gen = true
-                if (general) {
+                if (matchGeneral) {
                     gen = jewel.general_match
                 }
                 return mf && gen
@@ -98,6 +126,36 @@
         })
         displayedResponse = results
     }
+
+    function sortObjectByValue(obj) {
+        const entries = Object.entries(obj);
+
+        entries.sort(([, valueA], [, valueB]) => valueB - valueA); // Sort in ascending order
+
+        const sortedObject = {};
+        for (const [key, value] of entries) {
+            sortedObject[key] = value;
+        }
+
+        return sortedObject;
+    }
+
+    function getAttrCounts(results, attr) {
+        let all = {}
+        Object.keys(results).forEach(league => {
+            results[league].jewels.forEach(entry => {
+                if (!Object.keys(all).includes(entry[attr])) {
+                    all[entry[attr]] = 1;
+                } else {
+                    all[entry[attr]]++;
+                }
+            })
+        })
+        all = sortObjectByValue(all)
+        return all
+    }
+
+    
 
 </script>
 
@@ -125,10 +183,18 @@
 
 <!-- Results Summary -->
 <Card.Root class='transparentBackground'>
-    <Card.Header>
-        <Card.Title class='cardTitle'>Stats</Card.Title>
-    </Card.Header>
+    <!-- <Card.Header> -->
+        <!-- <Card.Title class='cardTitle'>Stats</Card.Title> -->
+    <!-- </Card.Header> -->
     <Card.Content class='flex flex-row justify-between'>
+        <div class='w-150'>
+            <p>Total Results: </p>
+            
+        </div>
+        <Separator orientation='vertial'></Separator>
+        <ResultChart values={Object.values(getAttrCounts(response, 'general'))} labels={Object.keys(getAttrCounts(response, 'general'))} theme='legion' title={'Top General: ' + topAttr(response, 'general').name} />
+        <ResultChart values={Object.values(getAttrCounts(response, 'ascendancy_name'))} labels={Object.keys(getAttrCounts(response, 'ascendancy_name'))} theme='legion' title={'Top Ascendancy: ' + topAttr(response, 'ascendancy_name').name} />
+        <ResultChart values={Object.values(getSocketCounts(response))} labels={Object.keys(getSocketCounts(response))} theme='legion' title={'Top Socket: ' + topSocket(response).value.name} />
         <!-- <div>
             <p>Total Matches:</p><p>{totalResults(response)}</p>
             <p>
@@ -141,33 +207,42 @@
     </Card.Content>
 </Card.Root>
 
+<div class='flex flex-row justify-start mt-5'>
+    <p class='contentTitle'>Results Browser</p>
+</div>
 
-
-<div class='flex flex-row mt-5'>
-<div class='flex flex-col'>
-<p class='contentTitle'>Browser</p>
-<Card.Root class='mt-5 p-4'>
-    <!-- <Card.Title class='cardTitle mb-6'>
-        Filters
-    </Card.Title> -->
+<div class='flex flex-row mt-5 justify-between h-[1200px]'>
+<div class='flex flex-col h-full w-[378px]'>
+<Card.Root class='p-4'>
     <Card.Content class='flex flex-col p-0 gap-4'>
+        <div class='flex flex-row justify-between items-center'>
+            <span class='searchParamLabel mr-4'>Hardcore Leagues Only</span>
+            <Switch 
+                bind:checked={hardcoreOnly}
+                onCheckedChange={(v) => {
+                    hardcoreOnly = v;
+                    applyFilters();
+                }}
+            />
+        </div>
         <div class='flex flex-row justify-between items-center'>
             <span class='searchParamLabel mr-4'>Matching General Only</span>
             <Switch 
                 bind:checked={matchGeneral}
                 onCheckedChange={(v) => {
-                    applyFilters(v, minMatchingMFMods);
                     matchGeneral = v;
+                    applyFilters();
                 }}
             />
         </div>
         {#if body.jewel_type === 'Militant Faith'}
         <div class='flex flex-row justify-between items-center'>
-            <span class='searchParamLabel mr-4'>Min. Matching Devotion Mods</span>
+            <span class='searchParamLabel mr-10'>Min. Matching Devotion Mods</span>
             <Select.Root 
                 selected={minMatchingMFMods}
                 onSelectedChange={(v) => {
-                    v && (minMatchingMFMods = v.value) && (applyFilters(matchGeneral, v.value))
+                    minMatchingMFMods = v.value
+                    applyFilters()
                 }}>
                 <Select.Trigger
                 class='flex flex-row justify-center w-12'>
@@ -183,17 +258,15 @@
         {/if}
     </Card.Content>
 </Card.Root>
-<!-- <div class='transparentBackground'> -->
-    <!-- min-h-[1000px] basis-[300px] -->
-<ScrollArea class='max-h-[1000px] rounded-md border mt-5'>
+<ScrollArea class='h-full rounded-md border mt-5'>
     <Accordion.Root>
         {#each Object.entries(displayedResponse) as [key, value]}
-        <Accordion.Item value={`item-${key}`}>
+        <Accordion.Item value={`item-${value.league_id}`}>
             <Accordion.Trigger class='leagueAccordionTrigger my-4' >
-                <span>{key} - {value.length}</span>
+                <span>{key} - {value.jewels.length}</span>
             </Accordion.Trigger>
             <Accordion.Content class='flex flex-col items-center'>
-                {#each value as jewel}
+                {#each value.jewels as jewel}
                 <div class="">
                     <Button onmouseenter={() => {
                         hoverData = jewel;
@@ -212,8 +285,14 @@
                         selectedJewel = jewel;
                     }}
                     class="jewelResultRowButton rounded-none flex justify-between py-10">
-                    <div><span>{jewel.character_name}</span></div>
-                    <div class='flex flex-col items-end'><p>Level {jewel.character_level}</p><p> {jewel.ascendancy_name}</p></div>    
+                    
+                    <div class='flex flex-col items-start gap-2'><span class='multiLang' style='font-size: 18px;'>{jewel.character_name}</span><p class='fontin'>Level {jewel.character_level} {jewel.ascendancy_name}</p></div>
+                    <div class='flex flex-col items-end gap-2'>
+                        <Badge variant='secondary' >Week {jewel.start_week}{jewel.start_week === jewel.end_week ? '' : ' - ' + jewel.end_week}</Badge>
+                        {#if jewel['vip'] && jewel['vip'] !== ''}
+                        <Badge variant='secondary' >{jewel.vip}</Badge>
+                        {/if}
+                    </div>    
                         
                     </Button>
                 </div>
@@ -228,14 +307,24 @@
 </div>
 
 
-<div>
-<Card.Root>
-    <Card.Content>
+<div class='flex-col flex-auto ml-5 h-full'>
+<Card.Root class='flex flex-col flex-auto self-stretch h-full'>
+    <Card.Content class='flex flex-col items-center'>
+        <div class='flex-col flex-auto w-full flex items-center justify-center'>
         {#if hoverData}
-        <p>{hoverData.character_name}</p>
+        <JewelDetailsCard data={hoverData}></JewelDetailsCard>
         <Separator></Separator>
         <JewelDrawing drawData={hoverData?.drawing} w={800} h={800}/>
+        {:else}
+        <div class='flex flex-row mt-[30%] items-center'>
+        {#if Object.keys(response).length > 0}
+        <ArrowLeft class='h-15 w-15'/><span class='ml-5' style='font-family: Fontin-SmallCaps; font-size: 60px;'>Select a league to view results</span>
+        {:else}
+        <span class='ml-5' style='font-family: Fontin-SmallCaps; font-size: 60px;'>No Results Found</span>
         {/if}
+        </div>
+        {/if}
+        </div>
     </Card.Content>
 </Card.Root>
 

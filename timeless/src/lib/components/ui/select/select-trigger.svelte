@@ -17,7 +17,7 @@
 	on:keydown
 >
 	<slot {builder} />
-	<div>
+	<div class='ml-1'>
 		<ChevronDown class="h-4 w-4 opacity-50" />
 	</div>
 </SelectPrimitive.Trigger>
