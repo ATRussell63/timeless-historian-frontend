@@ -501,7 +501,7 @@
 </div>
 
 <div class="flex flex-row mt-5 justify-between h-[1200px]">
-    <div class="flex flex-col h-full w-[400px]">
+    <div class="flex flex-col h-full w-[400px] flex-none">
         <Card.Root class="p-4">
             <Card.Content class="flex flex-col p-0 gap-4">
                 <div class="flex flex-row justify-between items-center">
@@ -627,7 +627,7 @@
     </div>
 
     <!-- <div class='flex-col flex-auto ml-5 h-full'> -->
-    <Card.Root class="flex flex-col flex-auto self-stretch ml-5 h-full">
+    <Card.Root class="flex flex-col grow-7 self-stretch ml-5 h-full transparentBackground">
         <Card.Content class="flex flex-row h-full justify-center">
             {#if hoverData}
                 <div

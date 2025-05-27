@@ -42,7 +42,7 @@ export function parse_jewel_seed(jewel_text) {
         return ''
     }
 
-    const capture_seed = /Item Level: \d\d\n(?:-*)\n\D*(\d*)/;
+    const capture_seed = /(?:Commissioned|Bathed|Carved|Commanded|Denoted).* (\d+)/;
     const m = jewel_text.match(capture_seed);
     if (!m) {
         // console.log('parse jewel seed was null')
@@ -63,11 +63,12 @@ export function parse_jewel_general(jewel_text) {
         return ''
     }
 
-    const capture_general = /Item Level: \d\d\n(?:-*)\n.*(\b\w+)/;
+    // const capture_general = /Item Level: \d\d\n(?:-*)\n.*(\b\w+)/;
+    const capture_general = /(?:Commissioned|Bathed|Carved|Commanded|Denoted).* ([a-zA-Z]+)\n/;
     const m = jewel_text.match(capture_general);
     
     if (!m) {
-        // console.log('parse general was null')
+        console.log('parse general was null')
         return ''
     }
 
@@ -147,11 +148,11 @@ export function parse_jewel_mf_mods(jewel_text) {
                         '4% increased Totem Damage per 10 Devotion'];
 
     if (!m) {
-        return ['Error', 'Error']
+        return ['', '']
     } else if (m.length !== 3) {
-        return ['Error', 'Error']
+        return ['', '']
     } else if (!mf_mods.includes(m[1]) || !mf_mods.includes(m[2])) {
-        return ['Error', 'Error']
+        return ['', '']
     } else {
         return [m[1], m[2]]
     }

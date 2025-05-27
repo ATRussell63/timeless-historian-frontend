@@ -9,7 +9,8 @@
     import { redirect } from "@sveltejs/kit";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-
+    import { SvelteToast } from '@zerodevx/svelte-toast';
+    import { toast } from '@zerodevx/svelte-toast';
 
     let text_input = $state('');
     let jewel_type = $derived(p.parse_jewel_type(text_input));
@@ -19,6 +20,17 @@
 
     let loading = $state(false);
     let error = $state(null);
+
+    function allFieldsGood() {
+        let fields = [jewel_type, general, seed]
+        let good = fields.reduce((accumulator, current) => accumulator && current && current !== '', true)
+
+        if (jewel_type === 'Militant Faith') {
+            good = good && mf_mods && mf_mods[0] !== '' && mf_mods[1] !== ''
+        }
+
+        return good
+    }
 
     onMount(() => {
         text_input = `Item Class: Jewels
@@ -31,7 +43,7 @@ Radius: Large
 --------
 Item Level: 84
 --------
-Carved to glorify 7875 new faithful converted by High Templar Dominus
+Carved to glorify 12345 new faithful converted by High Templar Dominus
 Passives in radius are Conquered by the Templars
 +2% to all Elemental Resistances per 10 Devotion
 1% reduced Mana Cost of Skills per 10 Devotion
@@ -65,15 +77,34 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
             const data = { body: request_body, response: await response.json() };
             search_result.set(data);
             // console.log(data)
-            if (response.ok) {
+            if (response.ok && Object.keys(data.response[0].results).length > 0) {
                 goto('/search/results');
             } else {
+                console.log('pushing smoke')
                 // display an error somewhere
+                toast.pop()
+                toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
+                           {duration: 3000,
+                            theme: {
+                                '--toastColor': 'black',
+                                '--toastBackground': 'white',
+                                '--toastBarBackground': 'red',
+                                }
+                           })
             }
+
             } catch (err) {
             error = err.message;
             } finally {
             loading = false;
+        }
+    }
+
+    let toastOptions = {
+        theme: {
+            '--toastColor': 'black',
+            '--toastBackground': 'white',
+            '--toastBarBackground': 'grey',
         }
     }
 </script>
@@ -135,8 +166,11 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
     <span class='searchButton'>Clear</span>
 </Button>
 <Button
+    disabled={!allFieldsGood()}
     class='flex-1 ml-5 h-12'
     on:click={search}>
     <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
 </Button>
 </div>
+
+<SvelteToast {toastOptions}/>

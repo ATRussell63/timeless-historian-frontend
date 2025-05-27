@@ -368,3 +368,15 @@ black: #0D0D0D
 .roboto {
   font-family: Roboto;
 }
+
+._toastMsg {
+  padding-left: 15px !important;
+}
+
+._toastBtn {
+  padding-right: 10px !important;
+}
+
+._toastItem {
+  border-radius: 10px !important;
+}

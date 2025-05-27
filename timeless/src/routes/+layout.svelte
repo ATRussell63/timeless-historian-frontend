@@ -1,10 +1,36 @@
 <script>
-import '../app.css';
-import Sidebar from '../Sidebar.svelte';
-import TopNav from '../TopNav.svelte';
-import {Button} from '$lib/components/ui/button';
+	import '../app.css';
+	import Sidebar from '../Sidebar.svelte';
+	import TopNav from '../TopNav.svelte';
+	import {Button} from '$lib/components/ui/button';
+	import { cn } from '$lib/utils'
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import VaalSymbol from '$lib/images/VaalSymbol.svg?url'
+	import EternalSymbol from '$lib/images/EternalSymbol.svg?url'
+	import TemplarSymbol from '$lib/images/TemplarSymbol.svg?url'
+	import KaruiSymbol from '$lib/images/KaruiSymbol.svg?url'
+	import MarakethSymbol from '$lib/images/MarakethSymbol.svg?url'
+    import { afterNavigate } from '$app/navigation';
 
-let { children } = $props();</script>
+	let { children } = $props();
+
+	const isAbout = $page.url.pathname.startsWith('/about');
+
+	const backgroundZoom = isAbout ? '120%' : '120%';
+	let backgroundURL = $state(KaruiSymbol);
+
+	afterNavigate(() => {
+		// randomize background url
+		// console.log(backgroundURL);
+		// const urls = [EternalSymbol, KaruiSymbol, MarakethSymbol, TemplarSymbol, VaalSymbol]
+		// backgroundURL = urls[Math.floor(Math.random() * urls.length)];
+		// console.log(backgroundURL);
+	})
+
+	
+
+</script>
 
 <div class='app'>
 <TopNav></TopNav>
@@ -17,10 +43,8 @@ let { children } = $props();</script>
   </div>
 
   <!-- Main Content -->
-  <main class="col-span-8 px-6 pt-3 rounded-t-xl" style='margin-top: 0px;'>
-    <!-- Your main content here -->
+  <main class={cn("col-span-8 px-6 pt-3 rounded-t-xl")} style="margin-top: 0px; background-size: {backgroundZoom} {backgroundZoom}; background-image: url({backgroundURL});">
 	 {@render children()}
-    <!-- <h1 class="text-2xl font-bold">Main Content Area</h1> -->
   </main>
 
   <!-- Right Margin -->
@@ -42,10 +66,9 @@ let { children } = $props();</script>
 
 	main {
 		background-color: white;
-		margin-top: 20px;
-		background-image: url('$lib/images/EternalSymbol.svg');
-		background-size: 180% 180%;
-		background-position: bottom 50% left 50%;
+		/* background-image: url('$lib/images/KaruiSymbol.svg'); */
+		/* background-size: 120% 120%; */
+		background-position: bottom 100% left 50%;
 	}
 
 	footer {

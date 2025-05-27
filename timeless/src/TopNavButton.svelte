@@ -3,7 +3,6 @@
     import { cn } from '$lib/utils'
     let props = $props();
     import { page } from '$app/stores';
-    import { derived, get } from 'svelte/store';
 
     let url = props.url;
     const isActive = () => $page.url.pathname.startsWith(url);

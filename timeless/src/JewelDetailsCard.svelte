@@ -51,8 +51,8 @@
     };
 </script>
 
-<div class="flex flex-row w-full h-full mb-5">
-    <div class="flex flex-col w-[60%] justify-between">
+<div class="flex flex-row w-full h-full mb-5 justify-between">
+    <div class="flex flex-col grow-7 justify-between basis-[700px]">
         <div class="flex-row w-full flex items-center overflow-hidden">
             <img
                 class="border-2 border-black rounded-sm border-solid h-24"
@@ -93,57 +93,57 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col gap-1ml-2">
-            <div class="flex flex-row items-center">
-                <p class='fontinSmallCaps mr-2'>General:</p>
-                <p  class='roboto'
-                    style={data.general_matches
-                        ? "color: green;"
-                        : "color: red;"}
-                >
-                    {data.general}
-                </p>
-                {#if data.general_matches}
-                    <Check style="color: green;" />
-                {:else}
-                    <X style="color: red;" />
-                {/if}
-            </div>
-
-            {#if data.mf_mods}
-                <div class="flex flex-row">
-                    <p class='fontinSmallCaps mr-2'># Matching Devotion Modifiers:</p>
-                    <p  class='roboto'
-                        style={data.mf_mods_match_count == 2
+            <div class="flex flex-col ml-2">
+                <div class="flex flex-row items-center">
+                    <p class='fontinBold mr-2'>General:</p>
+                    <p  class='fontin'
+                        style={data.general_matches
                             ? "color: green;"
                             : "color: red;"}
                     >
-                        ({data.mf_mods_match_count}/2)
+                        {data.general}
                     </p>
+                    {#if data.general_matches}
+                        <Check style="color: green;" />
+                    {:else}
+                        <X style="color: red;" />
+                    {/if}
                 </div>
-            {/if}
-            <div class='flex flex-row'>
-            <p class='fontinSmallCaps mr-2'>
-                Socket:</p><p class='roboto'> {data.socket.name}
-                {data.socket.description
-                    ? "(" + data.socket.description + ")"
-                    : ""}
-            </p>
+
+                {#if data.mf_mods}
+                    <div class="flex flex-row">
+                        <p class='fontinBold mr-2'># Matching Devotion Modifiers:</p>
+                        <p  class='fontin'
+                            style={data.mf_mods_match_count == 2
+                                ? "color: green;"
+                                : "color: red;"}
+                        >
+                            ({data.mf_mods_match_count}/2)
+                        </p>
+                    </div>
+                {/if}
+                <div class='flex flex-row'>
+                <p class='fontinBold mr-2'>
+                    Socket:</p><p class='fontin'> {data.socket.name}
+                    {data.socket.description
+                        ? "(" + data.socket.description + ")"
+                        : ""}
+                </p>
+                </div>
+                <div class='flex flex-row'>
+                <p class='fontinBold mr-2'>Last Scan: </p><p class='fontin'>{data.scan_date}</p>
+                </div>
+                <div class='flex flex-row'>
+                <p class='fontinBold mr-2'>First Equipped:</p><p class='fontin'>{data.initial_scan_date}</p>
+                </div>
             </div>
-            <div class='flex flex-row'>
-            <p class='fontinSmallCaps mr-2'>Last Scan: </p><p class='roboto'>{data.scan_date}</p>
-            </div>
-            <div class='flex flex-row'>
-            <p class='fontinSmallCaps mr-2'>First Equipped:</p><p class='roboto'>{data.initial_scan_date}</p>
-            </div>
-        </div>
     </div>
     <Separator orientation="vertical"></Separator>
-    <div class="flex flex-col px-6 w-[40%]">
+    <div class="flex flex-col px-6 grow-3 overflow-hidden">
         <p class="cardTitle pl-2 mb-3">
             Stats Granted by {data.jewel_type}
         </p>
-        <div class="pl-6 w-full">
+        <div class="w-full">
             <ScrollArea class="p-4 border rounded-sm h-[200px] w-full">
                 {#each data.drawing.jewel_stats as stat}
                     <p style="font-family: Roboto;">{stat}</p>
@@ -152,28 +152,3 @@
         </div>
     </div>
 </div>
-
-<!-- <div class='flex-row flex-auto w-full flex items-center justify-center'>
-<img class='border-2 border-black rounded-sm border-solid' alt={data.ascendancy_name} src={imgMap[data.ascendancy_name]} />
-<div class='flex flex-col ml-4'>
-<p class='multiLang' style='font-size: 40px;'>{data.character_name}</p>
-<Separator />
-<p>Level {data.character_level} {data.ascendancy_name}</p>
-</div>
-</div>
-<div class='flex-row flex-auto w-full flex items-center justify-center'>
-<img class='border-2 border-black rounded-sm border-solid' alt={data.ascendancy_name} src={imgMap[data.ascendancy_name]} />
-<div class='flex flex-col ml-4'>
-<p class='multiLang' style='font-size: 40px;'>{data.character_name}</p>
-<Separator />
-<p>Level {data.character_level} {data.ascendancy_name}</p>
-</div>
-</div>
-<div class='flex-row flex-auto w-full flex items-center justify-center'>
-<img class='border-2 border-black rounded-sm border-solid' alt={data.ascendancy_name} src={imgMap[data.ascendancy_name]} />
-<div class='flex flex-col ml-4'>
-<p class='multiLang' style='font-size: 40px;'>{data.character_name}</p>
-<Separator />
-<p>Level {data.character_level} {data.ascendancy_name}</p>
-</div>
-</div> -->

@@ -5,17 +5,14 @@
 </script>
 
 <nav class="bg-white text-white px-4 pt-10 pb-0 flex items-center justify-center">
-    <!-- Centered Buttons -->
-     <!-- class="absolute left-1/2 transform -translate-x-1/2 flex space-x-4" -->
     <div class='mr-auto'>
     </div>
     <div class='flex flex-row pb-0 gap-4'>
       <TopNavButton label='Search' url='/search'/>
-      <TopNavButton label='Browse' url='/browse'/>
+      <!-- <TopNavButton label='Browse' url='/browse'/> -->
       <TopNavDisabledButton label='Bulk (Coming Soon)'></TopNavDisabledButton>
       <!-- <TopNavButton label='Bulk (coming soon)' enabled={false}/> -->
     </div>
-    <!-- Login button on the right -->
     <div class="ml-auto">
       <!-- <TopNavLoginButton /> -->
     </div>
