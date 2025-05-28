@@ -9,14 +9,14 @@
 	import { data_summary } from "../store";
     import { afterNavigate } from '$app/navigation';
 	import ThemeSelector from '../ThemeSelector.svelte';
-	import { ModeWatcher } from 'mode-watcher';
+	import { mode, ModeWatcher } from 'mode-watcher';
 	import { version } from '$app/environment';
 	let { children, data } = $props();
 	data_summary.set(data)
 
 </script>
 <ModeWatcher />
-<div class='app'>
+<div class={cn('app ' + (mode.current === 'dark' ? 'dark' : ''))}>
 <TopNav></TopNav>
 <div class="flex flex-row min-h-screen justify-center">
 	<!-- Left Margin -->
@@ -44,20 +44,51 @@
 
 <style>
 	.app {
-		background-image: url('$lib/images/TH-Logo-Tiled-Lavender.svg');
-		background-size: 1280px 1280px;
+		position:relative;
+		overflow:hidden;
 	}
+
+	.app::before {
+		content: "";
+		position: absolute;
+		width: 400%;
+		height: 400%;
+		top: -200%;
+		left: -100%;
+		z-index: -1;
+		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray.svg');
+		background-color: #CCCCCC;
+		background-size: 1280px 755px;
+		/* background-size: 25%; */
+		transform: rotate(-45deg);
+	}
+
+	.dark.app::before {
+		content: "";
+		position: absolute;
+		width: 400%;
+		height: 400%;
+		top: -200%;
+		left: -100%;
+		z-index: -1;
+		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray-Dark.svg');
+		background-color: black;
+		background-size: 1280px 755px;
+		/* background-size: 25%; */
+		transform: rotate(-45deg);
+	}
+
 
 	main {
 		background-color: hsl(var(--background));
 	}
 
 	footer {
-		background-color: hsl(var(--foreground));
+		background-color: black;
 		display: flex;
 		padding: 8px;
 		font-size: 12px;
-		color: hsl(var(--background));
+		color: white;
 	}
 
 	footer a {
