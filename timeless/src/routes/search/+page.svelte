@@ -79,8 +79,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 
             const data = { body: request_body, response: await response.json() };
             search_result.set(data);
-            // console.log(data)
-            if (response.ok && Object.keys(data.response[0].results).length > 0) {
+            if (response.ok && Object.keys(data.response.results).length > 0) {
                 goto('/search/results');
             } else {
                 // display an error somewhere

@@ -5,7 +5,7 @@
     import Separator from '$lib/components/ui/separator/separator.svelte'
     import * as Card from '$lib/components/ui/card'
     import { afterNavigate } from '$app/navigation';
-    const d = $data_summary.data[0].results;
+    const d = $data_summary.data.results;
 
     let tagLine = $state('');
 
