@@ -21,8 +21,10 @@
     let selectedJewel = $state(null);
     let selectedLeague = $state(null);
     let minMatchingMFMods = $state(0);
-    let matchGeneral = $state(false);
-    let hardcoreOnly = $state(false);
+
+    // init switches to preference
+    let matchGeneral = $state(localStorage.getItem('matchGeneral') === 'true');
+    let hardcoreOnly = $state(localStorage.getItem('matchGeneral') === 'true');
 
     let { data } = $props();
     const body = data.body;
@@ -520,6 +522,7 @@
                         bind:checked={hardcoreOnly}
                         onCheckedChange={(v) => {
                             hardcoreOnly = v;
+                            localStorage.setItem('matchHardcore', `${v}`)
                             applyFilters();
                         }}
                     />
@@ -532,6 +535,7 @@
                         bind:checked={matchGeneral}
                         onCheckedChange={(v) => {
                             matchGeneral = v;
+                            localStorage.setItem('matchGeneral', `${v}`)
                             applyFilters();
                         }}
                     />
