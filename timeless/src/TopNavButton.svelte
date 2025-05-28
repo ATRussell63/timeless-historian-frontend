@@ -11,11 +11,14 @@
 
 <Button
     class={cn(
-        "topNavButton bg-white text-black px-4 rounded-t-sm rounded-b-none",
-        isActive() && 'TopNavActive',
-        !isActive() && 'TopNavNotActive'
+        "topNavButton bg-white text-black px-4 border rounded-t-sm rounded-b-none",
+        isActive() && 'TopNavActive h-[46px] translate-y-[2px]',
+        !isActive() && 'TopNavNotActive h-[44px]'
     )}
     href={props.url}
     >
-    {props.label}
+    <span
+
+    class={cn(isActive() && 'translate-y-[-1px] ', !isActive() && '')}
+    >{props.label}</span>
 </Button>

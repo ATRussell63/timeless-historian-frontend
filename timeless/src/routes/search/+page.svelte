@@ -159,7 +159,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 </div>
 
 <div class='flex mt-5'>
-<Button class='basis-1/3 h-12' variant='secondary'
+<Button class='basis-1/3 h-12 transparentBackground' variant='outline'
     on:click={() => {
         text_input = ''
     }}

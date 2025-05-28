@@ -579,7 +579,7 @@
                                         }}
                             class={cn("my-4 " + (selectedLeague === key ? 'selectedLeagueTrigger' : 'unselectedLeagueTrigger'))}>
                             <span
-                                style="font-family: Fontin-SmallCaps; font-size: 20px;"
+                                style="font-family: Fontin-SmallCaps; font-size: 24px;"
                                 >{key} ({value.jewels.length})</span
                             >
                         </Accordion.Trigger>
@@ -619,6 +619,7 @@
                                             class="flex flex-col items-end gap-2"
                                         >
                                             <Badge variant="secondary"
+                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : '')}
                                                 >Week {jewel.start_week}{jewel.start_week ===
                                                 jewel.end_week
                                                     ? ""
@@ -627,6 +628,7 @@
                                             >
                                             {#if jewel["vip"] && jewel["vip"] !== ""}
                                                 <Badge variant="secondary"
+                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : '')}
                                                     >{jewel.vip}</Badge
                                                 >
                                             {/if}

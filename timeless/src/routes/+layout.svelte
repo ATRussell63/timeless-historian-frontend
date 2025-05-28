@@ -26,7 +26,7 @@
 	</div>
 
   <!-- Main Content -->
-  <main class={cn("flex flex-col basis-1/3 max-w-[1700px] rounded-t-xl")} style="margin-top: 0px;">
+  <main class={cn("flex flex-col basis-1/3 max-w-[1700px] border rounded-t-xl")} style="margin-top: 0px;">
 	 {@render children()}
   </main>
 
@@ -56,11 +56,11 @@
 		top: -200%;
 		left: -100%;
 		z-index: -1;
-		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray.svg');
+		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray-O.svg');
 		background-color: #CCCCCC;
 		background-size: 1280px 755px;
 		/* background-size: 25%; */
-		transform: rotate(-45deg);
+		transform: rotate(-32deg);
 	}
 
 	.dark.app::before {
@@ -72,10 +72,10 @@
 		left: -100%;
 		z-index: -1;
 		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray-Dark.svg');
-		background-color: black;
+		background-color: hsl(0 0 12%);
 		background-size: 1280px 755px;
 		/* background-size: 25%; */
-		transform: rotate(-45deg);
+		transform: rotate(-32deg);
 	}
 
 
