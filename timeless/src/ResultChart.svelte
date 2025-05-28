@@ -83,7 +83,7 @@
                 fontSize: titleFontSize,
                 fontFamily: 'Fontin-SmallCaps',
                 fontWeight: 500,
-                color: 'black',
+                color: 'hsl(var(--foreground))',
                 // marginBottom: '10px'
             }
         },

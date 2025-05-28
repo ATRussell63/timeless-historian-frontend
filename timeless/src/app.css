@@ -223,10 +223,19 @@ black: #0D0D0D
 .topNavButton {
   font-family: Fontin-SmallCaps;
   font-size: 32px;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
 }
 
+/* .dark .topNavButton {
+  font-family: Fontin-SmallCaps;
+  font-size: 32px;
+  color: hsl();
+} */
+
 .topNavButton:hover {
-  color: white;
+  color: hsl(var(--background));
+  background-color: hsl(var(--foreground));
 }
 
 .sidebarButtonText {
@@ -246,12 +255,21 @@ black: #0D0D0D
 }
 
 .TopNavActive:hover {
-  background-color: white !important;
-  color: black !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 .TopNavNotActive, .topNavDisabledButton{
   box-shadow: inset 0 -4px 6px -4px rgba(0, 0, 0, 0.8);
+}
+
+.dark .TopNavActive:hover {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .TopNavNotActive, .topNavDisabledButton{
+  box-shadow: inset 0 -4px 6px -4px rgba(255, 255, 255, 0.8);
 }
 
 .searchButton {
@@ -260,7 +278,7 @@ black: #0D0D0D
 }
 
 .accordionTrigger {
-  background-color: white;
+  background-color: hsl(var(--background));
 }
 
 .accordionTrigger span {
@@ -321,6 +339,10 @@ black: #0D0D0D
 
 .transparentBackground {
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .transparentBackground {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .chartTooltipWrapper {

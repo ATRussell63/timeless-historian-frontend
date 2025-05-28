@@ -1,5 +1,4 @@
 <script>
-    import { search_result } from "../../../store";
     import * as Card from "$lib/components/ui/card";
     import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
     import * as Accordion from "$lib/components/ui/accordion";
@@ -9,13 +8,13 @@
     import Switch from "$lib/components/ui/switch/switch.svelte";
     import * as Select from "$lib/components/ui/select";
     import ChevronLeft from "lucide-svelte/icons/chevron-left";
-    // import { Chart,  A,  Dropdown, DropdownItem, Popover } from "flowbite-svelte";
     import ResultChart from "../../../ResultChart.svelte";
     import { ArrowLeft } from "lucide-svelte";
     import JewelDetailsCard from "../../../JewelDetailsCard.svelte";
     import { Badge } from "$lib/components/ui/badge";
     import KaruiSymbol from '$lib/images/KaruiSymbol.svg';
     import { cn } from "$lib/utils";
+    import { mode } from 'mode-watcher';
 
     let backgroundStyle = `background-size: 110% 110%; background-image: url(${KaruiSymbol});`
     let hoverData = $state(null);
@@ -25,8 +24,9 @@
     let matchGeneral = $state(false);
     let hardcoreOnly = $state(false);
 
-    let { body, response } = $search_result;
-    response = response[0].results;
+    let { data } = $props();
+    const body = data.body;
+    const response = data.response[0].results;
     let displayedResponse = $state($state.snapshot(response));
 
     let selectedTradeLeague = $state(
@@ -100,7 +100,6 @@
             });
         });
 
-        // console.log(all)
         return top;
     }
 
@@ -289,10 +288,10 @@
                 let filter = {
                     id: devoModMap(mod),
                 };
-                // console.log(filter)
+
                 return filter;
             });
-            // console.log(mf_filters)
+
             const devoFilter = {
                 type: "count",
                 filters: mf_filters,
@@ -300,7 +299,7 @@
                     min: 2,
                 },
             };
-            // console.log(devoFilter)
+
             queryObj.query.stats.push(devoFilter);
         }
 
@@ -338,7 +337,6 @@
     }
 </script>
 
-<!--  {backgroundZoom} {backgroundZoom}; -->
 <div class='mb-2 px-10 py-8 min-w-[1700px]' style={backgroundStyle}>
 <!-- Title row -->
 <div class="mb-4 flex flex-row items-center justify-between">
@@ -584,6 +582,7 @@
                         <Accordion.Content class="flex flex-col items-center">
                             {#each value.jewels as jewel}
                                     <Button
+                                        variant='outline'
                                         onmouseenter={() => {
                                             hoverData = jewel;
                                         }}
@@ -648,12 +647,14 @@
                     <div class='w-full h-full my-4'>
                     <JewelDetailsCard data={hoverData}></JewelDetailsCard>
                     </div>
-                    <!-- <Separator class="mb-2"></Separator> -->
-                     <div class='flex flex-row w-full justify-center' style='background-color: black; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;'>
+                    <Separator class="mb-2"></Separator>
+                     <!-- <div class='flex flex-row w-full justify-center' style='background-color: black; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;'> -->
+                      <div class='flex flex-row w-full justify-center' style=''>
                     <JewelDrawing
                         drawData={hoverData?.drawing}
-                        w={850}
+                        w={1050}
                         h={850}
+                        mode={mode}
                     />
                      </div>
                 </div>

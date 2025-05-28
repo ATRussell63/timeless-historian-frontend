@@ -8,39 +8,21 @@
 	import { onMount } from 'svelte';
 	import { data_summary } from "../store";
     import { afterNavigate } from '$app/navigation';
-
-	let { children } = $props();
-
-	onMount(() => {
-		// get the data summary info
-		async function get_data_summary() {
-			try {
-				const response = await fetch('http://localhost:5000/data/summary', {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
-				console.log('made the request')
-				const data = { response: await response.json() };
-				console.log(data)
-				data_summary.set(data)
-			} catch (err) {
-				console.log(err)
-			}
-		}
-
-		get_data_summary()
-	})
+	import ThemeSelector from '../ThemeSelector.svelte';
+	import { ModeWatcher } from 'mode-watcher';
+	import { version } from '$app/environment';
+	let { children, data } = $props();
+	data_summary.set(data)
 
 </script>
-
+<ModeWatcher />
 <div class='app'>
 <TopNav></TopNav>
 <div class="flex flex-row min-h-screen justify-center">
 	<!-- Left Margin -->
-	<div class="flex flex-col">
+	<div class="flex flex-col gap-5 mr-5 items-end">
 		<Sidebar/>
+		<ThemeSelector/>
 	</div>
 
   <!-- Main Content -->
@@ -55,7 +37,8 @@
   </div>
 </div>
 <footer class='flex flex-row justify-center gap-2'>
-	<span>Contact: timeless_auditor@gmail.com</span><span>|</span>This website is fan-made and is not affiliated with Grinding Gear Games<span>|</span><span>Fontin (PoE Font) created by <a target="_blank" rel="noopener noreferrer" href="https://www.exljbris.com">exljbris</a></span>
+	<span class='ml-auto'>Contact: timeless_auditor@gmail.com</span><span>|</span>This website is fan-made and is not affiliated with Grinding Gear Games<span>|</span><span>Fontin (PoE Font) created by <a target="_blank" rel="noopener noreferrer" href="https://www.exljbris.com">exljbris</a></span>
+	<span class='ml-auto mr-3'>{version}</span>
 </footer>
 </div>
 
@@ -66,15 +49,15 @@
 	}
 
 	main {
-		background-color: white;
+		background-color: hsl(var(--background));
 	}
 
 	footer {
-		background-color: #0D0D0D;
+		background-color: hsl(var(--foreground));
 		display: flex;
 		padding: 8px;
 		font-size: 12px;
-		color: white;
+		color: hsl(var(--background));
 	}
 
 	footer a {

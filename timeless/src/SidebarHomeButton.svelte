@@ -15,6 +15,9 @@
     class='h-11 sidebarButton'
     variant='link'
     href='/'>
-    <img class="mr-2 thLogo" src={THBlackLogo} alt='go away'/>
+    <div>
+    <img class="mr-2 thLogo absolute scale-100 dark:scale-0" src={THBlackLogo} alt='TH Logo'/>
+    <img class="mr-2 thLogo scale-0 dark:scale-100" src={THLightLogo} alt='TH Logo'/>
+    </div>
     <span class='sidebarHomeButtonText'>Home</span>
 </Button>

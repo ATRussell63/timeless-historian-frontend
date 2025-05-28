@@ -5,15 +5,13 @@
     import Separator from '$lib/components/ui/separator/separator.svelte'
     import * as Card from '$lib/components/ui/card'
     import { afterNavigate } from '$app/navigation';
-
-    const d = $data_summary.response[0].results
-    console.log(d);
+    const d = $data_summary.data[0].results;
 
     let tagLine = $state('');
 
     afterNavigate(() => {
         // select a random tagline
-        const tagLines = ['An Archive of Jewels Worth Using', 'Friend to Legion Farmers', 'PC Pls']
+        const tagLines = ['Jewels Worth Using', 'Friend to Legion Farmers', 'PC Pls']
         const r = Math.floor(Math.random() * tagLines.length);
         tagLine = tagLines[r];
     })
@@ -27,7 +25,7 @@
             <Card.Root class='transparentBackground'>
                 <Card.Content class='flex flex-col items-center mx-4 mt-2'>
                     <p style='font-family: Trajan; font-size: 60px;'>Timeless Historian</p>
-                    <Separator class='h-1' style='margin-top: -10px; background-color: black;' />
+                    <Separator class='h-1' style='margin-top: -10px; background-color: hsl(var(--foreground));' />
                     <p style='font-family: Fontin-Italic; font-size: 24px; margin-top: 8px;'>{tagLine}</p>
                 </Card.Content>
             </Card.Root>
@@ -39,19 +37,19 @@
             <div class='flex flex-col items-center gap-2'>
                 <p class='dataHeader'>Currently Indexing:</p>
                 <div class='flex flex-row'>
-                    <p class='dataVal'>{d.total_jewels}</p>
+                    <p class='dataVal'>{d?.total_jewels}</p>
                     <p class='dataLabel'> Total Timeless Jewels</p>
                 </div>
                 <div class='flex flex-row'>
-                    <p class='dataVal'>{d.total_characters}</p>
+                    <p class='dataVal'>{d?.total_characters}</p>
                     <p class='dataLabel'> Total Characters</p>
                 </div>
                 <div class='flex flex-row'>
-                    <p class='dataVal'>{d.unique_seeds}</p>
+                    <p class='dataVal'>{d?.unique_seeds}</p>
                     <p class='dataLabel'> Unique Jewel Seeds</p>
                 </div>
                 <div class='flex flex-row'>
-                    <p class='dataVal'>{d.unique_jewels}</p>
+                    <p class='dataVal'>{d?.unique_jewels}</p>
                     <p class='dataLabel'> Unique Timeless Jewels</p>
                 </div>
             </div>
@@ -59,6 +57,7 @@
             <Button class='w-[500px] h-[80px]' href='/search'>
                 <p class='homeSearchButton'>Search the DB</p>
             </Button>
+        </div>
         </Card.Content>
     </Card.Root>
         </div>

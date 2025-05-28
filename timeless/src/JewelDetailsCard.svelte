@@ -71,13 +71,18 @@
                     >
                     <ExternalLink class="w-5 h-5 ml-1 mb-3" />
                 </div>
-                <div class="flex flex-row">
-                    <p style="font-family:Fontin-Italic; margin-top: -3px;">
+                <div class="flex flex-row gap-3">
+                    <p class='mr-3' style="font-family:Fontin-Italic; margin-top: -3px;">
                         {data.account_name}
                     </p>
                     {#if data.vip}
-                        <Badge class="ml-3" style="margin-top: -3px;"
+                        <Badge style="margin-top: -3px;"
                             >{data.vip}</Badge
+                        >
+                    {/if}
+                    {#if data.end_week == 1}
+                        <Badge style="margin-top: -3px;" variant='destructive'
+                            >Early League</Badge
                         >
                     {/if}
                 </div>
@@ -142,11 +147,11 @@
     </div>
     <Separator orientation="vertical"></Separator>
     <div class="flex flex-col px-6 grow-3 overflow-hidden">
-        <p class="cardTitle pl-2 mb-3">
+        <p class="cardTitle pl-2 mb-3 mt-1">
             Stats Granted by {data.jewel_type}
         </p>
         <div class="w-full">
-            <ScrollArea class="p-4 border rounded-md h-[200px] w-full">
+            <ScrollArea class="p-4 border rounded-md h-[180px] w-full">
                 {#each data.drawing.jewel_stats as stat}
                     <p style="font-family: Roboto;">{stat}</p>
                 {/each}

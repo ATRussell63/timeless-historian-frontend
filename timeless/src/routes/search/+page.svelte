@@ -11,6 +11,7 @@
     import { onMount } from "svelte";
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import { toast } from '@zerodevx/svelte-toast';
+    import { mode } from "mode-watcher";
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
 
     let backgroundStyle = `background-size: 150% 150%; background-position: bottom 70% right 60%; background-image: url(${TemplarSymbol});`
@@ -67,7 +68,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                     "general": general,
                     "mf_mods": mf_mods
                 }
-            // console.log(request_body)
+
             const response = await fetch('http://localhost:5000/test', {
                 method: 'POST',
                 headers: {
@@ -82,14 +83,13 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
             if (response.ok && Object.keys(data.response[0].results).length > 0) {
                 goto('/search/results');
             } else {
-                console.log('pushing smoke')
                 // display an error somewhere
                 toast.pop()
                 toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
                            {duration: 3000,
                             theme: {
-                                '--toastColor': 'black',
-                                '--toastBackground': 'white',
+                                '--toastColor': 'hsl(var(--foreground))',
+                                '--toastBackground': 'hsl(var(--background))',
                                 '--toastBarBackground': 'red',
                                 }
                            })
@@ -111,7 +111,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
     }
 </script>
 
-<!-- TODO - put a banner image demonstrating the hover over a jewel? -->
+
 <div class='flex flex-col h-full min-w-[1400px] px-10 py-10' style={backgroundStyle}>
 <span class='searchPageTitle mb-4'>Search</span>
 <div class='flex flex-row mt-2'>

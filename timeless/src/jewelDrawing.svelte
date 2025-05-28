@@ -40,7 +40,7 @@
     import smallMF from '$lib/images/drawing/small_passiveMF.svg';
     import smallUN from '$lib/images/drawing/small_passiveUN.svg';
 
-    let { drawData, w, h } = $props();
+    let { drawData, w, h, mode } = $props();
 
     import Konva from 'konva';
     // import { Arc, Line } from 'svelte-konva';
@@ -104,8 +104,8 @@
         const maskLayer = new Konva.Layer();
         const ttLayer = new Konva.Layer(); // tooltip
 
-        // make clipping group (crops anything outside of radius)
-        const clipGroup = new Konva.Group({
+        // clipping group that trims the overall radius and punches holes for each node
+        const edgeCropper = new Konva.Group({
             clipFunc: function (ctx) {
                 ctx.arc(stage.width() / 2,
                         stage.height() / 2,
@@ -120,7 +120,8 @@
             x: stage.width() / 2,
             y: stage.height() / 2,
             radius: (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
-            fill: 'black'
+            fill: mode.current === 'dark' ? 'black': 'white',
+            opacity: 0.3
         })
 
         const timelessRadius = new Konva.Circle({
@@ -184,7 +185,7 @@
                     lineCap: 'square',
                     lineJoin: 'square',
                 });
-                clipGroup.add(sEdge);
+                edgeCropper.add(sEdge);
             } 
             else if (edge.edge_type === 'CurvedEdge') {
                 const cx = convert_coord(edge.relative_center.x, 'x');
@@ -201,7 +202,7 @@
                     stroke: stroke,
                     strokeWidth: 3
                 });
-                clipGroup.add(arc);
+                edgeCropper.add(arc);
             }
         })
 
@@ -375,7 +376,7 @@
                 });
                 img.offsetX((NODE_SIZE * SCALE_FACTOR) / 2);
                 img.offsetY((NODE_SIZE * SCALE_FACTOR) / 2);
-                clipGroup.add(img);
+                edgeCropper.add(img);
             }
 
             nodeImage.src = notableSVG;
@@ -479,7 +480,7 @@
             
         });
 
-        baseLayer.add(clipGroup);
+        baseLayer.add(edgeCropper);
         maskLayer.add(timelessRadius);
         stage.add(baseLayer);
         stage.add(maskLayer);

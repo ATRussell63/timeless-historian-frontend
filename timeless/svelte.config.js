@@ -9,6 +9,9 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			"@/*": "./lib/*"
+		},
+		version: {
+			name: 'v0.1'
 		}
 	}
 };
