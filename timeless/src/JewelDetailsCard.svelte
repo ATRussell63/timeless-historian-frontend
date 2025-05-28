@@ -51,8 +51,8 @@
     };
 </script>
 
-<div class="flex flex-row w-full h-full mb-5 justify-between">
-    <div class="flex flex-col grow-7 justify-between basis-[700px]">
+<div class="flex flex-row w-full h-full justify-between px-6">
+    <div class="flex flex-col grow-7 basis-[700px]">
         <div class="flex-row w-full flex items-center overflow-hidden">
             <img
                 class="border-2 border-black rounded-sm border-solid h-24"
@@ -93,6 +93,7 @@
                 </div>
             </div>
         </div>
+        <div class='flex flex-row my-auto'>
             <div class="flex flex-col ml-2">
                 <div class="flex flex-row items-center">
                     <p class='fontinBold mr-2'>General:</p>
@@ -137,6 +138,7 @@
                 <p class='fontinBold mr-2'>First Equipped:</p><p class='fontin'>{data.initial_scan_date}</p>
                 </div>
             </div>
+        </div>
     </div>
     <Separator orientation="vertical"></Separator>
     <div class="flex flex-col px-6 grow-3 overflow-hidden">
@@ -144,7 +146,7 @@
             Stats Granted by {data.jewel_type}
         </p>
         <div class="w-full">
-            <ScrollArea class="p-4 border rounded-sm h-[200px] w-full">
+            <ScrollArea class="p-4 border rounded-md h-[200px] w-full">
                 {#each data.drawing.jewel_stats as stat}
                     <p style="font-family: Roboto;">{stat}</p>
                 {/each}

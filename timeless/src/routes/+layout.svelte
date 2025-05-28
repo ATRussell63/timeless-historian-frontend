@@ -6,49 +6,50 @@
 	import { cn } from '$lib/utils'
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import VaalSymbol from '$lib/images/VaalSymbol.svg?url'
-	import EternalSymbol from '$lib/images/EternalSymbol.svg?url'
-	import TemplarSymbol from '$lib/images/TemplarSymbol.svg?url'
-	import KaruiSymbol from '$lib/images/KaruiSymbol.svg?url'
-	import MarakethSymbol from '$lib/images/MarakethSymbol.svg?url'
+	import { data_summary } from "../store";
     import { afterNavigate } from '$app/navigation';
 
 	let { children } = $props();
 
-	const isAbout = $page.url.pathname.startsWith('/about');
+	onMount(() => {
+		// get the data summary info
+		async function get_data_summary() {
+			try {
+				const response = await fetch('http://localhost:5000/data/summary', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+				console.log('made the request')
+				const data = { response: await response.json() };
+				console.log(data)
+				data_summary.set(data)
+			} catch (err) {
+				console.log(err)
+			}
+		}
 
-	const backgroundZoom = isAbout ? '120%' : '120%';
-	let backgroundURL = $state(KaruiSymbol);
-
-	afterNavigate(() => {
-		// randomize background url
-		// console.log(backgroundURL);
-		// const urls = [EternalSymbol, KaruiSymbol, MarakethSymbol, TemplarSymbol, VaalSymbol]
-		// backgroundURL = urls[Math.floor(Math.random() * urls.length)];
-		// console.log(backgroundURL);
+		get_data_summary()
 	})
-
-	
 
 </script>
 
 <div class='app'>
 <TopNav></TopNav>
-<div class="grid grid-cols-12 min-h-screen">
-  <!-- Left Margin -->
-  <div class="col-span-2 relative">
-    <div class="absolute right-0">
-      <Sidebar/>
-    </div>
-  </div>
+<div class="flex flex-row min-h-screen justify-center">
+	<!-- Left Margin -->
+	<div class="flex flex-col">
+		<Sidebar/>
+	</div>
 
   <!-- Main Content -->
-  <main class={cn("col-span-8 px-6 pt-3 rounded-t-xl")} style="margin-top: 0px; background-size: {backgroundZoom} {backgroundZoom}; background-image: url({backgroundURL});">
+  <main class={cn("flex flex-col basis-1/3 max-w-[1700px] rounded-t-xl")} style="margin-top: 0px;">
 	 {@render children()}
   </main>
 
   <!-- Right Margin -->
-  <div class="col-span-2">
+  <div class="flex flex-col w-[185px]">
 	
     <!-- Right margin content if needed -->
   </div>
@@ -66,9 +67,6 @@
 
 	main {
 		background-color: white;
-		/* background-image: url('$lib/images/KaruiSymbol.svg'); */
-		/* background-size: 120% 120%; */
-		background-position: bottom 100% left 50%;
 	}
 
 	footer {

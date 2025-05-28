@@ -14,9 +14,13 @@
     import { ArrowLeft } from "lucide-svelte";
     import JewelDetailsCard from "../../../JewelDetailsCard.svelte";
     import { Badge } from "$lib/components/ui/badge";
+    import KaruiSymbol from '$lib/images/KaruiSymbol.svg';
+    import { cn } from "$lib/utils";
 
+    let backgroundStyle = `background-size: 110% 110%; background-image: url(${KaruiSymbol});`
     let hoverData = $state(null);
     let selectedJewel = $state(null);
+    let selectedLeague = $state(null);
     let minMatchingMFMods = $state(0);
     let matchGeneral = $state(false);
     let hardcoreOnly = $state(false);
@@ -334,8 +338,10 @@
     }
 </script>
 
+<!--  {backgroundZoom} {backgroundZoom}; -->
+<div class='mb-2 px-10 py-8 min-w-[1700px]' style={backgroundStyle}>
 <!-- Title row -->
-<div class="mb-2 flex flex-row items-center justify-between">
+<div class="mb-4 flex flex-row items-center justify-between">
     <div class="flex items-center">
         <span class="contentTitle">Results Summary - </span>
         <div class="queryDetail">
@@ -376,11 +382,13 @@
     <!-- <Card.Title class='cardTitle'>Stats</Card.Title> -->
     <!-- </Card.Header> -->
     <Card.Content class="flex flex-row justify-start">
-        <div class="flex flex-col p-3 mr-3">
+        <div class="flex flex-col p-3 pr-6">
             <div>
                 <p class="resultsSummaryTitle mb-3">Breakdown</p>
+                <Card.Root class='mb-4'>
+                    <Card.Content>
                 <p class="resultsSummaryText mb-4">
-                    Total Results: {totalResults(response)}
+                    Total Results: <b>{totalResults(response)}</b>
                 </p>
                 <div class="ml-5">
                     <p class="resultsSummaryText mb-2">
@@ -390,28 +398,30 @@
                     <div class="flex flex-col gap-1">
                         {#if body.jewel_type === "Militant Faith"}
                             <p class="resultsSummaryText">
-                                • {topAttr(response, "general").count} jewels had
+                                • &nbsp;<b>{topAttr(response, "general").count}</b>&nbsp; jewels had
                                 a matching general
                             </p>
                             <p class="resultsSummaryText">
-                                • {numMatchingDevoMods(1)} jewels had at least 1
+                                • &nbsp;<b>{numMatchingDevoMods(1)}</b>&nbsp; jewels had at least 1
                                 matching devotion modifier
                             </p>
                             <p class="resultsSummaryText">
-                                • {numMatchingDevoMods(2)} jewels matched both devotion
+                                • &nbsp;<b>{numMatchingDevoMods(2)}</b>&nbsp; jewels matched both devotion
                                 modifiers
                             </p>
                             <p class="resultsSummaryText">
-                                • {numExactMatch()} jewels were an exact match
+                                • &nbsp;<b>{numExactMatch()}</b>&nbsp; jewels were an exact match
                             </p>
                         {:else}
                             <p class="resultsSummaryText">
-                                • {topAttr(response, "general").count} jewels were
+                                • &nbsp;<b>{topAttr(response, "general").count}</b>&nbsp; jewels were
                                 an exact match
                             </p>
                         {/if}
                     </div>
                 </div>
+                    </Card.Content>
+                </Card.Root>
             </div>
 
             <!-- Waste of time but if they ever change the site I guess we can go back to using this -->
@@ -435,10 +445,10 @@
             </Select.Root> -->
             <div class="mt-auto mb-3">
                 <p class="resultsSummaryTitle">
-                    Search on Official Trade Site:
+                    Search on the Official Trade Site:
                 </p>
             </div>
-            <div class="flex flex-row gap-2">
+            <div class="flex flex-row gap-3">
                 <Button
                     class="tradeSearch"
                     disabled={!selectedTradeLeague}
@@ -455,13 +465,13 @@
                         class="tradeSearch"
                         disabled={!selectedTradeLeague}
                         on:click={() => openTradeLink("exact")}
-                        >Match General + Devo Mods</Button
+                        >General + Devo Mods</Button
                     >
                 {/if}
             </div>
         </div>
         <Separator orientation="vertical" class="mx-auto"></Separator>
-        <div class="flex flex-row ml-3 mr-6 gap-8">
+        <div class="flex flex-row ml-3 mr-6 gap-6 items-center">
             <ResultChart
                 values={Object.values(getAttrCounts(response, "general"))}
                 labels={Object.keys(getAttrCounts(response, "general"))}
@@ -500,9 +510,9 @@
     <p class="contentTitle">Results Browser</p>
 </div>
 
-<div class="flex flex-row mt-5 justify-between h-[1200px]">
+<div class="flex flex-row mt-5 justify-between h-[1150px]">
     <div class="flex flex-col h-full w-[400px] flex-none">
-        <Card.Root class="p-4">
+        <Card.Root class="p-4 transparentBackground">
             <Card.Content class="flex flex-col p-0 gap-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="searchParamLabel mr-4"
@@ -531,7 +541,7 @@
                 {#if body.jewel_type === "Militant Faith"}
                     <div class="flex flex-row justify-between items-center">
                         <span class="searchParamLabel mr-10"
-                            >Min. Matching Devotion Mods</span
+                            >Minimum Matching Devotion Mods</span
                         >
                         <Select.Root
                             selected={minMatchingMFMods}
@@ -561,7 +571,11 @@
             <Accordion.Root>
                 {#each Object.entries(displayedResponse) as [key, value]}
                     <Accordion.Item value={`item-${value.league_id}`}>
-                        <Accordion.Trigger class="leagueAccordionTrigger my-4">
+                        <Accordion.Trigger 
+                            onclick={() => {
+                                            selectedLeague = key;
+                                        }}
+                            class={cn("my-4 " + (selectedLeague === key ? 'selectedLeagueTrigger' : 'unselectedLeagueTrigger'))}>
                             <span
                                 style="font-family: Fontin-SmallCaps; font-size: 20px;"
                                 >{key} ({value.jewels.length})</span
@@ -569,7 +583,6 @@
                         </Accordion.Trigger>
                         <Accordion.Content class="flex flex-col items-center">
                             {#each value.jewels as jewel}
-                                <div class="">
                                     <Button
                                         onmouseenter={() => {
                                             hoverData = jewel;
@@ -584,7 +597,7 @@
                                         onclick={() => {
                                             selectedJewel = jewel;
                                         }}
-                                        class="jewelResultRowButton rounded-none flex justify-between py-10"
+                                        class={cn("jewelResultRowButton rounded-none flex justify-between py-10 " + (selectedJewel === jewel ? 'selectedJewelButton': ''))}
                                     >
                                         <div
                                             class="flex flex-col items-start gap-2"
@@ -616,7 +629,6 @@
                                             {/if}
                                         </div>
                                     </Button>
-                                </div>
                             {/each}
                         </Accordion.Content>
                     </Accordion.Item>
@@ -628,18 +640,22 @@
 
     <!-- <div class='flex-col flex-auto ml-5 h-full'> -->
     <Card.Root class="flex flex-col grow-7 self-stretch ml-5 h-full transparentBackground">
-        <Card.Content class="flex flex-row h-full justify-center">
+        <Card.Content class="flex flex-row h-full justify-center p-0">
             {#if hoverData}
                 <div
-                    class="flex flex-col flex-auto w-full flex items-center justify-between"
+                    class="flex flex-col flex-auto w-full flex items-center justify-end"
                 >
+                    <div class='w-full h-full my-4'>
                     <JewelDetailsCard data={hoverData}></JewelDetailsCard>
-                    <Separator class="mb-2"></Separator>
+                    </div>
+                    <!-- <Separator class="mb-2"></Separator> -->
+                     <div class='flex flex-row w-full justify-center' style='background-color: black; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;'>
                     <JewelDrawing
                         drawData={hoverData?.drawing}
-                        w={900}
-                        h={900}
+                        w={850}
+                        h={850}
                     />
+                     </div>
                 </div>
             {:else if Object.keys(response).length > 0}
                 <div class="flex flex-row items-center justify-center">
@@ -660,6 +676,5 @@
             {/if}
         </Card.Content>
     </Card.Root>
-
-    <!-- </div> -->
+</div>
 </div>

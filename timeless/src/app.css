@@ -236,7 +236,7 @@ black: #0D0D0D
 
 .sidebarHomeButtonText {
   font-family: Trajan;
-  font-size: 28px;
+  font-size: 32px;
 }
 
 
@@ -351,7 +351,7 @@ black: #0D0D0D
 }
 
 .tradeSearch {
-  font-family: Fontin-SmallCaps;
+  font-family: Fontin;
   font-size: 18px;
 }
 
@@ -362,7 +362,7 @@ black: #0D0D0D
 
 .resultsSummaryTitle {
   font-family: Fontin-SmallCaps;
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .roboto {
@@ -379,4 +379,11 @@ black: #0D0D0D
 
 ._toastItem {
   border-radius: 10px !important;
+}
+
+.selectedJewelButton {
+  background-color: purple;
+  color: white;
+  border: 5px;
+  border-color: gold;
 }

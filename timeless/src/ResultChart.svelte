@@ -27,6 +27,11 @@
 
     colors = shuffleArray(colors)
 
+    let titleFontSize = '20px';
+    if (title.length > 30) {
+        titleFontSize = '16px';
+    }
+
     const options = {
         series: values,
         colors: colors,
@@ -73,10 +78,13 @@
         title: {
             text: title,
             align: 'center',
+            offsetY: -10,
             style: {
-                fontSize: '20px',
-                fontFamily: 'Roboto-Bold',
-                color: 'black'
+                fontSize: titleFontSize,
+                fontFamily: 'Fontin-SmallCaps',
+                fontWeight: 500,
+                color: 'black',
+                // marginBottom: '10px'
             }
         },
         tooltip: {

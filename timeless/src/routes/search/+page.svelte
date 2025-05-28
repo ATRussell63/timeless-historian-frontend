@@ -11,7 +11,9 @@
     import { onMount } from "svelte";
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import { toast } from '@zerodevx/svelte-toast';
+    import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
 
+    let backgroundStyle = `background-size: 150% 150%; background-position: bottom 70% right 60%; background-image: url(${TemplarSymbol});`
     let text_input = $state('');
     let jewel_type = $derived(p.parse_jewel_type(text_input));
     let general = $derived(p.parse_jewel_general(text_input));
@@ -110,21 +112,21 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 </script>
 
 <!-- TODO - put a banner image demonstrating the hover over a jewel? -->
-
-<span class='contentTitle'>Search</span>
+<div class='flex flex-col h-full min-w-[1400px] px-10 py-10' style={backgroundStyle}>
+<span class='searchPageTitle mb-4'>Search</span>
 <div class='flex flex-row mt-2'>
 <div class='mr-10 flex-1'>
-<Card.Root class=''>
+<Card.Root class='transparentBackground'>
     <Card.Header>
-        <Card.Title class='cardTitle'>Hover your jewel in-game and Ctrl-C to copy it, then paste into the field below</Card.Title>
+        <Card.Title class='cardTitle'>Hover your jewel in-game and press Ctrl+C to copy it, then paste into the field below</Card.Title>
     </Card.Header>
     <Card.Content>
         <Textarea class='h-[300px]' placeholder='Ctrl + V to paste here' bind:value={text_input}></Textarea>
     </Card.Content>
 </Card.Root>
 </div>
-<div class='basis-1/3'>
-<Card.Root >
+<div class='basis-2/5'>
+<Card.Root class='transparentBackground'>
     <Card.Header>
         <Card.Title class='cardTitle'>Search Params</Card.Title>
     </Card.Header>
@@ -172,5 +174,14 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
     <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
 </Button>
 </div>
+</div>
 
 <SvelteToast {toastOptions}/>
+
+<style>
+    .searchPageTitle {
+        font-family: Fontin-SmallCaps;
+        font-size: 48px;
+        margin-left: 5px;
+    }
+</style>

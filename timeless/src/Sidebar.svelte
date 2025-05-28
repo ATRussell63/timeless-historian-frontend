@@ -5,8 +5,8 @@
     import Separator from '$lib/components/ui/separator/separator.svelte';
 </script>
 
-<Card.Root class="inline-block mr-4 Sidebar">
-  <Card.Content class="flex flex-col items-end px-0 py-2">
+<Card.Root class="mr-4 Sidebar">
+  <Card.Content class="flex flex-col items-end px-0 py-2 mx-1">
     <SidebarHomeButton />
     <SidebarButton label='About' url='/about'/>
   </Card.Content>

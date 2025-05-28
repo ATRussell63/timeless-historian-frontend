@@ -48,7 +48,7 @@
     let stage = null;
 
     function drawJewel() {
-        const SCALE_FACTOR = 0.24;
+        const SCALE_FACTOR = 0.22;
         const NODE_SIZE = 256;
         const TT_FONT_BODY = '#8183BF';
         const TT_FONT_TITLE = '#F8E5C9';
@@ -521,3 +521,10 @@
 <div id="container">
 
 </div>
+
+<style>
+    #container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
