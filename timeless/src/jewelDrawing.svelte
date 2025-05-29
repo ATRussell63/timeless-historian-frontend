@@ -170,39 +170,77 @@
         ttLayer.hide();
 
         // EDGES
-        drawData.edges.forEach((edge) => {
+        function make_straight_edge(edge) {
             let stroke = '#333333';
             if (edge.allocated) {
                 stroke = LEGION_COLORS.get(drawData.jewel_type);
             }
 
-            if (edge.edge_type === 'StraightEdge') {
-                const sEdge = new Konva.Line({
-                    points: [convert_coord(edge.ends[0].relative.x, 'x'), convert_coord(edge.ends[0].relative.y, 'y'),
-                             convert_coord(edge.ends[1].relative.x, 'x'), convert_coord(edge.ends[1].relative.y, 'y')],
-                    stroke: stroke,
-                    strokeWidth: 3,
-                    lineCap: 'square',
-                    lineJoin: 'square',
-                });
-                edgeCropper.add(sEdge);
-            } 
-            else if (edge.edge_type === 'CurvedEdge') {
-                const cx = convert_coord(edge.relative_center.x, 'x');
-                const cy = convert_coord(edge.relative_center.y, 'y');
-                // const arc_len = (edge.angle * (Math.PI / 180)) * (edge.radius * SCALE_FACTOR);
-                const arc = new Konva.Arc({
-                    x: cx,
-                    y: cy,
-                    innerRadius: edge.radius * SCALE_FACTOR,
-                    outerRadius: edge.radius * SCALE_FACTOR,
-                    rotation: edge.rotation,
-                    angle: edge.angle,
-                    fill: 'yellow',
-                    stroke: stroke,
-                    strokeWidth: 3
-                });
-                edgeCropper.add(arc);
+            const sEdge = new Konva.Line({
+                points: [convert_coord(edge.ends[0].relative.x, 'x'), convert_coord(edge.ends[0].relative.y, 'y'),
+                            convert_coord(edge.ends[1].relative.x, 'x'), convert_coord(edge.ends[1].relative.y, 'y')],
+                stroke: stroke,
+                strokeWidth: 3,
+                lineCap: 'square',
+                lineJoin: 'square',
+            });
+            edgeCropper.add(sEdge);
+        }
+
+        function make_curved_edge(edge) {
+            let stroke = '#333333';
+            if (edge.allocated) {
+                stroke = LEGION_COLORS.get(drawData.jewel_type);
+            }
+            const cx = convert_coord(edge.relative_center.x, 'x');
+            const cy = convert_coord(edge.relative_center.y, 'y');
+            
+            const arc = new Konva.Arc({
+                x: cx,
+                y: cy,
+                innerRadius: edge.radius * SCALE_FACTOR,
+                outerRadius: edge.radius * SCALE_FACTOR,
+                rotation: edge.rotation,
+                angle: edge.angle,
+                fill: 'yellow',
+                stroke: stroke,
+                strokeWidth: 3
+            });
+            edgeCropper.add(arc);
+
+            // const label = new Konva.Text({
+            //         fill: 'yellow',
+            //         text: `${Math.trunc(edge.relative_center.x)}, ${Math.trunc(edge.relative_center.y)}`,
+            //         x: cx,
+            //         y: cy,
+            //         align: 'center'
+            //     })
+            //     edgeCropper.add(label)
+        }
+
+        // draw unallocated first
+        drawData.straight_edges.forEach((edge) => {
+            if (!edge.allocated) {
+                make_straight_edge(edge)
+            }
+        })
+        
+        drawData.curved_edges.forEach((edge) => {
+            if (!edge.allocated) {
+                make_curved_edge(edge)
+            }
+        })
+
+        drawData.straight_edges.forEach((edge) => {
+            if (edge.allocated) {
+                make_straight_edge(edge)
+            }
+        })
+
+
+        drawData.curved_edges.forEach((edge) => {
+            if (edge.allocated) {
+                make_curved_edge(edge)
             }
         })
 
@@ -377,6 +415,15 @@
                 img.offsetX((NODE_SIZE * SCALE_FACTOR) / 2);
                 img.offsetY((NODE_SIZE * SCALE_FACTOR) / 2);
                 edgeCropper.add(img);
+
+                // const label = new Konva.Text({
+                //     fill: 'white',
+                //     text: node.node_id,
+                //     x: nx,
+                //     y: ny,
+                //     align: 'center'
+                // })
+                // edgeCropper.add(label)
             }
 
             nodeImage.src = notableSVG;

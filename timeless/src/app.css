@@ -480,5 +480,5 @@ black: #0D0D0D
 }
 
 .apexcharts-pie-area {
-  stroke: hsl(var(--background));
+  stroke: hsl(var(--foreground));
 }
