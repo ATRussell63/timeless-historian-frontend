@@ -60,6 +60,7 @@
             enabled: true,
             style: {
                 fontFamily: "Roboto, sans-serif",
+                colors: ['hsl(var(--foreground))']
             },
             formatter: function(value, { seriesIndex, dataPointIndex, w }) {
                 // only show wedges larger than x%

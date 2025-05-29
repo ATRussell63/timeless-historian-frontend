@@ -11,9 +11,33 @@
 
     afterNavigate(() => {
         // select a random tagline
-        const tagLines = ['Jewels Worth Using', 'Friend to Legion Farmers', 'PC Pls']
-        const r = Math.floor(Math.random() * tagLines.length);
-        tagLine = tagLines[r];
+        const tagLines = ['Jewels Worth Using',
+                          'A Friend to 5-Way Enjoyers',
+                          'Archiving Since 3.25',
+                          'Embrace Eternal Conflict',
+                          'Sanctioned by the Legion of Legends',
+                          "`May Reason preserve us'",
+                          "`Kaom's canoe struck this sand with the force of destiny'",
+                          "Haste is irrelevant in the face of eternity",
+                          "`Fortune favor you'"]
+        let r = Math.random();
+        console.log(Math.floor(r * 100))
+        switch (Math.floor(r * 100)) {
+            case 1:
+                tagLine = "'...they seem to have met a tribe of... monkeys?'";
+                break;
+            case 32:
+                tagLine = "World of Warcraft has begun once again";
+                break;
+            case 33:
+                tagLine = '...thy Burning Crusade...';
+                break;
+            case 69:
+                tagLine = 'Rue is a ___';
+                break;
+            default:
+                tagLine = tagLines[Math.floor(r * tagLines.length)];
+        }
     })
 
     let backgroundStyle = `background-size: 140% 140%; background-position: bottom 50% right 50%; background-image: url(${MarakethSymbol});`
@@ -25,12 +49,21 @@
             <Card.Root class='transparentBackground'>
                 <Card.Content class='flex flex-col items-center mx-4 mt-2'>
                     <p style='font-family: Trajan; font-size: 60px;'>Timeless Historian</p>
-                    <Separator class='h-1' style='margin-top: -10px; background-color: hsl(var(--foreground));' />
+                    <Separator class='h-1' style='margin-top: -8px; background-color: hsl(var(--foreground));' />
                     <p style='font-family: Fontin-Italic; font-size: 24px; margin-top: 8px;'>{tagLine}</p>
                 </Card.Content>
             </Card.Root>
         </div>
     </div>
+    <!-- <div class='flex flex-row justify-center'>
+        <div class='flex flex-col items-center'>
+            <Card.Root class='transparentBackground'>
+                <Card.Content class='flex flex-col items-center mx-4 mt-2'>
+                    Query against an ever-growing archive of characters 
+                </Card.Content>
+            </Card.Root>
+        </div>
+    </div> -->
     <div class='flex flex-row justify-center'>
     <Card.Root class='transparentBackground max-w-[800px]'>
         <Card.Content class='m-4'>
@@ -55,7 +88,7 @@
             </div>
         <div class='flex flex-row justify-center mt-12'>
             <Button class='w-[500px] h-[80px]' href='/search'>
-                <p class='homeSearchButton'>Search the DB</p>
+                <p class='homeSearchButton'>Search the Database</p>
             </Button>
         </div>
         </Card.Content>

@@ -151,7 +151,7 @@
             Stats Granted by {data.jewel_type}
         </p>
         <div class="w-full">
-            <ScrollArea class="p-4 border rounded-md h-[180px] w-full">
+            <ScrollArea class="insetCard p-4 border rounded-md h-[200px] w-full">
                 {#each data.drawing.jewel_stats as stat}
                     <p style="font-family: Roboto;">{stat}</p>
                 {/each}

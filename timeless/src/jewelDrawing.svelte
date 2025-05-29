@@ -525,7 +525,7 @@
 
 <style>
     #container {
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 5px;
+        margin-bottom: 10px;
     }
 </style>

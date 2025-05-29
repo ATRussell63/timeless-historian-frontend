@@ -6,6 +6,7 @@
  
 @layer base {
   :root {
+    --inset: 0 0% 90%;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
  
@@ -39,6 +40,7 @@
   }
  
   .dark {
+    --inset: 0 0% 12%;
     --background: 222.2 0% 8%;
     --foreground: 210 40% 98%;
  
@@ -471,4 +473,12 @@ black: #0D0D0D
 .selectedJewelBadge {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+.insetCard {
+  background-color: hsl(var(--inset));
+}
+
+.apexcharts-pie-area {
+  stroke: hsl(var(--background));
 }

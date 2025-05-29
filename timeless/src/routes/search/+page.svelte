@@ -158,7 +158,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 </div>
 </div>
 
-<div class='flex mt-5'>
+<div class='flex flex-row mt-10 gap-10'>
 <Button class='basis-1/3 h-12 transparentBackground' variant='outline'
     on:click={() => {
         text_input = ''
@@ -168,7 +168,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
 </Button>
 <Button
     disabled={!allFieldsGood()}
-    class='flex-1 ml-5 h-12'
+    class='flex-1 h-12'
     on:click={search}>
     <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
 </Button>

@@ -385,7 +385,7 @@
         <div class="flex flex-col p-3 pr-6">
             <div>
                 <p class="resultsSummaryTitle mb-3">Breakdown</p>
-                <Card.Root class='mb-4'>
+                <Card.Root class='insetCard mb-4'>
                     <Card.Content>
                 <p class="resultsSummaryText mb-4">
                     Total Results: <b>{totalResults(response)}</b>
