@@ -1,5 +1,6 @@
 <script>
     import THLogoBlack from '$lib/images/TH-Logo-Black.svg';
+    import THLogoWhite from '$lib/images/TH-Logo-White.svg';
     import VaalSymbol from '$lib/images/VaalSymbol.svg'
     import * as Card from '$lib/components/ui/card'
 
@@ -9,8 +10,15 @@
 <div class='px-25 pt-3 pb-10 min-w-[1300px]' style={backgroundStyle}>
     <div class='flex flex-row justify-center mt-20 items-center'>
         <div class='flex flex-row items-center justify-center gap-20'>
-    <img alt='logo' class='h-15 w-15' src={THLogoBlack}/> <h3 style='font-family: Trajan; font-size: 60px;'>About</h3>
-    <img alt='logo' class='h-15 w-15' src={THLogoBlack}/>
+            <div>
+    <img class="mr-3 thLogo absolute scale-150 dark:scale-0" src={THLogoBlack} alt='TH Logo'/>
+    <img class="mr-3 thLogo scale-0 dark:scale-150" src={THLogoWhite} alt='TH Logo'/>
+            </div>
+    <h3 style='font-family: Trajan; font-size: 60px;'>About</h3>
+     <div>
+    <img class="mr-3 thLogo absolute scale-150 dark:scale-0" src={THLogoBlack} alt='TH Logo'/>
+    <img class="mr-3 thLogo scale-0 dark:scale-150" src={THLogoWhite} alt='TH Logo'/>
+     </div>
     </div>
     </div>
     <div class='flex flex-col max-w-[1250px] mx-auto mt-20 mb-30'>
@@ -71,7 +79,8 @@
         </Card.Root>
     </div>
     <div class='flex flex-row justify-center'>
-    <img alt='logo' class='h-10 w-10' src={THLogoBlack}/>
+        <img class="mr-3 thLogo absolute scale-150 dark:scale-0" src={THLogoBlack} alt='TH Logo'/>
+        <img class="mr-3 thLogo scale-0 dark:scale-150" src={THLogoWhite} alt='TH Logo'/>
     </div>
     <div class='flex flex-col max-w-[1250px] mx-auto mt-20 mb-10'>
                 <Card.Root class='transparentBackground'>

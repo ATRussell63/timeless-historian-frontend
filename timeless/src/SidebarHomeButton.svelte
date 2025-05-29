@@ -1,7 +1,6 @@
 <script>
     import Button from "$lib/components/ui/button/button.svelte";
-    import THLightLogo from '$lib/images/TH-Logo-White-Fatso.svg'
-    import THPurpleLogo from '$lib/images/TH-Logo-Purple-Fatso.svg'
+    import THLightLogo from '$lib/images/TH-Logo-White.svg'
     import THBlackLogo from '$lib/images/TH-Logo-Black.svg'
     import { page } from '$app/stores';
     import { writable } from "svelte/store";

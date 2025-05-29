@@ -619,7 +619,7 @@
                                             class="flex flex-col items-end gap-2"
                                         >
                                             <Badge variant="secondary"
-                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : '')}
+                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : 'jewelBadge')}
                                                 >Week {jewel.start_week}{jewel.start_week ===
                                                 jewel.end_week
                                                     ? ""
@@ -628,7 +628,7 @@
                                             >
                                             {#if jewel["vip"] && jewel["vip"] !== ""}
                                                 <Badge variant="secondary"
-                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : '')}
+                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : 'jewelBadge')}
                                                     >{jewel.vip}</Badge
                                                 >
                                             {/if}

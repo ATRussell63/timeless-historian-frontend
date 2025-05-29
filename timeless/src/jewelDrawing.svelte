@@ -120,8 +120,8 @@
             x: stage.width() / 2,
             y: stage.height() / 2,
             radius: (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
-            fill: mode.current === 'dark' ? 'black': 'white',
-            opacity: 0.3
+            fill: mode.current === 'dark' ? 'hsl(var(--inset))': 'hsl(var(--inset))',
+            opacity: mode.current === 'dark' ? 0.5 : 0.4
         })
 
         const timelessRadius = new Konva.Circle({
@@ -172,13 +172,13 @@
         // EDGES
         function make_straight_edge(edge) {
             let stroke = '#333333';
-            if (edge.allocated) {
+            if (edge.a) {
                 stroke = LEGION_COLORS.get(drawData.jewel_type);
             }
 
             const sEdge = new Konva.Line({
-                points: [convert_coord(edge.ends[0].relative.x, 'x'), convert_coord(edge.ends[0].relative.y, 'y'),
-                            convert_coord(edge.ends[1].relative.x, 'x'), convert_coord(edge.ends[1].relative.y, 'y')],
+                points: [convert_coord(edge.c[0].x, 'x'), convert_coord(edge.c[0].y, 'y'),
+                            convert_coord(edge.c[1].x, 'x'), convert_coord(edge.c[1].y, 'y')],
                 stroke: stroke,
                 strokeWidth: 3,
                 lineCap: 'square',
@@ -189,19 +189,19 @@
 
         function make_curved_edge(edge) {
             let stroke = '#333333';
-            if (edge.allocated) {
+            if (edge.a) {
                 stroke = LEGION_COLORS.get(drawData.jewel_type);
             }
-            const cx = convert_coord(edge.relative_center.x, 'x');
-            const cy = convert_coord(edge.relative_center.y, 'y');
+            const cx = convert_coord(edge.c.x, 'x');
+            const cy = convert_coord(edge.c.y, 'y');
             
             const arc = new Konva.Arc({
                 x: cx,
                 y: cy,
-                innerRadius: edge.radius * SCALE_FACTOR,
-                outerRadius: edge.radius * SCALE_FACTOR,
-                rotation: edge.rotation,
-                angle: edge.angle,
+                innerRadius: edge.r * SCALE_FACTOR,
+                outerRadius: edge.r * SCALE_FACTOR,
+                rotation: edge.o,
+                angle: edge.t,
                 fill: 'yellow',
                 stroke: stroke,
                 strokeWidth: 3
@@ -220,26 +220,26 @@
 
         // draw unallocated first
         drawData.straight_edges.forEach((edge) => {
-            if (!edge.allocated) {
+            if (!edge.a) {
                 make_straight_edge(edge)
             }
         })
         
         drawData.curved_edges.forEach((edge) => {
-            if (!edge.allocated) {
+            if (!edge.a) {
                 make_curved_edge(edge)
             }
         })
 
         drawData.straight_edges.forEach((edge) => {
-            if (edge.allocated) {
+            if (edge.a) {
                 make_straight_edge(edge)
             }
         })
 
 
         drawData.curved_edges.forEach((edge) => {
-            if (edge.allocated) {
+            if (edge.a) {
                 make_curved_edge(edge)
             }
         })
@@ -250,7 +250,7 @@
                                   'Brutal Restraint',
                                   'Lethal Pride',
                                   'Elegant Hubris']
-            if (jewel_titles.includes(node.tooltip.title)) {
+            if (jewel_titles.includes(node.l.title)) {
                 kText.fontFamily('Fontin-SmallCaps') 
                 kText.fill(TT_FONT_UNIQUE)
                 kText.fontSize(TT_TITLE_SIZE + 4)
@@ -261,7 +261,7 @@
             }
             
             kText.align('center')
-            kText.text(node.tooltip.title)
+            kText.text(node.l.title)
             kText.padding(10)
 
             // clear title centering from last node
@@ -269,7 +269,7 @@
         }
 
         const tt_body_fmt = function(node, kText) {
-            const t = node.tooltip.body.join('\n')
+            const t = node.l.body.join('\n')
 
             kText.text(t)
             kText.fontFamily('Fontin-Regular')
@@ -281,7 +281,7 @@
                                   'Brutal Restraint',
                                   'Lethal Pride',
                                   'Elegant Hubris']
-            if (jewel_titles.includes(node.tooltip.title)) {
+            if (jewel_titles.includes(node.l.title)) {
                 kText.align('center')
             } else {
                 kText.align('left')
@@ -295,8 +295,8 @@
 
         const tt_reminder_fmt = function(node, kText) {
             let t =''
-            if (node.tooltip.replaced_title) {
-                t = '(Replaced ' + node.tooltip.replaced_title + ')'
+            if (node.l.replaced_title) {
+                t = '(Replaced ' + node.l.replaced_title + ')'
             }
 
             kText.text(t)
@@ -309,13 +309,13 @@
                                 'Brutal Restraint',
                                 'Lethal Pride',
                                 'Elegant Hubris']
-            if (jewel_titles.includes(node.tooltip.title)) {
+            if (jewel_titles.includes(node.l.title)) {
                 kText.align('center')
             } else {
                 kText.align('left')
             }
 
-            let body_height = node.tooltip.body.length == 0 ? 10 : ttBody.height();
+            let body_height = node.l.body.length == 0 ? 10 : ttBody.height();
             
             kText.offsetX(-TT_W_PADDING)
             kText.offsetY(-(ttTitle.height() + body_height - 10))
@@ -324,8 +324,8 @@
         // NODES
         Object.values(drawData.nodes).forEach((node) => {
             const nodeImage = new Image();
-            const nx = convert_coord(node.relative_coords.x, 'x');
-            const ny = convert_coord(node.relative_coords.y, 'y');
+            const nx = convert_coord(node.c.x, 'x');
+            const ny = convert_coord(node.c.y, 'y');
 
             // images are always rects so we draw a circle to act as a mouseover target
             const nodeMouseoverDetector = new Konva.Circle({
@@ -342,7 +342,7 @@
                 tt_title_fmt(node, ttTitle);
                 tt_body_fmt(node, ttBody);
 
-                if (node.tooltip.replaced_title) {
+                if (node.l.replaced_title) {
                     tt_reminder_fmt(node, ttReminder);
                     ttReminder.show();
                 } else {
@@ -364,11 +364,11 @@
                 // set tooltip height
                 // let cumH = 0
                 let cumH = ttTitle.height()
-                if (node.tooltip.body.length > 0) {
+                if (node.l.body.length > 0) {
                     cumH += ttBody.height() - 10
                 }
                 // cumH += 8
-                if (node.tooltip.replaced_title) {
+                if (node.l.replaced_title) {
                     cumH += ttReminder.height() + 10
                 }
                 // cumH += ttReminder.height()
@@ -431,9 +431,9 @@
             // select the appropriate color of node image
             // this is a terrible way to do this but I don't want to mess with
             // interacting with the svg dom
-            switch(node.node_type) {
+            switch(node.t) {
                 case 'notable':
-                    if (!node.allocated) {
+                    if (!node.a) {
                         nodeImage.src = notableUN;
                         break;
                     }
@@ -456,7 +456,7 @@
                     }
                     break;
                 case 'keystone':
-                    if (!node.allocated) {
+                    if (!node.a) {
                         nodeImage.src = keystoneUN;
                         break;
                     }
@@ -479,7 +479,7 @@
                     }
                     break;
                 case 'small_passive':
-                    if (!node.allocated) {
+                    if (!node.a) {
                         nodeImage.src = smallUN;
                         break;
                     }
@@ -502,7 +502,7 @@
                     }
                     break;
                 case 'jewel_socket':
-                    if (!node.allocated) {
+                    if (!node.a) {
                         nodeImage.src = jewelSocketUN;
                         break;
                     }

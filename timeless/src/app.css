@@ -29,6 +29,7 @@
     --secondary-foreground: 222.2 47.4% 11.2%;
  
     --accent: 210 40% 96.1%;
+    --accent-mid: 210 10% 77%;
     --accent-foreground: 222.2 47.4% 11.2%;
  
     --destructive: 0 72.2% 50.6%;
@@ -63,6 +64,7 @@
     --secondary-foreground: 210 40% 98%;
  
     --accent: 217.2 10% 30%;
+    --accent-mid: 210 10% 20%;
     --accent-foreground: 210 40% 98%;
  
     --destructive: 0 62.8% 30.6%;
@@ -357,10 +359,6 @@ black: #0D0D0D
   background-color: hsl(var(--background));
 }
 
-.jewelResultRowButton {
-  width: 100%;
-}
-
 .contentTitle {
   font-family: Fontin-SmallCaps;
   font-size: 34px;
@@ -463,6 +461,26 @@ black: #0D0D0D
   border-radius: 10px !important;
 }
 
+.jewelResultRowButton {
+  width: 100%;
+  background-color: hsl(var(--accent-mid));
+}
+
+.jewelResultRowButton:hover {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.jewelResultRowButton:hover .jewelBadge:not(:hover) {
+  background-color: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+
+.jewelResultRowButton:hover .jewelBadge:hover {
+  background-color: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+
 .selectedJewelButton {
   background-color: hsl(var(--foreground));
   color: hsl(var(--background));
@@ -475,10 +493,20 @@ black: #0D0D0D
   color: hsl(var(--foreground));
 }
 
+.selectedJewelButton:hover .selectedJewelBadge:not(:hover) {
+  background-color: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+
+.selectedJewelButton:hover .selectedJewelBadge:hover {
+  background-color: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+
 .insetCard {
   background-color: hsl(var(--inset));
 }
 
 .apexcharts-pie-area {
-  stroke: hsl(var(--foreground));
+  stroke: hsl(var(--accent-mid));
 }

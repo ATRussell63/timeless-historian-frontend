@@ -57,7 +57,7 @@
 		left: -100%;
 		z-index: -1;
 		background-image: url('$lib/images/TH-Logo-Tiled-Offset-Gray-O.svg');
-		background-color: #CCCCCC;
+		background-color: #666666;
 		background-size: 1280px 755px;
 		/* background-size: 25%; */
 		transform: rotate(-32deg);
