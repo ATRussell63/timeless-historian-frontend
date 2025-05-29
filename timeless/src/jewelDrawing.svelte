@@ -1,49 +1,45 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    // import { Canvas, StaticCanvas, FabricText, loadSVGFromString } from 'fabric'
-    // import { util } from 'fabric';
     import { base } from '$app/paths';
-    import notableSVG from '$lib/images/drawing/notable.svg';
-    import keystoneSVG from '$lib/images/drawing/keystone.svg';
-    import smallPassiveSVG from '$lib/images/drawing/small_passive.svg';
-    import jewelSocketSVG from '$lib/images/drawing/jewel_socket.svg';
 
     // jewel socket
-    import jewelSocketBR from '$lib/images/drawing/jewel_socketBR.svg';
-    import jewelSocketLP from '$lib/images/drawing/jewel_socketLP.svg';
-    import jewelSocketGV from '$lib/images/drawing/jewel_socketGV.svg';
-    import jewelSocketEH from '$lib/images/drawing/jewel_socketEH.svg';
-    import jewelSocketMF from '$lib/images/drawing/jewel_socketMF.svg';
-    import jewelSocketUN from '$lib/images/drawing/jewel_socketUN.svg';
+    // import jewelSocketBR from '$lib/images/drawing/jewel_socketBR.svg';
+    // import jewelSocketLP from '$lib/images/drawing/jewel_socketLP.svg';
+    // import jewelSocketGV from '$lib/images/drawing/jewel_socketGV.svg';
+    // import jewelSocketEH from '$lib/images/drawing/jewel_socketEH.svg';
+    // import jewelSocketMF from '$lib/images/drawing/jewel_socketMF.svg';
+    // import jewelSocketUN from '$lib/images/drawing/jewel_socketUN.svg';
 
-    // keystone
-    import keystoneGV from '$lib/images/drawing/keystone_GV.svg';
-    import keystoneLP from '$lib/images/drawing/keystone_LP.svg';
-    import keystoneBR from '$lib/images/drawing/keystone_BR.svg';
-    import keystoneEH from '$lib/images/drawing/keystone_EH.svg';
-    import keystoneMF from '$lib/images/drawing/keystone_MF.svg';
-    import keystoneUN from '$lib/images/drawing/keystone_UN.svg';
+    // // keystone
+    // import keystoneGV from '$lib/images/drawing/keystone_GV.svg';
+    // import keystoneLP from '$lib/images/drawing/keystone_LP.svg';
+    // import keystoneBR from '$lib/images/drawing/keystone_BR.svg';
+    // import keystoneEH from '$lib/images/drawing/keystone_EH.svg';
+    // import keystoneMF from '$lib/images/drawing/keystone_MF.svg';
+    // import keystoneUN from '$lib/images/drawing/keystone_UN.svg';
 
-    // notable
-    import notableGV from '$lib/images/drawing/notable_GV.svg';
-    import notableLP from '$lib/images/drawing/notable_LP.svg';
-    import notableBR from '$lib/images/drawing/notable_BR.svg';
-    import notableEH from '$lib/images/drawing/notable_EH.svg';
-    import notableMF from '$lib/images/drawing/notable_MF.svg';
-    import notableUN from '$lib/images/drawing/notable_UN.svg';
+    // // notable
+    // import notableGV from '$lib/images/drawing/notable_GV.svg';
+    // import notableLP from '$lib/images/drawing/notable_LP.svg';
+    // import notableBR from '$lib/images/drawing/notable_BR.svg';
+    // import notableEH from '$lib/images/drawing/notable_EH.svg';
+    // import notableMF from '$lib/images/drawing/notable_MF.svg';
+    // import notableUN from '$lib/images/drawing/notable_UN.svg';
 
-    // small passive
-    import smallGV from '$lib/images/drawing/small_passiveGV.svg';
-    import smallLP from '$lib/images/drawing/small_passiveLP.svg';
-    import smallBR from '$lib/images/drawing/small_passiveBR.svg';
-    import smallEH from '$lib/images/drawing/small_passiveEH.svg';
-    import smallMF from '$lib/images/drawing/small_passiveMF.svg';
-    import smallUN from '$lib/images/drawing/small_passiveUN.svg';
+    // // small passive
+    // import smallGV from '$lib/images/drawing/small_passiveGV.svg';
+    // import smallLP from '$lib/images/drawing/small_passiveLP.svg';
+    // import smallBR from '$lib/images/drawing/small_passiveBR.svg';
+    // import smallEH from '$lib/images/drawing/small_passiveEH.svg';
+    // import smallMF from '$lib/images/drawing/small_passiveMF.svg';
+    // import smallUN from '$lib/images/drawing/small_passiveUN.svg';
 
-    let { drawData, w, h, mode } = $props();
+    const darkImages = import.meta.glob('$lib/images/drawing/dark/*.svg', { eager: true });
+    const lightImages = import.meta.glob('$lib/images/drawing/light/*.svg', { eager: true });
 
     import Konva from 'konva';
-    // import { Arc, Line } from 'svelte-konva';
+
+    let { drawData, w, h, mode } = $props();
 
     let stage = null;
 
@@ -58,6 +54,7 @@
         const TT_W_PADDING = 10
         const RADIUS_PADDING = 50
 
+        const UN_COLOR = mode.current === 'dark' ? '#666666' : '#333333';
         const TT_TITLE_SIZE = 20;
         const TT_BODY_SIZE = 16;
         const TT_REMINDER_SIZE = 14
@@ -86,8 +83,6 @@
         container: 'container',
         width: w,
         height: h
-        // width: window.innerWidth,
-        // height: window.innerHeight,
         });
         
         function convert_coord(n, dim) {
@@ -115,13 +110,22 @@
             }
         });
 
+        let backdropFill = mode.current === 'dark' ? 'hsl(var(--inset))': 'hsl(var(--inset))';
+        let backdropOpacity = mode.current === 'dark' ? 0.5 : 0.2;
+
+        // really hard to make out white on light grey
+        if (mode.current !== 'dark' && drawData.jewel_type == 'Elegant Hubris') {
+            // backdropFill = 'black'
+            backdropOpacity = 0.5
+        }
+
         // draw the radius
         const backdrop = new Konva.Circle({
             x: stage.width() / 2,
             y: stage.height() / 2,
             radius: (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
-            fill: mode.current === 'dark' ? 'hsl(var(--inset))': 'hsl(var(--inset))',
-            opacity: mode.current === 'dark' ? 0.5 : 0.4
+            fill: backdropFill,
+            opacity: backdropOpacity
         })
 
         const timelessRadius = new Konva.Circle({
@@ -171,7 +175,7 @@
 
         // EDGES
         function make_straight_edge(edge) {
-            let stroke = '#333333';
+            let stroke = UN_COLOR;
             if (edge.a) {
                 stroke = LEGION_COLORS.get(drawData.jewel_type);
             }
@@ -188,7 +192,7 @@
         }
 
         function make_curved_edge(edge) {
-            let stroke = '#333333';
+            let stroke = UN_COLOR;
             if (edge.a) {
                 stroke = LEGION_COLORS.get(drawData.jewel_type);
             }
@@ -426,105 +430,21 @@
                 // edgeCropper.add(label)
             }
 
-            nodeImage.src = notableSVG;
+            // nodeImage.src = notableUN;
 
-            // select the appropriate color of node image
-            // this is a terrible way to do this but I don't want to mess with
-            // interacting with the svg dom
-            switch(node.t) {
-                case 'notable':
-                    if (!node.a) {
-                        nodeImage.src = notableUN;
-                        break;
-                    }
-                    switch (src_suffix) {
-                        case 'GV':
-                            nodeImage.src = notableGV;
-                            break;
-                        case 'LP':
-                            nodeImage.src = notableLP;
-                            break;
-                        case 'MF':
-                            nodeImage.src = notableMF;
-                            break;
-                        case 'EH':
-                            nodeImage.src = notableEH;
-                            break;
-                        case 'BR':
-                            nodeImage.src = notableBR;
-                            break;
-                    }
+            const images = mode.current === 'dark' ? darkImages : lightImages;
+            const suffix = node.a ? src_suffix : 'UN';
+            const filename = node.t + '_' + suffix + '.svg';
+
+            let src = null;
+            for (const path in images) {
+                if (path.endsWith(`/${filename}`)) {
+                    src = images[path].default;
                     break;
-                case 'keystone':
-                    if (!node.a) {
-                        nodeImage.src = keystoneUN;
-                        break;
-                    }
-                    switch (src_suffix) {
-                        case 'GV':
-                            nodeImage.src = keystoneGV;
-                            break;
-                        case 'LP':
-                            nodeImage.src = keystoneLP;
-                            break;
-                        case 'MF':
-                            nodeImage.src = keystoneMF;
-                            break;
-                        case 'EH':
-                            nodeImage.src = keystoneEH;
-                            break;
-                        case 'BR':
-                            nodeImage.src = keystoneBR;
-                            break;
-                    }
-                    break;
-                case 'small_passive':
-                    if (!node.a) {
-                        nodeImage.src = smallUN;
-                        break;
-                    }
-                    switch (src_suffix) {
-                        case 'GV':
-                            nodeImage.src = smallGV;
-                            break;
-                        case 'LP':
-                            nodeImage.src = smallLP;
-                            break;
-                        case 'MF':
-                            nodeImage.src = smallMF;
-                            break;
-                        case 'EH':
-                            nodeImage.src = smallEH;
-                            break;
-                        case 'BR':
-                            nodeImage.src = smallBR;
-                            break;
-                    }
-                    break;
-                case 'jewel_socket':
-                    if (!node.a) {
-                        nodeImage.src = jewelSocketUN;
-                        break;
-                    }
-                    switch (src_suffix) {
-                        case 'GV':
-                            nodeImage.src = jewelSocketGV;
-                            break;
-                        case 'LP':
-                            nodeImage.src = jewelSocketLP;
-                            break;
-                        case 'MF':
-                            nodeImage.src = jewelSocketMF;
-                            break;
-                        case 'EH':
-                            nodeImage.src = jewelSocketEH;
-                            break;
-                        case 'BR':
-                            nodeImage.src = jewelSocketBR;
-                            break;
-                    }
+                }
             }
-            
+
+            nodeImage.src = src;
         });
 
         baseLayer.add(edgeCropper);

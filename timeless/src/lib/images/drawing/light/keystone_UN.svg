@@ -3,16 +3,8 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
-<g id="Layer_1_1_" display="none">
-	
-		<image display="inline" overflow="visible" enable-background="new    " width="159" height="159" xlink:href="EE2D34D4.jpeg"  transform="matrix(0.3642 0 0 0.3642 2.6377 4.5498)">
-	</image>
-</g>
-<g id="Layer_2">
-	<polygon fill="none" points="27.104,40.133 31.954,30.987 36.792,40.133 	"/>
-</g>
 <g id="Layer_4">
-	<ellipse cx="32.5" cy="31.781" rx="22.625" ry="22.094"/>
+	<ellipse fill="#CCCCCC" cx="32.5" cy="31.781" rx="22.625" ry="22.094"/>
 </g>
 <g id="Layer_3">
 	<path fill="#333333" d="M48.561,15.438c-9.146-9.146-23.976-9.146-33.123,0.001c-9.146,9.146-9.145,23.975,0.002,33.122

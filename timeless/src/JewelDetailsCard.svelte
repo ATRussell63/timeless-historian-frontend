@@ -148,7 +148,7 @@
     <Separator orientation="vertical"></Separator>
     <div class="flex flex-col px-6 grow-3 overflow-hidden">
         <p class="cardTitle pl-2 mb-3 mt-1">
-            Stats Granted by {data.jewel_type}
+            Stats Granted by {data.jewel_type} {data.seed}
         </p>
         <div class="w-full">
             <ScrollArea class="insetCard p-4 border rounded-md h-[200px] w-full">

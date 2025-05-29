@@ -3,18 +3,9 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
-<g id="Layer_1_1_" display="none">
-	
-		<image display="inline" overflow="visible" enable-background="new    " width="133" height="133" xlink:href="CAA76F8.jpeg"  transform="matrix(0.4386 0 0 0.4386 2.395 3.334)">
-	</image>
-</g>
-<g id="Layer_2" display="none">
-	<polygon display="inline" fill="none" stroke="#000000" stroke-miterlimit="10" points="1.563,19.924 0.344,22.409 -1.563,18.909 
-		-3.469,22.409 -4.688,19.924 -6.328,22.752 3.203,22.752 	"/>
-</g>
 <g id="Layer_4">
-	<rect x="21.05" y="18.731" width="20.272" height="26.867"/>
-	<rect x="19.138" y="20.929" width="25.928" height="22.182"/>
+	<rect fill="#CCCCCC" x="21.05" y="18.731" width="20.272" height="26.867"/>
+	<rect fill="#CCCCCC" x="19.138" y="20.929" width="25.928" height="22.182"/>
 </g>
 <g id="Layer_3">
 	<path fill="#333333" stroke="#333333" stroke-miterlimit="10" d="M47.307,33.256l2.316-1.262l-2.316-1.262v-1.023l1.357-0.667
