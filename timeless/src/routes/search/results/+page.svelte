@@ -24,7 +24,7 @@
 
     // init switches to preference
     let matchGeneral = $state(localStorage.getItem('matchGeneral') === 'true');
-    let hardcoreOnly = $state(localStorage.getItem('matchGeneral') === 'true');
+    let hardcoreOnly = $state(localStorage.getItem('matchHardcore') === 'true');
 
     let { data } = $props();
     const body = data.body;
