@@ -24,9 +24,7 @@
     import Trickster from "$lib/images/classes/Trickster.png";
     import Warden from "$lib/images/classes/Warden.png";
 
-    // MAJOR TODO - unascended shadows fucking your shit up
-
-    let { data } = $props();
+    let { data, sampleMode } = $props();
 
     const imgMap = {
         Ascendant: Ascendant,
@@ -103,13 +101,13 @@
                 <div class="flex flex-row items-center">
                     <p class='fontinBold mr-2'>General:</p>
                     <p  class='fontin'
-                        style={data.general_matches
+                        style={sampleMode || data.general_matches
                             ? "color: green;"
                             : "color: red;"}
                     >
                         {data.general}
                     </p>
-                    {#if data.general_matches}
+                    {#if sampleMode || data.general_matches}
                         <Check style="color: green;" />
                     {:else}
                         <X style="color: red;" />
@@ -120,11 +118,11 @@
                     <div class="flex flex-row">
                         <p class='fontinBold mr-2'># Matching Devotion Modifiers:</p>
                         <p  class='fontin'
-                            style={data.mf_mods_match_count == 2
+                            style={sampleMode || data.mf_mods_match_count == 2
                                 ? "color: green;"
                                 : "color: red;"}
                         >
-                            ({data.mf_mods_match_count}/2)
+                            ({sampleMode ? '2' : data.mf_mods_match_count}/2)
                         </p>
                     </div>
                 {/if}

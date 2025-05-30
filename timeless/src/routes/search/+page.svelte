@@ -69,7 +69,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                     "mf_mods": mf_mods
                 }
 
-            const response = await fetch('http://localhost:5000/test', {
+            const response = await fetch('http://localhost:5000/search', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
@@ -98,6 +98,57 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
             error = err.message;
             } finally {
             loading = false;
+        }
+    }
+
+    async function sample() {
+        // loading = true;
+        error = null;
+
+        try {
+            const request_body = {
+                    "jewel_type": 'Any',
+                    "seed": 'Any',
+                    "general": 'Any',
+                    "mf_mods": null
+                }
+
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+                        
+            const limit = getRandomInt(15, 20)
+            
+            const response = await fetch(`http://localhost:5000/data/sample?limit=${limit}`, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+
+            const data = { body: request_body, response: await response.json() };
+            search_result.set(data);
+            if (response.ok && Object.keys(data.response.results).length > 0) {
+                goto('/search/results');
+            } else {
+                // display an error somewhere
+                toast.pop()
+                toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
+                           {duration: 3000,
+                            theme: {
+                                '--toastColor': 'hsl(var(--foreground))',
+                                '--toastBackground': 'hsl(var(--background))',
+                                '--toastBarBackground': 'red',
+                                }
+                           })
+            }
+
+            } catch (err) {
+            error = err.message;
+            } finally {
+            // loading = false;
         }
     }
 
@@ -173,7 +224,18 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
     <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
 </Button>
 </div>
+<div class='flex flex-row mt-10 justify-center'>
+    <Card.Root>
+        <Card.Content class='py-0 m-0'>
+            <div class='flex flex-row items-center'>
+            <p style='font-size: 14px;'>Don't have a jewel or just want to see some data?</p>
+            <Button variant='link' class='p-0 ml-2' style='font-size: 14px;' on:click={sample}><b>Click here for a random sample</b></Button>
+            </div>
+        </Card.Content>
+    </Card.Root>
 </div>
+</div>
+
 
 <SvelteToast {toastOptions}/>
 

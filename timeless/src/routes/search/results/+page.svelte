@@ -137,7 +137,7 @@
             results[league].jewels = results[league].jewels.filter((jewel) => {
                 let mf = jewel.mf_mods_match_count >= minMatchingMFMods;
                 let gen = true;
-                if (matchGeneral) {
+                if (matchGeneral && body.general !== 'Any') {
                     gen = jewel.general_match;
                 }
                 return mf && gen;
@@ -387,10 +387,11 @@
                 <p class="resultsSummaryTitle mb-3">Breakdown</p>
                 <Card.Root class='insetCard mb-4'>
                     <Card.Content>
-                <p class="resultsSummaryText mb-4">
+                <p class="resultsSummaryText mb-0">
                     Total Results: <b>{totalResults(response)}</b>
                 </p>
-                <div class="ml-5">
+                {#if body.seed !== 'Any'}
+                <div class="ml-5 mt-4">
                     <p class="resultsSummaryText mb-2">
                         Of the search results:
                     </p>
@@ -420,6 +421,11 @@
                         {/if}
                     </div>
                 </div>
+                <!-- {:else}
+                <div class='ml-5'>
+
+                </div> -->
+                {/if}
                     </Card.Content>
                 </Card.Root>
             </div>
@@ -443,6 +449,7 @@
                     {/each}
                 </Select.Content>
             </Select.Root> -->
+            {#if body.seed !== 'Any'}
             <div class="mt-auto mb-3">
                 <p class="resultsSummaryTitle">
                     Search on the Official Trade Site:
@@ -469,9 +476,18 @@
                     >
                 {/if}
             </div>
+            {/if}
         </div>
         <Separator orientation="vertical" class="mx-auto"></Separator>
         <div class="flex flex-row ml-3 mr-6 gap-6 items-center">
+            {#if body.seed === 'Any'}
+            <ResultChart
+                values={Object.values(getAttrCounts(response, "jewel_type"))}
+                labels={Object.keys(getAttrCounts(response, "jewel_type"))}
+                theme="legion"
+                title={"Top Jewel Type: " + topAttr(response, "jewel_type").name}
+            />
+            {/if}
             <ResultChart
                 values={Object.values(getAttrCounts(response, "general"))}
                 labels={Object.keys(getAttrCounts(response, "general"))}
@@ -651,7 +667,7 @@
                     class="flex flex-col flex-auto w-full flex items-center justify-end"
                 >
                     <div class='w-full h-full my-4'>
-                    <JewelDetailsCard data={hoverData}></JewelDetailsCard>
+                    <JewelDetailsCard data={hoverData} sampleMode={body.seed === 'Any'}></JewelDetailsCard>
                     </div>
                     <Separator class="mb-2"></Separator>
                      <!-- <div class='flex flex-row w-full justify-center' style='background-color: black; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;'> -->
