@@ -12,6 +12,7 @@
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import { toast } from '@zerodevx/svelte-toast';
     import { mode } from "mode-watcher";
+    import { PUBLIC_API_URL } from "$env/static/public";
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
 
     let backgroundStyle = `background-size: 150% 150%; background-position: bottom 70% right 60%; background-image: url(${TemplarSymbol});`
@@ -46,7 +47,7 @@ Radius: Large
 --------
 Item Level: 84
 --------
-Carved to glorify 12345 new faithful converted by High Templar Dominus
+Carved to glorify 3389 new faithful converted by High Templar Dominus
 Passives in radius are Conquered by the Templars
 +2% to all Elemental Resistances per 10 Devotion
 1% reduced Mana Cost of Skills per 10 Devotion
@@ -69,7 +70,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                     "mf_mods": mf_mods
                 }
 
-            const response = await fetch('http://localhost:5000/search', {
+            const response = await fetch(`${PUBLIC_API_URL}/search`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
@@ -121,7 +122,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                         
             const limit = getRandomInt(15, 20)
             
-            const response = await fetch(`http://localhost:5000/data/sample?limit=${limit}`, {
+            const response = await fetch(`${PUBLIC_API_URL}/data/sample?limit=${limit}`, {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json'
