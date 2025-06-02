@@ -1,6 +1,7 @@
 FROM node:20-slim as builder
 WORKDIR /app
-COPY package.json ./
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
 RUN corepack enable
 # RUN yarn add -D dotenv-cli
 RUN yarn install
@@ -12,7 +13,8 @@ RUN yarn build
 
 FROM node:20-slim
 WORKDIR /app
-COPY --from=builder /app/build build/
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules node_modules/
 COPY package.json .
 
