@@ -90,7 +90,7 @@
     </div>
     <div class='flex flex-col mx-10'>
     <h2>What is this site?</h2>
-    <p>Timeless Historian is a historial database for timeless jewels. You can search the database to see if someone on the ladder has ever used a particular jewel.
+    <p>Timeless Historian is a historial database for timeless jewels. The site periodically polls characters from the Softcore and Hardcore Trade ladders and records any timeless jewels it finds. You can search the database using a jewel in your inventory to see if Timeless Historian has seen any characters using the same seed.
     </p><p>
         This site attempts to answer the question 'Does anyone use this jewel?' or 'Is this jewel good for anyone?'.</p><p>
         What it <strong>isn't</strong> is a price checking tool or a replacement for the official trade site.

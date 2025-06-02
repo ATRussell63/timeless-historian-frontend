@@ -6,8 +6,9 @@ node_modules
 .netlify
 .wrangler
 /.svelte-kit
+/.yarn
 /build
-
+yarn.lock
 # OS
 .DS_Store
 Thumbs.db
