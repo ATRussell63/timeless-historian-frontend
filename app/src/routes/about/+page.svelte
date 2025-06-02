@@ -39,13 +39,13 @@
                         Any build maker can easily find not only the optimal seed, but often many viable fallbacks as well.
                     Path of Building will even generate bulk trade queries to make the browsing process easier.
                 </p><p>
-                    Ironically, not much has changed for most sellers. There are 3 options:
+                    Ironically, not much has changed for sellers. There are 3 options:
                 </p>
                 <div class='flex flex-col mx-10'>
                     <h2>• Dump tabs</h2>
                 <p>
                     This is by far the fastest method and arguably the best way to make money from selling bulk jewels. </p><p>The seller makes a guess at an above-mean price for an arbitrary jewel, lists everything at that price, and steadily decreases it until hopefully everything sells.
-                    </p><p>This IS the best method if you assume that there is a lot of demand for low quality items (such as at league start). However, it outright ignores the potential for jackpots.
+                    </p><p>This <strong>is</strong> the best method if you assume that there is a lot of demand for low quality items (such as at league start). However, it outright ignores the potential for jackpots.
                 </p>
                     <h2>• Trade queries</h2>
                 <p>
@@ -64,9 +64,9 @@
                 </div>
                 <p><br />
                     Dump tabs seem like the only viable option for people running dozens of 5-way Domains per day. I don't expect this website will change much for people generating that volume of jewels.
-                    That said, a large part of the fun in Path of Exile comes from dropping great loot. </p><p> Mageblood and Bloodseeker might be equally rare, but only one could be called GREAT.
+                    </p><p>However, as the league progresses people will have more to spend on their ideal jewel, and that's where careful appraisal pays off.
                 </p><br /><p>
-                    I farmed a lot of Legion in a recent private league hosted by Pohx. It occurred to me that in that setting, the trade site was not very useful. Even in a trade environment of 20,000+ players, most of the jewel seeds didn't exist.
+                    I farmed a lot of Legion in a recent private league hosted by Pohx. It occurred to me that in that setting, the trade site was not very useful. Even in an league of 20,000+ players, most of the jewel seeds didn't exist.
                     Some of my jewels sold, but I wasn't satisfied by randomly chucking them into dump tabs.
                 </p><p>    
                     It occurred to me that it would be great if there was a community compiled spreadsheet of notable timeless jewels I could reference.

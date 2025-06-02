@@ -38,27 +38,27 @@
         return good
     }
 
-    onMount(() => {
-        text_input = `Item Class: Jewels
-Rarity: Unique
-Militant Faith
-Timeless Jewel
---------
-Limited to: 1 Historic
-Radius: Large
---------
-Item Level: 84
---------
-Carved to glorify 3389 new faithful converted by High Templar Dominus
-Passives in radius are Conquered by the Templars
-+2% to all Elemental Resistances per 10 Devotion
-1% reduced Mana Cost of Skills per 10 Devotion
-Historic
---------
-They believed themselves the utmost faithful, but that conviction became oppression.
---------
-Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to remove from the Socket.`
-    })
+//     onMount(() => {
+//         text_input = `Item Class: Jewels
+// Rarity: Unique
+// Militant Faith
+// Timeless Jewel
+// --------
+// Limited to: 1 Historic
+// Radius: Large
+// --------
+// Item Level: 84
+// --------
+// Carved to glorify 3389 new faithful converted by High Templar Dominus
+// Passives in radius are Conquered by the Templars
+// +2% to all Elemental Resistances per 10 Devotion
+// 1% reduced Mana Cost of Skills per 10 Devotion
+// Historic
+// --------
+// They believed themselves the utmost faithful, but that conviction became oppression.
+// --------
+// Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to remove from the Socket.`
+//     })
 
     async function search() {
         loading = true;
