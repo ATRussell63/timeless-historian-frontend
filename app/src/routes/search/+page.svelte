@@ -12,7 +12,9 @@
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import { toast } from '@zerodevx/svelte-toast';
     import { mode } from "mode-watcher";
-    import { PUBLIC_API_URL } from "$env/static/public";
+    // const baseURL = import.meta.env.PUBLIC_API_URL;
+    // import 'dotenv/config';
+    // console.log(import.meta.env);
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
 
     let backgroundStyle = `background-size: 150% 150%; background-position: bottom 70% right 60%; background-image: url(${TemplarSymbol});`
@@ -70,7 +72,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                     "mf_mods": mf_mods
                 }
 
-            const response = await fetch(`${PUBLIC_API_URL}/search`, {
+            const response = await fetch(`/api/search`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
@@ -122,7 +124,7 @@ Place into an allocated Jewel Socket on the Passive Skill Tree. Right click to r
                         
             const limit = getRandomInt(15, 20)
             
-            const response = await fetch(`${PUBLIC_API_URL}/data/sample?limit=${limit}`, {
+            const response = await fetch(`/api/data/sample?limit=${limit}`, {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json'
