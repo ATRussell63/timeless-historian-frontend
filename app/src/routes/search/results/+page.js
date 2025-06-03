@@ -6,7 +6,6 @@ export function load() {
     const sr = get(search_result);
 
     if (!sr) {
-        console.log('redirecting')
         throw redirect(302, '/search')
     }
 

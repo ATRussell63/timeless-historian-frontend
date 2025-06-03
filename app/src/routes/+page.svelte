@@ -21,7 +21,7 @@
                           "Haste is irrelevant in the face of eternity",
                           "`Fortune favor you'"]
         let r = Math.random();
-        console.log(Math.floor(r * 100))
+
         switch (Math.floor(r * 100)) {
             case 1:
                 tagLine = "'...they seem to have met a tribe of... monkeys?'";
@@ -110,12 +110,12 @@
     }
 
     .dataLabel {
-        font-family: Fontin;
+        font-family: Fontin-Regular;
         font-size: 24px;
     }
 
     .homeSearchButton {
-        font-family: Fontin;
+        font-family: Fontin-Bold;
         font-size: 30px;
     }
 </style>

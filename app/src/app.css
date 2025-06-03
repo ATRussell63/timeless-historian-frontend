@@ -419,7 +419,7 @@ black: #0D0D0D
 }
 
 .fontin {
-  font-family: Fontin;
+  font-family: Fontin-Regular;
 }
 
 .fontinBold {
@@ -431,7 +431,7 @@ black: #0D0D0D
 }
 
 .tradeSearch {
-  font-family: Fontin;
+  font-family: Fontin-Regular;
   font-size: 18px;
 }
 

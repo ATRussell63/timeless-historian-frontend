@@ -28,7 +28,6 @@ export function parse_jewel_general(jewel_text) {
     const m = jewel_text.match(capture_general);
     
     if (!m) {
-        console.log('parse general was null')
         return ''
     }
 

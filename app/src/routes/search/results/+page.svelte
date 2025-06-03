@@ -176,7 +176,7 @@
 
     function openTradeLink(mode) {
         const league = selectedTradeLeague;
-        console.log(`got ${league}, ${mode}`);
+        // console.log(`got ${league}, ${mode}`);
 
         const generalToModIdMap = {
             Asenath: "explicit.pseudo_timeless_jewel_asenath",
@@ -248,7 +248,7 @@
 
         if (body.jewel_type === "Militant Faith" && mode === "exact") {
             // add mf mods to query
-            console.log("adding mf mods");
+            // console.log("adding mf mods");
             function devoModMap(devoMod) {
                 switch (devoMod) {
                     case "4% increased Totem Damage per 10 Devotion":
@@ -310,7 +310,7 @@
             league.replace(" ", "") +
             "/?q=" +
             encodeURIComponent(JSON.stringify(queryObj));
-        console.log(JSON.stringify(queryObj));
+        // console.log(JSON.stringify(queryObj));
         window.open(url, "_blank");
     }
 

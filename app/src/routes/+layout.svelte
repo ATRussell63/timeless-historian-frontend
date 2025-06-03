@@ -15,7 +15,7 @@
 	data_summary.set(data)
 
 </script>
-<ModeWatcher />
+<ModeWatcher disableTransitions={false} />
 <div class={cn('app ' + (mode.current === 'dark' ? 'dark' : ''))}>
 <TopNav></TopNav>
 <div class="flex flex-row min-h-screen justify-center">
