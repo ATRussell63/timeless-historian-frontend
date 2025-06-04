@@ -7,6 +7,12 @@
     let backgroundStyle = `background-size: 190% 190%; background-position: bottom 40% left 50%; background-image: url(${VaalSymbol});`
 </script>
 
+<svelte:head>
+    <title>
+        Timeless Historian - About
+    </title>
+</svelte:head>
+
 <div class='px-25 pt-3 pb-10 min-w-[1300px]' style={backgroundStyle}>
     <div class='flex flex-row justify-center mt-20 items-center'>
         <div class='flex flex-row items-center justify-center gap-20'>

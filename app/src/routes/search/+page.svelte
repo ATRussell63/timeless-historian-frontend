@@ -71,8 +71,11 @@
                     "general": general,
                     "mf_mods": mf_mods
                 }
-
-            const response = await fetch(`/api/search`, {
+            let url = '/api/search';
+            if (!import.meta.env.PROD) {
+                url = 'http://localhost:5000' + url.replace('/api', '');
+            }
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json'
@@ -123,8 +126,11 @@
             }
                         
             const limit = getRandomInt(15, 20)
-            
-            const response = await fetch(`/api/data/sample?limit=${limit}`, {
+            let url = `/api/data/sample?limit=${limit}`;
+            if (!import.meta.env.PROD) {
+                url = 'http://localhost:5000' + url.replace('/api', '');
+            }
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json'
@@ -164,6 +170,11 @@
     }
 </script>
 
+<svelte:head>
+    <title>
+        Timeless Historian - Search
+    </title>
+</svelte:head>
 
 <div class='flex flex-col h-full min-w-[1400px] px-10 py-10' style={backgroundStyle}>
 <span class='searchPageTitle mb-4'>Search</span>

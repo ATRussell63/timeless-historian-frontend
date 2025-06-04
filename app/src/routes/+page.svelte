@@ -43,6 +43,12 @@
     let backgroundStyle = `background-size: 140% 140%; background-position: bottom 50% right 50%; background-image: url(${MarakethSymbol});`
 </script>
 
+<svelte:head>
+    <title>
+        Timeless Historian
+    </title>
+</svelte:head>
+
 <div class='flex flex-col mb-2 px-6 pt-3 h-full gap-20 min-w-[1200px]' style={backgroundStyle}>
     <div class='flex flex-row justify-center mt-30'>
         <div class='flex flex-col items-center'>

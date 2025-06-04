@@ -339,6 +339,12 @@
     }
 </script>
 
+<svelte:head>
+    <title>
+        Timeless Historian - Search Results
+    </title>
+</svelte:head>
+
 <div class='mb-2 px-10 py-8 min-w-[1700px]' style={backgroundStyle}>
 <!-- Title row -->
 <div class="mb-4 flex flex-row items-center justify-between">
