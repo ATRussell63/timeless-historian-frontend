@@ -11,6 +11,7 @@
 	import ThemeSelector from '../ThemeSelector.svelte';
 	import { mode, ModeWatcher } from 'mode-watcher';
 	import { version } from '$app/environment';
+	import KofiIcon from '$lib/images/Ko-fi_icon.png';
 	let { children, data } = $props();
 	data_summary.set(data)
 
@@ -31,14 +32,26 @@
   </main>
 
   <!-- Right Margin -->
-  <div class="flex flex-col w-[185px]">
+  <div class="flex flex-col w-[203px]">
 	
     <!-- Right margin content if needed -->
   </div>
 </div>
 <footer class='flex flex-row justify-center gap-2'>
-	<span class='ml-auto'>Contact: timeless_auditor@gmail.com</span><span>|</span>This website is fan-made and is not affiliated with Grinding Gear Games<span>|</span><span>Fontin (PoE Font) created by <a target="_blank" rel="noopener noreferrer" href="https://www.exljbris.com">exljbris</a></span>
-	<span class='ml-auto mr-3'>{version}</span>
+	<span class='ml-auto'>Copyright © 2025 Aaron Russell</span>
+	<span>|</span>
+	<span>Contact: timeless_auditor@gmail.com</span>
+	<span>|</span>
+	<a target="_blank" rel="noopener noreferrer" href="https://ko-fi.com/timelesshistorian">
+		<div class='flex flex-row gap-1 items-center'>
+		<img class='w-4 h-4' alt='kofi' src={KofiIcon}/>Support the site on Ko-fi
+		</div>
+	</a>
+	<span>|</span>
+	<span>This website is fan-made and is not affiliated with Grinding Gear Games</span>
+	<span>|</span>
+	<span class='mr-auto'>Fontin (PoE Font) created by <a target="_blank" rel="noopener noreferrer" href="https://www.exljbris.com">exljbris</a></span>
+	<!-- <span class='absolute mr-3'>{version}</span> -->
 </footer>
 </div>
 
