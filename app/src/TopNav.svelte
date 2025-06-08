@@ -4,18 +4,28 @@
     import TopNavDisabledButton from "./TopNavDisabledButton.svelte";
 </script>
 
-<nav class="bg-white text-white px-4 pt-8 pb-0 flex items-center justify-center">
-    <div class='mr-auto'>
-    </div>
-    <div class='flex flex-row pb-0 gap-4 items-end h-[46px]'>
-      <TopNavButton label='Search' url='/search'/>
-      <!-- <TopNavButton label='Browse' url='/browse'/> -->
-      <TopNavDisabledButton label='Bulk (Coming Soon)'></TopNavDisabledButton>
-      <!-- <TopNavButton label='Bulk (coming soon)' enabled={false}/> -->
-    </div>
-    <div class="ml-auto">
-      <!-- <TopNavLoginButton /> -->
-    </div>
+<nav class="bg-white text-white pt-8 pb-0 flex items-center justify-center">
+    <!-- <div class='flex flex-col w-[203px]'>
+    </div> -->
+    <!-- <div class='flex flex-col'> -->
+      <div class='flex flex-row pb-0 items-end h-[46px] w-full'>
+        <div class='mr-auto' style='visibility:hidden;'>
+        <TopNavLoginButton />
+        </div>
+        <div class='mr-2'>
+        <TopNavButton label='Search' url='/search'/>
+        </div>
+        <div class='ml-2'>
+        <TopNavButton label='Bulk Search' url='/bulk'/>
+        </div>
+        <div class='ml-auto'>
+        <TopNavLoginButton />
+        </div>
+      </div>
+    <!-- </div> -->
+    <!-- <div class="flex flex-col w-[203px]"> -->
+      
+    <!-- </div> -->
   </nav>
 
 <style>

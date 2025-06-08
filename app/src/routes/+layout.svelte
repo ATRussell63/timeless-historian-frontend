@@ -18,18 +18,22 @@
 </script>
 <ModeWatcher disableTransitions={false} />
 <div class={cn('app ' + (mode.current === 'dark' ? 'dark' : ''))}>
-<TopNav></TopNav>
+
 <div class="flex flex-row min-h-screen justify-center">
 	<!-- Left Margin -->
-	<div class="flex flex-col gap-5 mr-5 items-end">
+	<div class="flex flex-col gap-5 mr-5 items-end mt-[78px]">
 		<Sidebar/>
 		<ThemeSelector/>
 	</div>
 
   <!-- Main Content -->
-  <main class={cn("flex flex-col basis-1/3 max-w-[1700px] border rounded-t-xl")} style="margin-top: 0px;">
+   <div class='flex flex-col basis-1/3 max-w-[1700px]'>
+  <TopNav></TopNav>
+  <main class={cn("flex flex-col border rounded-t-xl h-full")} style="margin-top: 0px;">
+	
 	 {@render children()}
   </main>
+   </div>
 
   <!-- Right Margin -->
   <div class="flex flex-col w-[203px]">
