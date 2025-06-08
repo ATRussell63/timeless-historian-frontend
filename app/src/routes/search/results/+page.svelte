@@ -591,7 +591,7 @@
                 {/if}
             </Card.Content>
         </Card.Root>
-        <ScrollArea class="h-full rounded-md border mt-5">
+        <ScrollArea class="h-full rounded-md border mt-5 transparentBackground">
             <Accordion.Root value={Object.entries(displayedResponse).length === 1 ? `item-${Object.entries(displayedResponse)[0][1].league_id}` : ''}>
                 {#each Object.entries(displayedResponse) as [key, value]}
                     <Accordion.Item value={`item-${value.league_id}`}>
