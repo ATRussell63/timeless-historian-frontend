@@ -629,7 +629,7 @@
                                         >
                                             <span
                                                 class="multiLang"
-                                                style="font-size: 18px;"
+                                                style={cn(jewel.character_name.length >= 19 ? "font-size: 14px;" : "font-size: 18px;")}
                                                 >{jewel.character_name}</span
                                             >
                                             <p class="fontin">

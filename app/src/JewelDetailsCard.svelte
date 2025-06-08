@@ -4,6 +4,7 @@
     import Badge from "$lib/components/ui/badge/badge.svelte";
     import { ExternalLink, Check, X } from "lucide-svelte";
     import * as Card from "$lib/components/ui/card";
+    import { cn } from "$lib/utils";
     import Ascendant from "$lib/images/classes/Ascendant.png";
     import Assassin from "$lib/images/classes/Assassin.png";
     import Berserker from "$lib/images/classes/Berserker.png";
@@ -63,7 +64,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="multiLang"
-                        style="font-size: 36px;"
+                        style={cn(data.character_name.length >= 19 ? "font-size: 24px;" : "font-size: 36px;")}
                         href={`https://www.pathofexile.com/account/view-profile/${data.account_name.replace("#", "-")}/characters?characterName=${encodeURIComponent(data.character_name)}`}
                         >{data.character_name}</a
                     >
