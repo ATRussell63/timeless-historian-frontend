@@ -19,7 +19,8 @@ export const ENGLISH_MF_MODS = [
     '4% increased Totem Damage per 10 Devotion'];
 
 const FRENCH_MF_ANCHOR = 'Templiers'
-const FRENCH_MF_MODS = ['Tous les 10 de Ferveur, vous avez 0.6 de Mana Régénéré par seconde',
+const FRENCH_MF_MODS = [
+    'Tous les 10 de Ferveur, vous avez 0.6 de Mana Régénéré par seconde',
     "Tous les 10 de Ferveur, vous avez 3% d'Augmentation de l'Effet sur les Ennemis de vos Altérations n'infligeant pas de Dégâts",
     "4% d'Augmentation des Dégâts de zone tous les 10 de Ferveur",
     "Tous les 10 de Ferveur, vous avez 1% d'Augmentation de l'Effet des Auras (Malédictions exceptés)",
@@ -36,12 +37,30 @@ const FRENCH_MF_MODS = ['Tous les 10 de Ferveur, vous avez 0.6 de Mana Régéné
     "Tous les 10 de Ferveur, 4% d'Augmentation des Dégâts des Totems"
 ]
 
+const GERMAN_MF_ANCHOR = 'Templern erobert'
+const GERMAN_MF_MODS = [
+    'Regeneriert 0.6 Mana pro Sekunde pro 10 Hingabe',
+    '3% erhöhte Wirkung von nicht schädigenden Beeinträchtigungen bei Gegnern pro 10 Hingabe',
+    '4% erhöhter Flächenschaden pro 10 Hingabe',
+    '1% erhöhte Wirkung von Auren (Fluchauren ausgenommen) pro 10 Hingabe',
+    '4% erhöhter Zeichenschaden pro 10 Hingabe',
+    'Kanalisierungsfertigkeiten verursachen 4% erhöhten Schaden pro 10 Hingabe',
+    '4% verkürzte Dauer von Flüchen auf Euch pro 10 Hingabe',
+    '4% verlängerte Dauer von elementaren Beeinträchtigungen auf Euch pro 10 Hingabe',
+    '4% erhöhter Elementarschaden pro 10 Hingabe',
+    '+2% zu allen Elementarwiderständen pro 10 Hingabe',
+    'Kreaturen haben +60 zu Treffergenauigkeit pro 10 Hingabe',
+    '1% erhöhte Kreaturenangriffs- und Zaubergeschwindigkeit pro 10 Hingabe',
+    '1% verringerte Manakosten von Fertigkeiten pro 10 Hingabe',
+    '3% erhöhte Verteidigungswerte vom ausgerüsteten Schild pro 10 Hingabe',
+    '4% erhöhter Totemschaden pro 10 Hingabe'
+]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS]
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS]
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);
