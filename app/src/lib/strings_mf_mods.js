@@ -94,11 +94,30 @@ const RUSSIAN_MF_MODS = [
     '4% увеличение урона тотемами за каждые 10 набожности'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS];
+const SPANISH_MF_ANCHOR = 'templarios'
+const SPANISH_MF_MODS = [
+    'Regeneras 0.6 de maná por segundo por cada 10 de Devoción',
+    'Efecto de los estados alterados no dañinos sobre los enemigos aumentado un 3% por cada 10 de Devoción',
+    'Daño de área aumentado un 4% por cada 10 de Devoción',
+    'Efecto de las auras que no son maldiciones aumentado un 1% por cada 10 de Devoción',
+    'Daño con marcas aumentado un 4% por cada 10 de devoción',
+    'Las habilidades de canalización infligen su daño aumentado un 4% por cada 10 de Devoción',
+    'Duración de las maldiciones sobre ti reducida un 4% por cada 10 de Devoción',
+    'Duración de los estados alterados elementales sobre ti reducida un 4% por cada 10 de devoción',
+    'Daño elemental aumentado un 4% por cada 10 de Devoción',
+    '+2% a todas las resistencias elementales por cada 10 de Devoción',
+    'Los esbirros tienen +60 a la precisión por cada 10 de Devoción',
+    'Velocidades de ataque y lanzamiento de hechizos de los esbirros aumentadas un 1% por cada 10 de Devoción',
+    'Costo de maná de las habilidades reducido un 1% por cada 10 de devoción',
+    'Defensas por el escudo equipado aumentadas un 3% por cada 10 de Devoción',
+    'Daño de tótems aumentado un 4% por cada 10 de Devoción'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);

@@ -40,5 +40,13 @@ const RUSSIAN = [
     'Выточен во', // MF
 ]
 
+const SPANISH = [
+    'Denota', // BR
+    'Se encargaron', // EH
+    'Bañada', // GV
+    'Otorgada', // LP
+    'Tallada', // MF
+]
 
-export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN];
+
+export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN, ...SPANISH];
