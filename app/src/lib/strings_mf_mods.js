@@ -132,11 +132,30 @@ const THAI_MF_MODS = [
     'เพิ่มความเสียหายของ โทเทม 4% ต่อ ความภักดี 10 หน่วย'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR, THAI_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS, ...THAI_MF_MODS];
+const KOREAN_MF_ANCHOR = '받음'
+const KOREAN_MF_MODS = [
+    '헌신 10당 1초마다 마나 0.6 재생',
+    '헌신 10당 적에게 적용되는 비-피해 상태 이상 효과 3% 증가',
+    '헌신 10당 범위 피해 4% 증가',
+    '헌신 10당 비-저주 오라 효과 1% 증가',
+    '헌신 10당 낙인 피해 4% 증가',
+    '헌신 10당 집중 유지 스킬로 주는 피해 4% 증가',
+    '헌신 10당 플레이어가에게 적용된 저주 지속시간 4% 감소',
+    '헌신 10당 플레이어에게 적용되는 원소 상태 이상 지속시간 4% 감소',
+    '헌신 10당 원소 피해 4% 증가',
+    '헌신 10당 모든 원소 저항 +2%',
+    '헌신 10당 소환수 정확도 +60',
+    '헌신 10당 소환수 공격 및 시전 속도 1% 증가',
+    '헌신 10당 스킬의 마나 소모 1% 감소',
+    '헌신 10당 장착한 방패로 얻는 방어력 3% 증가',
+    '헌신 10당 토템 피해 4% 증가'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR, THAI_MF_ANCHOR, KOREAN_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS, ...THAI_MF_MODS, ...KOREAN_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS, THAI_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS, THAI_MF_MODS, KOREAN_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);

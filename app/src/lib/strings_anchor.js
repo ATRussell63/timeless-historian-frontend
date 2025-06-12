@@ -1,3 +1,5 @@
+import { KOREAN_GENERAL_NAMES } from "./strings_general"
+
 // line anchor will vary based on language every time
 
 const ENGLISH = [
@@ -56,5 +58,7 @@ const THAI = [
     'สลักไว้เพื่อเชิดชูผู้ถูกแปรพักตร์โดยเทมพลาร์ระดับสูง', // MF
 ]
 
+// seed line starts with the general's name in korean
+const KOREAN = KOREAN_GENERAL_NAMES
 
-export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN, ...SPANISH, ...THAI];
+export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN, ...SPANISH, ...THAI, ...KOREAN];
