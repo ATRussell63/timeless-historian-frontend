@@ -24,5 +24,13 @@ const GERMAN = [
     'Im Namen', // MF
 ]
 
+const PORTUGESE = [
+    'Denota', // BR
+    'Comissionadas', // EH
+    'Banhado', // GV
+    'Liderança', // LP
+    'Talhado', // MF
+]
 
-export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN];
+
+export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE];

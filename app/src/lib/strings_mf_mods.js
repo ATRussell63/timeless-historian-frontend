@@ -56,11 +56,30 @@ const GERMAN_MF_MODS = [
     '4% erhöhter Totemschaden pro 10 Hingabe'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS]
+const PORTUGESE_MF_ANCHOR = 'Templários'
+const PORTUGESE_MF_MODS = [
+    '0.6 de Mana Regenerada por Segundo por cada 10 de Devoção',
+    'Efeito de Afecções que não causam Dano nos Inimigos aumentado em 3% por cada 10 de Devoção',
+    'Dano em Área aumentado em 4% por cada 10 de Devoção',
+    'Efeito das Auras Não-Maldições aumentado em 1% por cada 10 de Devoção',
+    'Dano de Runas aumentado em 4% por cada 10 de Devoção',
+    'Habilidades Canalizadas causam Dano aumentado em 4% por cada 10 de Devoção',
+    'Duração das Maldições em você reduzida em 4% por cada 10 de Devoção',
+    'Duração das Afecções Elementais reduzidas em 4% por cada 10 de Devoção',
+    'Dano Elemental aumentado em 4% por cada 10 de Devoção',
+    '+2% de todas as Resistências Elementais por cada 10 de Devoção',
+    'Lacaios tem +60 de Precisão por cada 10 de Devoção',
+    'Velocidade de Ataque e Conjuração dos Lacaios aumentadas em 1% por cada 10 de Devoção',
+    'Custo de Mana das Habilidades reduzido em 1% por cada 10 de Devoção Vida',
+    'Defesas do Escudo Equipado aumentadas em 3% por cada 10 de Devoção',
+    'Dano de Totens aumentado em 4% por cada 10 de Devoção'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);
