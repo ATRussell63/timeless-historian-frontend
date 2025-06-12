@@ -75,11 +75,30 @@ const PORTUGESE_MF_MODS = [
     'Dano de Totens aumentado em 4% por cada 10 de Devoção'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS];
+const RUSSIAN_MF_ANCHOR = 'храмовниками'
+const RUSSIAN_MF_MODS = [
+    'Регенерация 0.6 маны в секунду за каждые 10 набожности',
+    '3% усиление эффекта не наносящих урон состояний на врагах за каждые 10 набожности',
+    '4% увеличение урона по области за каждые 10 набожности',
+    '1% усиление эффекта аур не-проклятий за каждые 10 набожности',
+    '4% увеличение урона клеймами за каждые 10 набожности',
+    'Поддерживаемые умения наносят увеличенный на 4% урон за каждые 10 набожности',
+    '4% уменьшение длительности проклятий на вас за каждые 10 набожности',
+    '4% уменьшение длительности стихийных состояний на вас за каждые 10 набожности',
+    '4% увеличение урона от стихий за каждые 10 набожности',
+    '+2% к сопротивлению всем стихиям за каждые 10 набожности',
+    'Приспешники имеют +60 к меткости за каждые 10 набожности',
+    '1% повышение скорости атаки и сотворения чар приспешниками за каждые 10 набожности',
+    '1% снижение затрат маны умениями за каждые 10 набожности',
+    '3% повышение защиты от щита в руках за каждые 10 набожности',
+    '4% увеличение урона тотемами за каждые 10 набожности'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);

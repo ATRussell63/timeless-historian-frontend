@@ -32,5 +32,13 @@ const PORTUGESE = [
     'Talhado', // MF
 ]
 
+const RUSSIAN = [
+    'Символизирует', // BR
+    'Выделено', // EH
+    'Омыт в', // GV
+    'Повелевает', // LP
+    'Выточен во', // MF
+]
 
-export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE];
+
+export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN];
