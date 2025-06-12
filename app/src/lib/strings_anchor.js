@@ -1,19 +1,19 @@
 // line anchor will vary based on language every time
 
 const ENGLISH = [
-    'Commissioned',
-    'Bathed',
-    'Carved',
-    'Commanded',
-    'Denoted'
+    'Denoted', // BR
+    'Commissioned', // EE
+    'Bathed', // GV
+    'Carved', // LP
+    'Commanded', // MF
 ]
 
 const FRENCH = [
-    'A commémoré',
-    'Imprégné',
-    'A fait',
-    'Gravé pour',
-    'A commandé'
+    'A commémoré', // BR
+    'A commandé', // EE
+    'Imprégné', // GV
+    'A fait', // LP
+    'Gravé pour', // MF
 ]
 
 
