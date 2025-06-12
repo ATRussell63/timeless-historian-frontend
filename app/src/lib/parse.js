@@ -1,5 +1,5 @@
 import { ALL_SEED_LINE_ANCHORS } from "./strings_anchor";
-import { ALL_GENERAL_NAMES, LATIN_GENERAL_NAMES, KOREAN_GENERAL_NAMES, map_general_name_to_latin } from "./strings_general";
+import { ALL_GENERAL_NAMES, LATIN_GENERAL_NAMES, KOREAN_GENERAL_NAMES, JAPANESE_GENERAL_NAMES, map_general_name_to_latin } from "./strings_general";
 import { ALL_RARITY_ANCHORS, ALL_JEWEL_NAMES, ENGLISH_JEWEL_NAMES, map_jewel_name_to_english } from "./strings_jewel_name";
 import { ALL_MF_ANCHORS, ENGLISH_MF_MODS, map_mf_mod_to_english } from "./strings_mf_mods";
 
@@ -8,7 +8,7 @@ export function parse_jewel_seed(jewel_text) {
         return ''
     }
 
-    const capture_seed = new RegExp(`(?:${ALL_SEED_LINE_ANCHORS.join('|')}).* (\\d+)`);
+    const capture_seed = new RegExp(`(?:${ALL_SEED_LINE_ANCHORS.join('|')})\\D*(\\d+)`);
     const m = jewel_text.match(capture_seed);
 
     if (!m || m.length === 0) {
@@ -31,7 +31,8 @@ export function parse_jewel_general(jewel_text) {
     
     if (!m || m.length === 0) {
         // korean requires a different regex since general is the anchor
-        const re = new RegExp(`(${KOREAN_GENERAL_NAMES.join('|')})`)
+        const SEED_LINE_LEADING_GENERAL_NAMES = [...KOREAN_GENERAL_NAMES, ...JAPANESE_GENERAL_NAMES];
+        const re = new RegExp(`(${SEED_LINE_LEADING_GENERAL_NAMES.join('|')})`);
         const match = jewel_text.match(re)
 
         if (match) {

@@ -151,11 +151,30 @@ const KOREAN_MF_MODS = [
     '헌신 10당 토템 피해 4% 증가'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR, THAI_MF_ANCHOR, KOREAN_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS, ...THAI_MF_MODS, ...KOREAN_MF_MODS];
+const JAPANESE_MF_ANCHOR = 'に征服される'
+const JAPANESE_MF_MODS = [
+    '信仰心10ごとに毎秒0.6のマナを自動回復する',
+    '信仰心10ごとに敵に対する非ダメージ性状態異常の効果が3%増加する',
+    '信仰心10ごとに範囲ダメージが4%増加する',
+    '信仰心10ごとに呪い以外のオーラの効果が1%増加する',
+    '信仰心10ごとにブランドのダメージが4%増加する',
+    '信仰心10ごとにチャネリングスキルのダメージが4%増加する',
+    '信仰心10ごとにプレイヤーに対する呪いの持続時間が4%減少する',
+    '信仰心10ごとにプレイヤーに対する元素系状態異常の持続時間が4%減少する',
+    '信仰心10ごとに元素ダメージが4%増加する',
+    '信仰心10ごとに全ての元素耐性 +2%',
+    '信仰心10ごとにミニオンの命中力 +60',
+    '信仰心10ごとにミニオンのアタックスピードおよびキャストスピードが1%増加する',
+    '信仰心10ごとにスキルのマナコストが1%減少する',
+    '信仰心10ごとに装備中の盾の防御力が3%増加する',
+    '信仰心10ごとにトーテムのダメージが4%増加する'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR, THAI_MF_ANCHOR, KOREAN_MF_ANCHOR, JAPANESE_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS, ...THAI_MF_MODS, ...KOREAN_MF_MODS, ...JAPANESE_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS, THAI_MF_MODS, KOREAN_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS, THAI_MF_MODS, KOREAN_MF_MODS, JAPANESE_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);

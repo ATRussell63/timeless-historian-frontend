@@ -71,10 +71,28 @@ export const KOREAN_GENERAL_NAMES = [
     '고위 템플러 막사리우스가'   
 ]
 
+export const JAPANESE_GENERAL_NAMES = [
+    'アセナスとのアカーラにより',
+    'バルバラとのアカーラにより',
+    'ナシマとのアカーラにより',
+    'カディーロの記念コインを',
+    'カスピロの記念コインを',
+    'ヴィクタリオの記念コインを',
+    'アフアナの名において捧げられた',
+    'ドリヤニの名において捧げられた',
+    'シバクアの名において捧げられた',
+    'アコヤ配下の',
+    'カオム配下の',
+    'ラキアタ配下の',
+    'ハイテンプラーアヴァリウスが改宗させた',
+    'ハイテンプラードミナスが改宗させた',
+    'ハイテンプラーマクサリウスが改宗させた'
+]
+
 export const ALL_GENERAL_NAMES = [...LATIN_GENERAL_NAMES, ...RUSSIAN_GENERAL_NAMES, ...THAI_GENERAL_NAMES]
 
 export function map_general_name_to_latin(general_name) {
-    const LANGUAGES = [RUSSIAN_GENERAL_NAMES, THAI_GENERAL_NAMES, KOREAN_GENERAL_NAMES]
+    const LANGUAGES = [RUSSIAN_GENERAL_NAMES, THAI_GENERAL_NAMES, KOREAN_GENERAL_NAMES, JAPANESE_GENERAL_NAMES]
 
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === general_name);
