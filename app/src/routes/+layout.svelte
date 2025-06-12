@@ -12,8 +12,36 @@
 	import { mode, ModeWatcher } from 'mode-watcher';
 	import { version } from '$app/environment';
 	import KofiIcon from '$lib/images/Ko-fi_icon.png';
+	import { getAccessCode } from '$lib/oauth';
+	import { getAccountName } from '$lib/api';
+	import { account_name } from '../store';
+
 	let { children, data } = $props();
 	data_summary.set(data)
+
+	// referred from ggg oauth authorization
+	const oauth_code = $page.url.searchParams.get('code');
+	const oauth_state = $page.url.searchParams.get('state');
+	if (oauth_code && oauth_state) {
+		if (oauth_state !== localStorage.getItem('oauth_state')) {
+			console.log(`ERROR: oauth_state received does not match stored value. Received state: ${oauth_state}`)
+		}
+		else {
+			console.log('Received oauth code')
+			getAccessCode(oauth_code)
+		}
+	}
+
+	// verify that token has not expired yet
+	if (localStorage.get('token_exp') > Date.now()) {
+		console.log('Access token is expired, clearing storage.')
+		localStorage.removeItem('token_exp')
+		localStorage.removeItem('access_token')
+		localStorage.removeItem('account_name')
+	} else if (!account_name) {
+		// token is not expired but we haven't populated the account data yet
+		account_name.set(getAccountName())
+	}
 
 </script>
 <ModeWatcher disableTransitions={false} />

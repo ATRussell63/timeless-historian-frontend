@@ -1796,6 +1796,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-sha256@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "js-sha256@npm:0.11.1"
+  checksum: 10c0/ef8e294b6f38f218e4834cb653471dd1a76808cea93dc66eaffcb04124116bc36d6cebc4e8866753e184ab4e57892b6ef21918e8ab0450179a7e093ea962d974
+  languageName: node
+  linkType: hard
+
 "jsbn@npm:1.1.0":
   version: 1.1.0
   resolution: "jsbn@npm:1.1.0"
@@ -2877,6 +2884,7 @@ __metadata:
     dotenv: "npm:^16.5.0"
     flowbite: "npm:^3.1.2"
     flowbite-svelte: "npm:^1.4.3"
+    js-sha256: "npm:^0.11.1"
     konva: "npm:^9.3.20"
     lucide-svelte: "npm:^0.511.0"
     mode-watcher: "npm:^1.0.7"

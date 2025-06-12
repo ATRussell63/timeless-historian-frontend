@@ -119,9 +119,5 @@
         font-family: Fontin-Regular;
         font-size: 24px;
     }
-
-    .homeSearchButton {
-        font-family: Fontin-Bold;
-        font-size: 30px;
-    }
+ 
 </style>
