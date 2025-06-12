@@ -17,8 +17,11 @@ const RUSSIAN_NAMES = ['Жестокая сдержанность', 'Изящн�
 const SPANISH_ANCHOR = 'Rareza: Único'
 const SPANISH_NAMES = ['Restricción brutal', 'Arrogancia elegante', 'Vanidad gloriosa', 'Orgullo letal', 'Fe combativa']
 
-export const ALL_RARITY_ANCHORS = [ENGLISH_ANCHOR, FRENCH_ANCHOR, GERMAN_ANCHOR, PORTUGESE_ANCHOR, RUSSIAN_ANCHOR, SPANISH_ANCHOR]
-export const ALL_JEWEL_NAMES = [...ENGLISH_JEWEL_NAMES, ...FRENCH_NAMES, ...GERMAN_NAMES, ...PORTUGESE_NAMES, ...RUSSIAN_NAMES, ...SPANISH_NAMES]
+const THAI_ANCHOR = 'ความหายาก: ยูนิค'
+const THAI_NAMES = ENGLISH_JEWEL_NAMES
+
+export const ALL_RARITY_ANCHORS = [ENGLISH_ANCHOR, FRENCH_ANCHOR, GERMAN_ANCHOR, PORTUGESE_ANCHOR, RUSSIAN_ANCHOR, SPANISH_ANCHOR, THAI_ANCHOR]
+export const ALL_JEWEL_NAMES = [...ENGLISH_JEWEL_NAMES, ...FRENCH_NAMES, ...GERMAN_NAMES, ...PORTUGESE_NAMES, ...RUSSIAN_NAMES, ...SPANISH_NAMES, ...THAI_NAMES]
 
 
 export function map_jewel_name_to_english(jewel_name) {

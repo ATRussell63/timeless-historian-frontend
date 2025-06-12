@@ -48,5 +48,13 @@ const SPANISH = [
     'Tallada', // MF
 ]
 
+const THAI = [
+    'รับใช้อังคะราแห่ง', // BR
+    'สั่งทำเหรียญเป็นอนุสรณ์แด่', // EH
+    'อาบเลือดเครื่องสังเวยในนามแห่ง', // GV
+    'นำทัพนักรบใต้บัญชาแห่ง', // LP
+    'สลักไว้เพื่อเชิดชูผู้ถูกแปรพักตร์โดยเทมพลาร์ระดับสูง', // MF
+]
 
-export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN, ...SPANISH];
+
+export const ALL_SEED_LINE_ANCHORS = [...ENGLISH, ...FRENCH, ...GERMAN, ...PORTUGESE, ...RUSSIAN, ...SPANISH, ...THAI];

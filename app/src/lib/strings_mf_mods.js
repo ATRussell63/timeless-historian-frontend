@@ -113,11 +113,30 @@ const SPANISH_MF_MODS = [
     'Daño de tótems aumentado un 4% por cada 10 de Devoción'
 ]
 
-export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR];
-export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS];
+const THAI_MF_ANCHOR = 'เหล่าเทมพลาร์'
+const THAI_MF_MODS = [
+    'ฟื้นฟูมานา 0.6 ต่อวินาที ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มผลของ สถานะเจ็บป่วยไร้ความเสียหาย ต่อศัตรู 3% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มความเสียหาย พื้นที่ 4% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มผลของ ออร่าที่ไม่ใช่คำสาป 1% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มความเสียหายของ ตราเวท 4% ต่อ ความภักดี 10 หน่วย',
+    'สกิลแชนเนล สร้างความเสียหาย เพิ่มขึ้น 4% ต่อ ความภักดี 10 หน่วย',
+    'ลดระยะเวลาของคำสาป ต่อตัวคุณ 4% ต่อ ความภักดี 10 หน่วย',
+    'ลดระยะเวลาของ สถานะเจ็บป่วยธาตุ ต่อตัวคุณ 4% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มความเสียหาย ธาตุ 4% ต่อ ความภักดี 10 หน่วย',
+    'ค่าต้านทาน ทุกธาตุ +2% ต่อ ความภักดี 10 หน่วย',
+    'มิเนียน มีอัตราความแม่นยำ +60 ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มความเร็วในการโจมตีและร่ายของ มิเนียน 1% ต่อ ความภักดี 10 หน่วย',
+    'ลดค่าใช้งานมานาของ สกิล 1% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มค่าป้องกันจาก โล่ที่สวมใส่ 3% ต่อ ความภักดี 10 หน่วย',
+    'เพิ่มความเสียหายของ โทเทม 4% ต่อ ความภักดี 10 หน่วย'
+]
+
+export const ALL_MF_ANCHORS = [ENGLISH_MF_ANCHOR, FRENCH_MF_ANCHOR, GERMAN_MF_ANCHOR, PORTUGESE_MF_ANCHOR, RUSSIAN_MF_ANCHOR, SPANISH_MF_ANCHOR, THAI_MF_ANCHOR];
+export const ALL_MF_MODS = [...ENGLISH_MF_MODS, ...FRENCH_MF_MODS, ...GERMAN_MF_MODS, ...PORTUGESE_MF_MODS, ...RUSSIAN_MF_MODS, ...SPANISH_MF_MODS, ...THAI_MF_MODS];
 
 export function map_mf_mod_to_english(mod) {
-    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS]
+    const LANGUAGES = [FRENCH_MF_MODS, GERMAN_MF_MODS, PORTUGESE_MF_MODS, RUSSIAN_MF_MODS, SPANISH_MF_MODS, THAI_MF_MODS]
     
     for (let i = 0; i < LANGUAGES.length; i++) {
         const index = LANGUAGES[i].findIndex((e) => e === mod);
