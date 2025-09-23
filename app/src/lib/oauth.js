@@ -1,32 +1,33 @@
-import { sha256 } from 'js-sha256';
 
 
-function base64UrlEncode(str) {
-  return btoa(str)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+function generateCodeVerifier() {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    return base64UrlEncode(array);
 }
 
-function randomBytes() {
-    const randomArray = new Uint8Array(32);
-    const randomString = window.crypto.getRandomValues(randomArray);
-    let secret = ''
-    randomString.forEach((b) => b = secret += String.fromCharCode(b));
-    return secret
+function base64UrlEncode(buffer) {
+    return btoa(String.fromCharCode(...buffer))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
 }
 
-export function redirectToAuthorize() {
-    let code = randomBytes();
-    let code_verifier = base64UrlEncode(code);
-    let code_challenge = base64UrlEncode(sha256(code_verifier));
+export async function redirectToAuthorize() {
+    let code_verifier = generateCodeVerifier()
+    // let code_challenge = await generateCodeChallenge(code_verifier)
 
-    let state = base64UrlEncode(randomBytes());
+    const encoder = new TextEncoder();
+    const data = encoder.encode(code_verifier);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    let code_challenge = base64UrlEncode(new Uint8Array(digest));
+
+    let state = generateCodeVerifier();
 
     let redirectURL = 'https://www.pathofexile.com/oauth/authorize'
     redirectURL += '?client_id=timelesshistorian'
     redirectURL += '&response_type=code'
-    redirectURL += '&scope=' + base64UrlEncode('account:profile account:leagues account:stashes')
+    redirectURL += '&scope=' + encodeURIComponent('account:profile account:leagues account:stashes account:characters')
     redirectURL += '&state=' + state
     redirectURL += '&redirect_uri=https://www.timelesshistorian.xyz'
     redirectURL += '&code_challenge=' + code_challenge
@@ -34,7 +35,8 @@ export function redirectToAuthorize() {
 
     localStorage.setItem('code_verifier', code_verifier);
     localStorage.setItem('oauth_state', state);
-
+    console.log('CODE VERIFIER')
+    console.log(code_verifier)
     window.location.href = redirectURL;
 }
 
@@ -48,7 +50,7 @@ export async function getAccessCode(oauth_code) {
         'grant_type': 'authorization_code',
         'code': oauth_code,
         'redirect_uri': 'https://www.timelesshistorian.xyz',
-        'scope': 'account:profile account:leagues account:stashes',
+        'scope': encodeURIComponent('account:profile account:leagues account:stashes'),
         'code_verifier': code_verifier
     })
 

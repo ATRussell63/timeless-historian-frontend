@@ -218,7 +218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.3.1, @floating-ui/core@npm:^1.7.0":
+"@floating-ui/core@npm:^1.7.0":
   version: 1.7.0
   resolution: "@floating-ui/core@npm:1.7.0"
   dependencies:
@@ -227,13 +227,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.4.5, @floating-ui/dom@npm:^1.7.0":
+"@floating-ui/core@npm:^1.7.1, @floating-ui/core@npm:^1.7.3":
+  version: 1.7.3
+  resolution: "@floating-ui/core@npm:1.7.3"
+  dependencies:
+    "@floating-ui/utils": "npm:^0.2.10"
+  checksum: 10c0/edfc23800122d81df0df0fb780b7328ae6c5f00efbb55bd48ea340f4af8c5b3b121ceb4bb81220966ab0f87b443204d37105abdd93d94846468be3243984144c
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.7.0":
   version: 1.7.0
   resolution: "@floating-ui/dom@npm:1.7.0"
   dependencies:
     "@floating-ui/core": "npm:^1.7.0"
     "@floating-ui/utils": "npm:^0.2.9"
   checksum: 10c0/49a7f0fbef82ba2c2f0bde7bb4812b276ae431b59e6a81427283a55cfb36c0af9cc459cbeb0bb1a5cc3efca1a332f584e123e7b1a8f0a9c94a21989b09b8c060
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.7.1":
+  version: 1.7.4
+  resolution: "@floating-ui/dom@npm:1.7.4"
+  dependencies:
+    "@floating-ui/core": "npm:^1.7.3"
+    "@floating-ui/utils": "npm:^0.2.10"
+  checksum: 10c0/da6166c25f9b0729caa9f498685a73a0e28251613b35d27db8de8014bc9d045158a23c092b405321a3d67c2064909b6e2a7e6c1c9cc0f62967dca5779f5aef30
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.2.10":
+  version: 0.2.10
+  resolution: "@floating-ui/utils@npm:0.2.10"
+  checksum: 10c0/e9bc2a1730ede1ee25843937e911ab6e846a733a4488623cd353f94721b05ec2c9ec6437613a2ac9379a94c2fd40c797a2ba6fa1df2716f5ce4aa6ddb1cf9ea4
   languageName: node
   linkType: hard
 
@@ -251,12 +277,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@internationalized/date@npm:^3.5.0, @internationalized/date@npm:^3.5.1":
-  version: 3.8.1
-  resolution: "@internationalized/date@npm:3.8.1"
+"@internationalized/date@npm:^3.8.1":
+  version: 3.9.0
+  resolution: "@internationalized/date@npm:3.9.0"
   dependencies:
     "@swc/helpers": "npm:^0.5.0"
-  checksum: 10c0/22374a28e803c1d8399954f9e7b5f4b0de384871f4b09f865d10e0fe0a16d1df9bea663e3fe903b9c63e419ff528eef4f3eb23557f8b86d10fc7fa4fe0823de2
+  checksum: 10c0/8f2bf54c407aa95ab9922759c27f19bd9185bc6c4bde936fb5cc7a99bf764de8483102a61d53afa0598eefa11711617d3c05a65e8a5cb8bfac10c2c0800e488a
   languageName: node
   linkType: hard
 
@@ -325,19 +351,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@melt-ui/svelte@npm:0.76.2":
-  version: 0.76.2
-  resolution: "@melt-ui/svelte@npm:0.76.2"
-  dependencies:
-    "@floating-ui/core": "npm:^1.3.1"
-    "@floating-ui/dom": "npm:^1.4.5"
-    "@internationalized/date": "npm:^3.5.0"
-    dequal: "npm:^2.0.3"
-    focus-trap: "npm:^7.5.2"
-    nanoid: "npm:^5.0.4"
+"@lucide/svelte@npm:^0.515.0":
+  version: 0.515.0
+  resolution: "@lucide/svelte@npm:0.515.0"
   peerDependencies:
-    svelte: ">=3 <5"
-  checksum: 10c0/6d7115bdee8175fc6cd80d85de0f99e5cc1f6ff74c1f2badde3c2ac35e06784f0859a16bbb37a78a631518e246c20fc4a3049bc8b9025638a321fc4ad23363d2
+    svelte: ^5
+  checksum: 10c0/189e1143a61e6e6b2bfbb36f0c876d827fa21b0fe38c424e3bb3d12076ed3c5a909bcfe591eb67d0f2146d65de4a69f8947cb9dfa6428a2a1a2760405ba51c1c
   languageName: node
   linkType: hard
 
@@ -1078,16 +1097,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bits-ui@npm:0.22.0":
-  version: 0.22.0
-  resolution: "bits-ui@npm:0.22.0"
+"bits-ui@npm:^2.8.6":
+  version: 2.10.0
+  resolution: "bits-ui@npm:2.10.0"
   dependencies:
-    "@internationalized/date": "npm:^3.5.1"
-    "@melt-ui/svelte": "npm:0.76.2"
-    nanoid: "npm:^5.0.5"
+    "@floating-ui/core": "npm:^1.7.1"
+    "@floating-ui/dom": "npm:^1.7.1"
+    esm-env: "npm:^1.1.2"
+    runed: "npm:^0.31.1"
+    svelte-toolbelt: "npm:^0.9.3"
+    tabbable: "npm:^6.2.0"
   peerDependencies:
-    svelte: ^4.0.0 || ^5.0.0
-  checksum: 10c0/c1ca9cd0ecb586e6451cb07a4a9dd43616daa268a820b3e73094aa45ef90e87b554bec0e69ac60920b7ed5cc2c66c07a6c6c40b1f634945a0f485ce2eb414487
+    "@internationalized/date": ^3.8.1
+    svelte: ^5.33.0
+  checksum: 10c0/a1ac831e9c8d6d53c75389a6c7330e21098bcec0bb3e1a259882dd75c420824635c2a4749fd8de1d9b9888eb51695ebe0e56a3d4ce5d13940da42ec501263122
   languageName: node
   linkType: hard
 
@@ -1246,13 +1269,6 @@ __metadata:
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
-  languageName: node
-  linkType: hard
-
-"dequal@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "dequal@npm:2.0.3"
-  checksum: 10c0/f98860cdf58b64991ae10205137c0e97d384c3a4edc7f807603887b7c4b850af1224a33d88012009f150861cbee4fa2d322c4cc04b9313bee312e47f6ecaa888
   languageName: node
   linkType: hard
 
@@ -1426,7 +1442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esm-env@npm:^1.0.0, esm-env@npm:^1.2.1, esm-env@npm:^1.2.2":
+"esm-env@npm:^1.0.0, esm-env@npm:^1.1.2, esm-env@npm:^1.2.1, esm-env@npm:^1.2.2":
   version: 1.2.2
   resolution: "esm-env@npm:1.2.2"
   checksum: 10c0/3d25c973f2fd69c25ffff29c964399cea573fe10795ecc1d26f6f957ce0483d3254e1cceddb34bf3296a0d7b0f1d53a28992f064ba509dfe6366751e752c4166
@@ -1535,15 +1551,6 @@ __metadata:
     mini-svg-data-uri: "npm:^1.4.3"
     postcss: "npm:^8.5.1"
   checksum: 10c0/5e617695162e8800f874281fe9ac205cbadc1c1413eccc760efb19c51bc6cfb337e3af70bfda6ed49b586b24e6af01a99b3a87c633688a77924516bc4d08795b
-  languageName: node
-  linkType: hard
-
-"focus-trap@npm:^7.5.2":
-  version: 7.6.4
-  resolution: "focus-trap@npm:7.6.4"
-  dependencies:
-    tabbable: "npm:^6.2.0"
-  checksum: 10c0/ed810d47fd904a5e0269e822d98e634c6cbdd7222046c712ef299bdd26a422db754e3cec04e6517065b12be4b47f65c21f6244e0c07a308b1060985463d518cb
   languageName: node
   linkType: hard
 
@@ -2151,15 +2158,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^5.0.4, nanoid@npm:^5.0.5":
-  version: 5.1.5
-  resolution: "nanoid@npm:5.1.5"
-  bin:
-    nanoid: bin/nanoid.js
-  checksum: 10c0/e6004f1ad6c7123eeb037062c4441d44982037dc043aabb162457ef6986e99964ba98c63c975f96c547403beb0bf95bc537bd7bf9a09baf381656acdc2975c3c
-  languageName: node
-  linkType: hard
-
 "napi-build-utils@npm:^2.0.0":
   version: 2.0.0
   resolution: "napi-build-utils@npm:2.0.0"
@@ -2521,6 +2519,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"runed@npm:^0.29.0":
+  version: 0.29.2
+  resolution: "runed@npm:0.29.2"
+  dependencies:
+    esm-env: "npm:^1.0.0"
+  peerDependencies:
+    svelte: ^5.7.0
+  checksum: 10c0/6a7b77bca1a3ee37f683bc7b10f28b95942ca8a5637cbb2003226a6e4d5ac4d6e9850a90bd74454111ba31bb8d2ac0c183c38122830cda13403331e45a61ef33
+  languageName: node
+  linkType: hard
+
+"runed@npm:^0.31.1":
+  version: 0.31.1
+  resolution: "runed@npm:0.31.1"
+  dependencies:
+    esm-env: "npm:^1.0.0"
+  peerDependencies:
+    svelte: ^5.7.0
+  checksum: 10c0/b954482c29816db5e4793a7e3be869a141bd4fa76d0dfc47503306460f312188cad4f2663b3edfd89b449a4a5c546ab6673bde199272bdb014d47abbd2b4c7dd
+  languageName: node
+  linkType: hard
+
 "sade@npm:^1.8.1":
   version: 1.8.1
   resolution: "sade@npm:1.8.1"
@@ -2759,6 +2779,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"svelte-toolbelt@npm:^0.9.3":
+  version: 0.9.3
+  resolution: "svelte-toolbelt@npm:0.9.3"
+  dependencies:
+    clsx: "npm:^2.1.1"
+    runed: "npm:^0.29.0"
+    style-to-object: "npm:^1.0.8"
+  peerDependencies:
+    svelte: ^5.30.2
+  checksum: 10c0/040bb08b388e924d3465a23292eeadae6cfa1451fc63fd12dac13a699a71e58bfe5a0b98c5a99c29d1619b1b33f4844e7b0df24d0ff340218662c0e57dba1af9
+  languageName: node
+  linkType: hard
+
 "svelte@npm:^5.25.0":
   version: 5.33.2
   resolution: "svelte@npm:5.33.2"
@@ -2871,6 +2904,8 @@ __metadata:
   resolution: "timeless@workspace:."
   dependencies:
     "@fontsource/fira-mono": "npm:^5.0.0"
+    "@internationalized/date": "npm:^3.8.1"
+    "@lucide/svelte": "npm:^0.515.0"
     "@neoconfetti/svelte": "npm:^2.0.0"
     "@sveltejs/adapter-auto": "npm:^6.0.0"
     "@sveltejs/adapter-node": "npm:^5.2.12"
@@ -2878,7 +2913,7 @@ __metadata:
     "@sveltejs/vite-plugin-svelte": "npm:^5.0.0"
     "@tailwindcss/vite": "npm:^4.0.0"
     "@zerodevx/svelte-toast": "npm:^0.9.6"
-    bits-ui: "npm:0.22.0"
+    bits-ui: "npm:^2.8.6"
     canvas: "npm:^3.1.0"
     clsx: "npm:^2.1.1"
     dotenv: "npm:^16.5.0"

@@ -13,7 +13,7 @@
     <Card.Content>
         
         <div class='flex flex-row justify-center mb-4'>
-        <Button class='w-[400px] h-[80px]' on:click={redirectToAuthorize}><p class='homeSearchButton'>Login</p></Button>
+        <Button class='w-[400px] h-[80px]' onclick={redirectToAuthorize}><p class='homeSearchButton'>Login</p></Button>
         </div>
         <p class='text-center'>Log in to grant Timeless Historian access to view your stash tabs.</p>
     </Card.Content>

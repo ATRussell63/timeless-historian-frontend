@@ -465,19 +465,19 @@
                 <Button
                     class="tradeSearch"
                     disabled={!selectedTradeLeague}
-                    on:click={() => openTradeLink("seed")}>Any General</Button
+                    onclick={() => openTradeLink("seed")}>Any General</Button
                 >
                 <Button
                     class="tradeSearch"
                     disabled={!selectedTradeLeague}
-                    on:click={() => openTradeLink("general")}
+                    onclick={() => openTradeLink("general")}
                     >Match General</Button
                 >
                 {#if body.jewel_type === "Militant Faith"}
                     <Button
                         class="tradeSearch"
                         disabled={!selectedTradeLeague}
-                        on:click={() => openTradeLink("exact")}
+                        onclick={() => openTradeLink("exact")}
                         >General + Devo Mods</Button
                     >
                 {/if}

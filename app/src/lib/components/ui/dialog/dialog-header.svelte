@@ -1,5 +1,6 @@
 <script>
 	import { cn } from "$lib/utils.js";
+
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -10,8 +11,8 @@
 
 <div
 	bind:this={ref}
-	data-slot="select-label"
-	class={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
+	data-slot="dialog-header"
+	class={cn("flex flex-col gap-2 text-center sm:text-left", className)}
 	{...restProps}
 >
 	{@render children?.()}

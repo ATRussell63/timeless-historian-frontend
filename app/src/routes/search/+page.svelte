@@ -225,7 +225,7 @@
 
 <div class='flex flex-row mt-10 gap-10'>
 <Button class='basis-1/3 h-12 transparentBackground' variant='outline'
-    on:click={() => {
+    onclick={() => {
         text_input = ''
     }}
     >
@@ -234,7 +234,7 @@
 <Button
     disabled={!allFieldsGood()}
     class='flex-1 h-12'
-    on:click={search}>
+    onclick={search}>
     <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
 </Button>
 </div>
@@ -243,7 +243,7 @@
         <Card.Content class='py-0 m-0'>
             <div class='flex flex-row items-center'>
             <p style='font-size: 14px;'>Don't have a jewel or just want to see some data?</p>
-            <Button variant='link' class='p-0 ml-2' style='font-size: 14px;' on:click={sample}><b>Click here for a random sample</b></Button>
+            <Button variant='link' class='p-0 ml-2' style='font-size: 14px;' onclick={sample}><b>Click here for a random sample</b></Button>
             </div>
         </Card.Content>
     </Card.Root>

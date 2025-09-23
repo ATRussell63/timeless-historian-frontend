@@ -10,8 +10,8 @@
 
 <div
 	bind:this={ref}
-	data-slot="select-label"
-	class={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
+	data-slot="dialog-footer"
+	class={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
 	{...restProps}
 >
 	{@render children?.()}

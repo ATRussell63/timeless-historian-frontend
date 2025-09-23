@@ -13,35 +13,57 @@
 	import { version } from '$app/environment';
 	import KofiIcon from '$lib/images/Ko-fi_icon.png';
 	import { getAccessCode } from '$lib/oauth';
-	import { getAccountName } from '$lib/api';
-	import { account_name } from '../store';
+	import { getAccountName, getAccountLeagues, getLeagueStashList } from '$lib/api';
+	import { account_name, account_leagues } from '../store';
 
 	let { children, data } = $props();
 	data_summary.set(data)
 
-	// referred from ggg oauth authorization
-	const oauth_code = $page.url.searchParams.get('code');
-	const oauth_state = $page.url.searchParams.get('state');
-	if (oauth_code && oauth_state) {
-		if (oauth_state !== localStorage.getItem('oauth_state')) {
-			console.log(`ERROR: oauth_state received does not match stored value. Received state: ${oauth_state}`)
+	onMount(async () => {
+		// referred from ggg oauth authorization
+		const oauth_code = $page.url.searchParams.get('code');
+		const oauth_state = $page.url.searchParams.get('state');
+		if (oauth_code && oauth_state) {
+			if (oauth_state !== localStorage.getItem('oauth_state')) {
+				console.log(`ERROR: oauth_state received does not match stored value. Received state: ${oauth_state}`)
+			}
+			else {
+				console.log('Received oauth code')
+				console.log(oauth_code)
+				getAccessCode(oauth_code)
+			}
 		}
-		else {
-			console.log('Received oauth code')
-			getAccessCode(oauth_code)
-		}
-	}
 
-	// verify that token has not expired yet
-	if (localStorage.get('token_exp') > Date.now()) {
-		console.log('Access token is expired, clearing storage.')
-		localStorage.removeItem('token_exp')
-		localStorage.removeItem('access_token')
-		localStorage.removeItem('account_name')
-	} else if (!account_name) {
-		// token is not expired but we haven't populated the account data yet
-		account_name.set(getAccountName())
-	}
+		localStorage.setItem('access_token', 'de482556bef13e61bb3fbf1820eae0492b37d160');
+		localStorage.setItem('token_exp', Date.now() + 36000)
+
+		// verify that token has not expired yet
+		if (localStorage.getItem('token_exp') < Date.now()) {
+			console.log('Access token is expired, clearing storage.')
+			localStorage.removeItem('token_exp')
+			localStorage.removeItem('access_token')
+			localStorage.removeItem('account_name')
+		} else if ($account_name === null) {
+			// token is not expired but we haven't populated the account data yet
+			let acc_name = await getAccountName()
+			console.log('Account name received is ' + acc_name)
+			account_name.set(acc_name)
+
+			// TODO - get all stashes
+			// populate leagues so there's no delay on bulk page
+			let acc_leagues = await getAccountLeagues()
+			console.log('Account leagues: ')
+			console.log(acc_leagues)
+			account_leagues.set(acc_leagues)
+			localStorage.setItem('account_leagues', acc_leagues)
+
+			// let stashes = await getLeagueStashList(acc_leagues)
+			// stash_data.set(stashes)
+			// localStorage.setItem('stash_data', stashes)
+			// console.log('Account Stashes:')
+			// console.log(stashes)
+		}
+	})
 
 </script>
 <ModeWatcher disableTransitions={false} />
