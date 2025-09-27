@@ -34,7 +34,7 @@
 			}
 		}
 
-		localStorage.setItem('access_token', 'de482556bef13e61bb3fbf1820eae0492b37d160');
+		localStorage.setItem('access_token', '3528e2c885c44a76c4d96ca1ac8bd8922a43bb83');
 		localStorage.setItem('token_exp', Date.now() + 36000)
 
 		// verify that token has not expired yet
@@ -43,19 +43,15 @@
 			localStorage.removeItem('token_exp')
 			localStorage.removeItem('access_token')
 			localStorage.removeItem('account_name')
-		} else if ($account_name === null) {
+		} else if (localStorage.getItem('account_name') === null) {
 			// token is not expired but we haven't populated the account data yet
 			let acc_name = await getAccountName()
 			console.log('Account name received is ' + acc_name)
-			account_name.set(acc_name)
+			localStorage.setItem('account_name', acc_name)
 
 			// TODO - get all stashes
 			// populate leagues so there's no delay on bulk page
-			let acc_leagues = await getAccountLeagues()
-			console.log('Account leagues: ')
-			console.log(acc_leagues)
-			account_leagues.set(acc_leagues)
-			localStorage.setItem('account_leagues', acc_leagues)
+			
 
 			// let stashes = await getLeagueStashList(acc_leagues)
 			// stash_data.set(stashes)
@@ -63,6 +59,14 @@
 			// console.log('Account Stashes:')
 			// console.log(stashes)
 		}
+
+		account_name.set(localStorage.getItem('account_name'))
+
+		let acc_leagues = await getAccountLeagues()
+		console.log('Account leagues: ')
+		console.log(acc_leagues)
+		account_leagues.set(acc_leagues)
+		localStorage.setItem('account_leagues', acc_leagues)
 	})
 
 </script>

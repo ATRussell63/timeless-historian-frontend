@@ -1,0 +1,458 @@
+<script>
+    import { onDestroy, onMount } from 'svelte';
+    import Konva from 'konva';
+    import MarakethSymbol from '$lib/images/MarakethSymbol.svg'
+    import EternalSymbol from '$lib/images/EternalSymbol.svg'
+    import KaruiSymbol from '$lib/images/KaruiSymbol.svg'
+    import VaalSymbol from '$lib/images/VaalSymbol.svg'
+    import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
+    import { scale } from 'svelte/transition';
+
+    let { jewelData, sideLen, cellsPerSide, mode } = $props();
+
+    Konva.showWarnings = false
+    
+    let stage = null;
+
+    function drawStash() {
+        const cellSize = sideLen / cellsPerSide;
+        const numHitsFontSize = cellSize - 20;
+        const backgroundColor = mode.current === 'dark' ? '#333333' : '#999999'
+        const gridColor = mode.current === 'dark' ? '#999999' : '#CCCCCC'
+        const gridStrokeW = 2
+        const mouseOverZoomScale = 1.3
+
+        // TODO gonna need to make this reactive
+        const ttWidth = 300
+        let ttHeight = 400
+
+        stage = new Konva.Stage({
+            container: 'container',
+            width: sideLen,
+            height: sideLen
+        });
+
+        const LEGION_COLORS = new Map([
+            ['Brutal Restraint', '#E8A92B'],
+            ['Militant Faith' , '#0BA94A'],
+            ['Glorious Vanity' , '#E02828'],
+            ['Elegant Hubris' , '#E6E7E8'],
+            ['Lethal Pride' , '#E55C24']
+        ])
+
+        const LEGION_COLORS_DESAT = new Map([
+            ['Brutal Restraint', '#CC9933'],
+            ['Militant Faith' , '#006633'],
+            ['Glorious Vanity' , '#993333'],
+            ['Elegant Hubris' , '#999999'],
+            ['Lethal Pride' , '#996633']
+        ])
+
+        // TODO test with the other images
+        const LEGION_IMAGE_OFFSETS = new Map([
+            ['Brutal Restraint', {x: -ttHeight * 0.15, y: 0}],
+            ['Militant Faith' , {x: 0, y: 0}],
+            ['Glorious Vanity' , {x: 0, y: 0}],
+            ['Elegant Hubris' , {x: 0, y: 0}],
+            ['Lethal Pride' , {x: 0, y: 0}]
+        ])
+
+        const LEGION_IMAGES = new Map([
+            ['Brutal Restraint', MarakethSymbol],
+            ['Militant Faith' , TemplarSymbol],
+            ['Glorious Vanity' , VaalSymbol],
+            ['Elegant Hubris' , EternalSymbol],
+            ['Lethal Pride' , KaruiSymbol]
+        ])
+
+        const MF_MOD_ABBREVIATIONS = new Map([
+            ['Regenerate 0.6 Mana per Second per 10 Devotion', 'Mana Regeneration'],
+            ['3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion', 'Non-Damaging Ailment Effect'],
+            ['4% increased Area Damage per 10 Devotion', 'Area Damage'],
+            ['1% increased effect of Non-Curse Auras per 10 Devotion', 'Non-Curse Aura Effect'],
+            ['4% increased Brand Damage per 10 Devotion', 'Brand Damage'],
+            ['Channelling Skills deal 4% increased Damage per 10 Devotion', 'Channelling Skill Damage'],
+            ['4% reduced Duration of Curses on you per 10 Devotion', 'Curse Duration'],
+            ['4% reduced Elemental Ailment Duration on you per 10 Devotion', 'Elemental Ailment Duration'],
+            ['4% increased Elemental Damage per 10 Devotion', 'Elemental Damage'],
+            ['+2% to all Elemental Resistances per 10 Devotion', 'Elemental Resistances'],
+            ['Minions have +60 to Accuracy Rating per 10 Devotion', 'Minion Accuracy Rating'],
+            ['1% increased Minion Attack and Cast Speed per 10 Devotion', 'Minion Attack and Cast Speed'],
+            ['1% reduced Mana Cost of Skills per 10 Devotion', 'Reduced Mana Cost of Skills'],
+            ['3% increased Defences from Equipped Shield per 10 Devotion', 'Increased Defences from Shield'],
+            ['4% increased Totem Damage per 10 Devotion', 'Totem Damage']
+        ])
+        
+        const baseLayer = new Konva.Layer();
+        const gridLines = new Konva.Layer();
+        const tileLayer = new Konva.Layer();
+        const zoomTileLayer = new Konva.Layer();
+        const ttLayer = new Konva.Layer();
+        const mouseoverLayer = new Konva.Layer();
+
+        const allTilesGroup = new Konva.Group();
+        const highlightTileGroup = new Konva.Group();
+
+        // draw background color
+        const backdrop = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: sideLen,
+            height: sideLen,
+            fill: backgroundColor,
+            stroke: gridColor,
+            strokeWidth: gridStrokeW * 2,
+            opacity: 0.8
+        })
+
+        baseLayer.add(backdrop);
+        
+
+        // draw the grid lines
+        for (let i = 0; i < cellsPerSide; i++) {
+            const lineLat = new Konva.Line({
+                stroke: gridColor,
+                strokeWidth: gridStrokeW,
+                points: [0, i * cellSize, sideLen, i * cellSize]
+            })
+
+            const lineLong = new Konva.Line({
+                stroke: gridColor,
+                strokeWidth: gridStrokeW,
+                points: [i * cellSize, 0, i * cellSize, sideLen]
+            })
+
+            gridLines.add(lineLat)
+            gridLines.add(lineLong)
+        }
+
+        // draw the jewels
+        $jewelData.forEach((r) => {
+            // note to self, need to make the backend respond with the type of each jewel later
+            const tile = new Konva.Rect({
+                x: r.x * cellSize + cellSize / 2,
+                y: r.y * cellSize + cellSize / 2,
+                width: cellSize,
+                height: cellSize,
+                stroke: gridColor,
+                strokeWidth: gridStrokeW,
+                fill: LEGION_COLORS.get(r.jewel_type),
+                zIndex: 0
+            })
+
+            // marker for how many seed hits this jewel had
+            const numHits = new Konva.Text({
+                x: r.x * cellSize + (cellSize / 2),
+                y: r.y * cellSize + (cellSize / 2),
+                text: r.seed_match,
+                fill: r.seed_match > 0 ? 'black' : '#333333',
+                fontSize: numHitsFontSize,
+                fontFamily: 'Fontin',
+                align: 'center',
+                zIndex: 1
+            })
+
+            const tileTarget = new Konva.Rect({
+                x: r.x * cellSize + cellSize / 2,
+                y: r.y * cellSize + cellSize / 2,
+                width: cellSize,
+                height: cellSize,
+                fill: LEGION_COLORS.get(r.jewel_type),
+                opacity: 0,
+                zIndex: 2
+            })
+
+            // go with smaller font size if the # of hits is large
+            // this works for 3 digits, good enough for 50 years of poe
+            if (numHits.width() > (tile.width() - 12)) {
+                numHits.fontSize(numHitsFontSize * 0.75);
+            }
+
+            // 'desaturate' the tile if hits is 0
+            if (r.seed_match === 0) {
+                tile.opacity(0.5);
+            } else {
+                // if there were hits, make the tile into a button and add a tooltip
+
+                // tooltip
+                const ttGroup = new Konva.Group({
+                    clip: {
+                        x: 0,
+                        y: 0,
+                        width: ttWidth,
+                        height: ttHeight
+                    }
+                })
+
+                // const ttImage = new Image();
+                // let img = null
+                // ttImage.onload = () => {
+                //     img = new Konva.Image({
+                //         // x: LEGION_IMAGE_OFFSETS.get(r.jewel_type).x,
+                //         // y: LEGION_IMAGE_OFFSETS.get(r.jewel_type).y,
+                //         x: 0,
+                //         y: 0,
+                //         image: ttImage,
+                //         width: ttWidth * 1.5,
+                //         height: ttWidth * 1.5,
+                //         opacity: 0.7,
+                //         zIndex: 1
+                //     })
+
+                //     // ttGroup.add(img)
+                //     // console.log('img loaded')
+                // }
+                // ttImage.src = LEGION_IMAGES.get(r.jewel_type)
+
+                const ttBackground = new Konva.Rect({
+                    x: 0,
+                    y: 0,
+                    width: ttWidth,
+                    height: ttHeight,
+                    fill: 'black',
+                    opacity: 1,
+                    stroke: LEGION_COLORS_DESAT.get(r.jewel_type),
+                    strokeWidth: 4,
+                    zIndex: 0
+                })
+
+                function drawTooltip() {
+                    try {
+                        ttLayer.destroyChildren()
+
+                        const mousePos = stage.getPointerPosition();
+                        const base_offset_x = 5;
+                        const base_offset_y = 5;
+                        let offset_x = base_offset_x;
+                        let offset_y = base_offset_y;
+                        let push_margin = 20
+                        
+                        if (mousePos.x + ttBackground.width() + offset_x + push_margin > stage.width()) {
+                            offset_x = -(ttBackground.width() + base_offset_x)
+                        }
+
+                        if (mousePos.y + ttBackground.height() + offset_y + push_margin > stage.height()) {
+                            offset_y = stage.height() - (mousePos.y + ttBackground.height() + push_margin)
+                        }
+
+                        ttGroup.position({
+                            x: mousePos.x + offset_x,
+                            y: mousePos.y + offset_y,
+                        });
+
+                        // text content
+
+                        const margin_top = 8
+                        // jewel name
+                        const ttJewelName = new Konva.Text({
+                            x: 0,
+                            y: margin_top,
+                            text: r.jewel_type,
+                            fill: LEGION_COLORS.get(r.jewel_type),
+                            fontFamily: 'Fontin-SmallCaps',
+                            fontSize: 24,
+                            align: 'center',
+                        })
+                        ttJewelName.offsetX(ttJewelName.width() / 2)
+                        ttJewelName.x(ttBackground.width() / 2);
+
+                        let y_accum = ttJewelName.height() + margin_top * 2
+
+                        // general and seed
+                        const ttGenSeed = new Konva.Text({
+                            x: 0,
+                            y: y_accum,
+                            text: `${r.general} #${r.seed}`,
+                            fill: LEGION_COLORS.get(r.jewel_type),
+                            fontFamily: 'Fontin-Regular',
+                            fontSize: 18,
+                            align: 'center',
+                        })
+                        ttGenSeed.offsetX(ttGenSeed.width() / 2)
+                        ttGenSeed.x(ttBackground.width() / 2);
+
+                        y_accum += ttGenSeed.height() + margin_top
+
+                        // any mf mods 
+                        // if (true) {
+                        let ttMfMods = null
+                        if (r.jewel_type === 'Militant Faith') {
+                            ttMfMods = new Konva.Text({
+                                x: 0,
+                                y: y_accum,
+                                text: `${MF_MOD_ABBREVIATIONS.get(r.mf_mods[0])}\n${MF_MOD_ABBREVIATIONS.get(r.mf_mods[1])}`,
+                                // text: 'borgus',
+                                fill: LEGION_COLORS.get(r.jewel_type),
+                                fontFamily: 'Fontin-Regular',
+                                fontSize: 18,
+                                // padding: 15,
+                                lineHeight: 1.5,
+                                align: 'center'
+                            })
+                            ttMfMods.offsetX(ttMfMods.width() / 2)
+                            ttMfMods.x(ttBackground.width() / 2)
+                            // ttGroup.add(ttMfMods)
+                            y_accum += ttMfMods.height() + margin_top
+                        }
+
+                        const sep_height = y_accum
+                        y_accum += margin_top
+                        
+
+                        // seed match
+                        // general match
+                        // exact matches (mf only)
+
+                        let matchText = `Matching Seed: ${r.seed_match}\nMatching General: ${r.general_match}`
+
+                        if (r.jewel_type === 'Militant Faith') {
+                            matchText += `\nExact Matches: ${r.exact_match}`
+                        }
+
+                        const ttMatches = new Konva.Text({
+                            x: 50,
+                            y: y_accum,
+                            text: matchText,
+                            // fill: LEGION_COLORS.get(r.jewel_type),
+                            fill: 'white',
+                            fontFamily: 'Fontin-Regular',
+                            fontSize: 18,
+                            lineHeight: 1.5,
+                            align: 'center'
+                        })
+                        ttMatches.offsetX(ttMatches.width() / 2)
+                        ttMatches.x(ttBackground.width() / 2)
+
+                        y_accum += ttMatches.height() + margin_top
+                        ttBackground.height(y_accum)
+                        
+                        let ttWidest = Math.max(ttJewelName.width(), ttGenSeed.width(), ttMatches.width())
+                        if (ttMfMods) {
+                            ttWidest = Math.max(ttWidest, ttMfMods.width())
+                        }
+                        
+                        const separator = new Konva.Line({
+                            stroke: LEGION_COLORS_DESAT.get(r.jewel_type),
+                            strokeWidth: gridStrokeW,
+                            points: [0, sep_height, ttWidest + 40, sep_height]
+                        })
+
+                        ttBackground.width(ttWidest + 40)
+
+                        ttGroup.add(ttBackground)
+                        ttGroup.add(ttJewelName)
+                        ttGroup.add(ttGenSeed)
+                        ttGroup.add(separator)
+                        ttGroup.add(ttMatches)
+
+                        if (ttMfMods) {
+                            ttGroup.add(ttMfMods)
+                        }
+
+                        ttLayer.add(ttGroup)
+
+                        ttLayer.show();
+                    } catch (e) {
+                        return
+                    }
+                }
+
+                // zoom animation
+                const jewelMouseoverZoomIn = new Konva.Animation(function(frame) {
+                    // tile.zIndex(22)
+                    // numHits.zIndex(23)
+                    tile.moveTo(highlightTileGroup)
+                    numHits.moveTo(highlightTileGroup)
+                    const scale = mouseOverZoomScale
+                    tile.scale({x: scale, y: scale})
+                    numHits.scale({x: scale, y: scale}) 
+                    drawTooltip()
+                })
+
+                const jewelMouseoverZoomOut = new Konva.Animation(function(frame) {
+                    // tile.zIndex(0)
+                    // numHits.zIndex(1)
+                    tile.moveTo(allTilesGroup)
+                    numHits.moveTo(allTilesGroup)
+                    const scale = 1
+                    tile.scale({x: scale, y: scale})
+                    numHits.scale({x: scale, y: scale})
+                    ttLayer.hide();
+                })
+                
+                tileTarget.on('mousemove', function (e) {
+                    e.target.getStage().container().style.cursor = 'pointer';
+                    jewelMouseoverZoomIn.start()
+                })
+                tileTarget.on('mouseout', function (e) {
+                    e.target.getStage().container().style.cursor = 'default';
+                    jewelMouseoverZoomOut.start()
+                    // console.log('out')
+                })
+                
+                // numHits.on('mousemove', function (e) {
+                //     e.target.getStage().container().style.cursor = 'pointer';
+                //     jewelMouseoverZoomIn.start()
+                // })
+                // numHits.on('mouseout', function (e) {
+                //     e.target.getStage().container().style.cursor = 'default';
+                //     jewelMouseoverZoomOut.start()
+                // })
+            }
+
+            tile.offsetX(tile.width() / 2);
+            tile.offsetY(tile.height() / 2);
+            tileTarget.offsetX(tile.width() / 2);
+            tileTarget.offsetY(tile.height() / 2);
+            numHits.offsetX(numHits.width() / 2);
+            numHits.offsetY(numHits.height() / 2);
+
+            allTilesGroup.add(tile);
+            allTilesGroup.add(numHits);
+            mouseoverLayer.add(tileTarget);
+        })
+
+        tileLayer.add(allTilesGroup);
+        zoomTileLayer.add(highlightTileGroup)
+        // add layers to stage
+        stage.add(baseLayer);
+        stage.add(gridLines);
+        stage.add(tileLayer);
+        stage.add(zoomTileLayer);
+        stage.add(ttLayer);
+        stage.add(mouseoverLayer);
+        ttLayer.hide();
+    }
+
+    onMount(() => {
+        if (!$jewelData) {
+            return;
+        }
+
+        drawStash();
+    });
+
+    onDestroy(() => {
+        if (stage) {
+            stage.destroy();
+            stage = null;
+        }
+    });
+
+
+    // on update to props, re-render
+    $effect(() => {
+        if (stage) {
+            stage.destroy();
+            stage = null;
+        }
+
+        if (!$jewelData) {
+            return;
+        }
+        drawStash();
+    });
+</script>
+
+<div id='container'>
+</div>

@@ -8,4 +8,8 @@ export const account_name = writable(null);
 
 export const account_leagues = writable([]);
 
-export const stash_data = writable({});
+export const stashes_per_league = writable({});
+
+export const api_jewel_data = writable({});
+
+export const bulk_result = writable(null);

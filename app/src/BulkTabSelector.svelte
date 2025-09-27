@@ -1,18 +1,22 @@
 <script>
   import * as Select from "$lib/components/ui/select";
-  import { account_leagues, stash_data } from "./store";
+  import { account_leagues, stashes_per_league, api_jewel_data, bulk_result } from "./store";
   import { PUBLIC_CURRENT_LEAGUE } from "$env/static/public";
   import { leagues } from "$lib/data/leagues";
-  import { stashes_standard } from "$lib/data/stashes";
-  import { filterUnsupportedStashTypes, flattenStashes, getAccountStashes } from "$lib/api";
+  // import { stashes_standard } from "$lib/data/stashes";
+  import { filterUnsupportedStashTypes, flattenStashes, getAccountStashes, getJewelsFromStashTab } from "$lib/api";
+  import { parse_jewel_seed, parse_jewel_general } from "$lib/parse"
+  import StashBrowser from "./StashBrowser.svelte";
 
   import CheckIcon from "@lucide/svelte/icons/check";
   import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
-  import { tick } from "svelte";
+  import { RefreshCw } from "lucide-svelte";
+  import { onMount, tick } from "svelte";
   import * as Command from "$lib/components/ui/command/index.js";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { cn } from "$lib/utils.js";
+  import { mode } from "mode-watcher";
 
   const current_leagues = $derived(
     $account_leagues
@@ -27,32 +31,157 @@
 
   let selected_league = $state("");
   let stashes = $state("");
+  let selected_stash_size = $state(0);
+  let open = $state(false);
+  let selected_stash = $state("");
+  let triggerRef = $state(null);
 
   async function getStashesForLeague() {
+    const raw_stashes = await getAccountStashes(selected_league)
+    // console.log('raw stashes here')
+    // console.log(raw_stashes)
+
+    const filtered_stashes = filterUnsupportedStashTypes(
+      flattenStashes(raw_stashes),
+    );
+    stashes = filtered_stashes.map((s) => ({
+      // if value isn't unique then multiple items highlight so we just include the id in the value
+      value: s.name + ' ' + s.id,
+      label: s.name,
+      stash_obj: s,
+      color: s?.metadata.colour,
+    }));
+
+    console.log('getStashesForLeague: stashes')
+    console.log(stashes)
+  }
+
+  async function selectLeagueTrigger() {
     console.log(`getting stashes for ${selected_league}`);
     
     // if we already have the stashes for the requested league we can just swap and display it
-    if (stash_data[selected_league]) {
-      stashes = stash_data[selected_league]
+    if (stashes_per_league[selected_league]) {
+      stashes = stashes_per_league[selected_league]
     }
     else {
-      const raw_stashes = await getAccountStashes(selected_league)
-      // console.log('raw stashes here')
-      // console.log(raw_stashes)
-      // shadcn-svelte's Command component does not natively support searching based on label value
-      // we need to embed the name of the stash tab in the value with a known separator
-      // since poe supports basically all characters we make a random string for this session only
-      const randomString = Math.random().toString(36).substring(2)
-      localStorage.setItem('stashSeparator', randomString);
-      const filtered_stashes = filterUnsupportedStashTypes(
-        flattenStashes(raw_stashes),
-      );
-      stashes = filtered_stashes.map((s) => ({
-        value: s.name + randomString + s.id,
-        label: s.name,
-        color: s?.metadata.colour,
-      }));
+      // get the stash data again and clear the selected stash
+      getStashesForLeague()
+      selected_stash = ''
     }
+  }
+
+  async function refreshStashData() {
+    // re-fetch the stashes for the currently selected league
+    if (selected_league == '') {
+      // TODO - button should be disabled if league isn't selected
+      console.log('refreshStashData: No selected league')
+      return
+    }
+    else {
+      console.log('refreshStashData: refreshing stash data...')
+      getStashesForLeague()
+
+      if (stashes.find((s) => s.stash_obj.name === selected_stash)) {
+        console.log('refreshStashData: no need to deselect the stash')
+        console.log('refreshStashData: refreshing tab:')
+        const s = stashes.find((s => s.stash_obj.name === selected_stash)).stash_obj
+        console.log(s)
+        selectStashTrigger(s, true)
+      } else {
+        console.log('refreshStashData: resetting selection...')
+        bulk_result.set(null)
+        selected_stash = ''
+      }
+    }
+  } 
+
+  function safe_getter(obj, path) {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+  }
+
+  function setPath(obj, path, value) {
+    if (path.length === 0) return value;
+    const [key, ...rest] = path;
+    return {
+      ...obj,
+      [key]: setPath(obj?.[key] ?? {}, rest, value)
+    };
+  }
+
+  async function bulkSearch(jewels) {
+    // jewels: [
+    //         {
+    //             i: 0    # index (yeah kinda redundant)
+    //             x: int, # coords for where the jewel is in the tab
+    //             y: int,
+    //             jewel_type: str,
+    //             seed: int,
+    //             general: str,
+    //             ?mf_mods: [str, str]
+    //         }...
+    //     ]
+
+    let counter = 0
+    let request_body = jewels.map((j) => ({
+        i: counter++,
+        x: j.x,
+        y: j.y,
+        jewel_type: j.name,
+        seed: parse_jewel_seed(j.explicitMods[0]),
+        general: parse_jewel_general(j.explicitMods[0]),
+        mf_mods: j.explicitMods.length == 4 ? [j.explicitMods[1], j.explicitMods[2]] : []
+    }))
+    console.log('bulkSearch: body')
+    console.log(request_body)
+
+    let url = '/api/search/bulk'
+    if (!import.meta.env.PROD) {
+        url = 'http://localhost:5000' + url.replace('/api', '')
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({jewels: request_body})
+        });
+
+        const data = await response.json()
+        console.log('bulkSearch: response from backend:')
+        console.log(data)
+        bulk_result.set(data.results)
+    } catch (err) {
+        console.log(err)
+        // TODO maybe throw a toast or something
+    }
+  }
+
+  async function selectStashTrigger(stash, force=false) {
+    selected_stash_size = stash.type === 'QuadStash' ? 24 : 12
+
+    const s_id = stash.id
+    console.log('selectStashTrigger: heres api_jewel_data:')
+    console.log($api_jewel_data)
+    if (!safe_getter($api_jewel_data, selected_league + '.' + s_id) || force) {
+      // get the jewels from ggg
+      const jewels = await getJewelsFromStashTab(selected_league, s_id)
+      console.log('selectStashTrigger: jewels')
+      console.log(jewels)
+      
+      api_jewel_data.update(current => setPath(current, [selected_league, s_id], jewels))
+
+      console.log($api_jewel_data)
+    }
+
+    // get hits from backend
+    if ($api_jewel_data[selected_league][s_id].length > 0) {
+      bulkSearch($api_jewel_data[selected_league][s_id])
+    } else {
+      bulk_result.set([])
+    }
+    
   }
 
   const leagueTrigger = $derived(
@@ -60,20 +189,17 @@
       .concat(other_leagues)
       .find((f) => f.value === selected_league)?.label ?? "Select a League",
   );
-  const stashTrigger = $derived.by(() => {
-    if (leagueTrigger !== "Select a League") {
-      return (
-        stashes.find((f) => f.value === selected_stash)?.label ??
-        "Select a Stash"
-      );
-    } else {
-      return " - ";
-    }
-  });
+  // const stashTrigger = $derived.by(() => {
+  //   if (leagueTrigger !== "Select a League") {
+  //     return (
+  //       stashes.find((f) => f.value === selected_stash)?.label ??
+  //       "Select a Stash"
+  //     );
+  //   } else {
+  //     return " - ";
+  //   }
+  // });
 
-  let open = $state(false);
-  let selectedStash = $state("");
-  let triggerRef = $state(null);
 
   const selectedValue = $derived(
     frameworks.find((f) => f.value === value)?.label,
@@ -89,28 +215,39 @@
     });
   }
 
-  function getStashNameFromItemValue(itemValue) {
-    const sep = localStorage.getItem('stashSeparator')
-    return itemValue.split(sep)[0]
-  }
+  // function getStashNameFromItemValue(itemValue) {
+  //   const sep = localStorage.getItem('stashSeparator')
+  //   return itemValue.split(sep)[0]
+  // }
 
-  function stashFilter(
-    commandValue,
-    search,
-    commandKeywords
-  ) {
-    const stashId = getStashNameFromItemValue(commandValue)
-    return stashId.toLowerCase().includes(search) ? 1 : 0;
-  }
+  // function stashFilter(
+  //   commandValue,
+  //   search,
+  //   commandKeywords
+  // ) {
+  //   const stashId = getStashNameFromItemValue(commandValue)
+  //   return stashId.toLowerCase().includes(search) ? 1 : 0;
+  // }
+
+  onMount(() => {
+    // init league dropdown with user's last selection if there is any
+    const prevSelectedLeague = localStorage.getItem('selected_league')
+    if (prevSelectedLeague) {
+      selected_league = prevSelectedLeague
+      selectLeagueTrigger()
+    }
+  })
 
 </script>
 
 <div class="flex flex-row space-x-5">
   <Select.Root
     type="single"
+    value={selected_league}
     onValueChange={(v) => {
       selected_league = v;
-      getStashesForLeague();
+      localStorage.setItem('selected_league', v)
+      selectLeagueTrigger();
     }}
   >
     <Select.Trigger class="w-[180px]">
@@ -150,13 +287,13 @@
           role="combobox"
           aria-expanded={open}
         >
-          {getStashNameFromItemValue(selectedStash) || "Select a stash..."}
+          {selected_stash || "Select a stash..."}
           <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
         </Button>
       {/snippet}
     </Popover.Trigger>
     <Popover.Content class="w-[200px] p-0">
-      <Command.Root filter={stashFilter}>
+      <Command.Root>
         <Command.Input placeholder="Search stashes..." />
         <Command.List>
           <Command.Empty>No stashes found.</Command.Empty>
@@ -166,12 +303,13 @@
                 style={`color: #${stash.color}`}
                 value={stash.value}
                 onSelect={() => {
-                  selectedStash = stash.value;
+                  selected_stash = stash.label;
+                  selectStashTrigger(stash.stash_obj);
                   closeAndFocusTrigger();
                 }}
               >
                 <CheckIcon
-                  class={cn(selectedStash !== stash.value && "text-transparent")}
+                  class={cn(selected_stash !== stash.value && "text-transparent")}
                 />
                 {stash.label}
               </Command.Item>
@@ -181,4 +319,16 @@
       </Command.Root>
     </Popover.Content>
   </Popover.Root>
+
+  <Button 
+    variant='secondary'
+    onclick={refreshStashData}>
+    <RefreshCw />
+  </Button>
+
+  
+</div>
+
+<div class='mt-10'>
+<StashBrowser jewelData={bulk_result} sideLen={800} cellsPerSide={selected_stash_size} mode={mode}/>
 </div>

@@ -8,8 +8,9 @@
 
     function logout() {
         account_name.set(null);
-        localStorage.remove('token_exp')
-        localStorage.remove('access_token')
+        localStorage.removeItem('token_exp')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('account_name')
     }
     // console.log(get(account_name))
     // account_name.set('Rooballeux#4717')

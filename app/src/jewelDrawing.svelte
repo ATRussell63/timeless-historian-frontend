@@ -2,38 +2,6 @@
     import { onDestroy, onMount } from 'svelte';
     import { base } from '$app/paths';
 
-    // jewel socket
-    // import jewelSocketBR from '$lib/images/drawing/jewel_socketBR.svg';
-    // import jewelSocketLP from '$lib/images/drawing/jewel_socketLP.svg';
-    // import jewelSocketGV from '$lib/images/drawing/jewel_socketGV.svg';
-    // import jewelSocketEH from '$lib/images/drawing/jewel_socketEH.svg';
-    // import jewelSocketMF from '$lib/images/drawing/jewel_socketMF.svg';
-    // import jewelSocketUN from '$lib/images/drawing/jewel_socketUN.svg';
-
-    // // keystone
-    // import keystoneGV from '$lib/images/drawing/keystone_GV.svg';
-    // import keystoneLP from '$lib/images/drawing/keystone_LP.svg';
-    // import keystoneBR from '$lib/images/drawing/keystone_BR.svg';
-    // import keystoneEH from '$lib/images/drawing/keystone_EH.svg';
-    // import keystoneMF from '$lib/images/drawing/keystone_MF.svg';
-    // import keystoneUN from '$lib/images/drawing/keystone_UN.svg';
-
-    // // notable
-    // import notableGV from '$lib/images/drawing/notable_GV.svg';
-    // import notableLP from '$lib/images/drawing/notable_LP.svg';
-    // import notableBR from '$lib/images/drawing/notable_BR.svg';
-    // import notableEH from '$lib/images/drawing/notable_EH.svg';
-    // import notableMF from '$lib/images/drawing/notable_MF.svg';
-    // import notableUN from '$lib/images/drawing/notable_UN.svg';
-
-    // // small passive
-    // import smallGV from '$lib/images/drawing/small_passiveGV.svg';
-    // import smallLP from '$lib/images/drawing/small_passiveLP.svg';
-    // import smallBR from '$lib/images/drawing/small_passiveBR.svg';
-    // import smallEH from '$lib/images/drawing/small_passiveEH.svg';
-    // import smallMF from '$lib/images/drawing/small_passiveMF.svg';
-    // import smallUN from '$lib/images/drawing/small_passiveUN.svg';
-
     const darkImages = import.meta.glob('$lib/images/drawing/dark/*.svg', { eager: true });
     const lightImages = import.meta.glob('$lib/images/drawing/light/*.svg', { eager: true });
 

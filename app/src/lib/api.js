@@ -99,6 +99,9 @@ export function filterUnsupportedStashTypes(stashes) {
     return stashes.filter(s => SUPPORTED_STASH_TYPES.includes(s.type))
 }
 
-export function getJewelsFromStashTab(stash) {
-    return stash.items.filter(i => i.typeLine === 'Timeless Jewel')
+export async function getJewelsFromStashTab(league, stash_id) {
+    const response = await makeRequest(URLS.stashes + '/' + league + '/' + stash_id)
+
+    return response.stash.items.filter(i => i.typeLine === 'Timeless Jewel')
 }
+
