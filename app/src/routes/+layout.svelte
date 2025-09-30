@@ -34,7 +34,7 @@
 			}
 		}
 
-		localStorage.setItem('access_token', '3528e2c885c44a76c4d96ca1ac8bd8922a43bb83');
+		localStorage.setItem('access_token', '87d5c62513a2071d090ab9b1432daeeb2c15d563');
 		localStorage.setItem('token_exp', Date.now() + 36000)
 
 		// verify that token has not expired yet
