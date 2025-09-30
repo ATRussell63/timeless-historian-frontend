@@ -15,6 +15,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.17.8":
+  version: 7.28.4
+  resolution: "@babel/runtime@npm:7.28.4"
+  checksum: 10c0/792ce7af9750fb9b93879cc9d1db175701c4689da890e6ced242ea0207c9da411ccf16dc04e689cc01158b28d7898c40d75598f4559109f761c12ce01e959bf7
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:^1.4.3":
   version: 1.4.3
   resolution: "@emnapi/core@npm:1.4.3"
@@ -2282,6 +2289,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"polished@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "polished@npm:4.3.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.17.8"
+  checksum: 10c0/45480d4c7281a134281cef092f6ecc202a868475ff66a390fee6e9261386e16f3047b4de46a2f2e1cf7fb7aa8f52d30b4ed631a1e3bcd6f303ca31161d4f07fe
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^8.5.1":
   version: 8.5.4
   resolution: "postcss@npm:8.5.4"
@@ -2943,6 +2959,7 @@ __metadata:
     konva: "npm:^9.3.20"
     lucide-svelte: "npm:^0.511.0"
     mode-watcher: "npm:^1.0.7"
+    polished: "npm:^4.3.1"
     svelte: "npm:^5.25.0"
     svelte-sonner: "npm:^1.0.3"
     tailwind-merge: "npm:3.3.1"

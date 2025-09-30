@@ -17,6 +17,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { cn } from "$lib/utils.js";
   import { mode } from "mode-watcher";
+  import { lighten } from "polished";
 
   const current_leagues = $derived(
     $account_leagues
@@ -36,6 +37,11 @@
   let selected_stash = $state("");
   let triggerRef = $state(null);
 
+  function ffToBlue(colorString) {
+    // for whatever reason blue comes out of the api as 'ff'
+    return colorString === '#ff' ? '#0033FF' : colorString
+  }
+
   async function getStashesForLeague() {
     const raw_stashes = await getAccountStashes(selected_league)
     // console.log('raw stashes here')
@@ -49,7 +55,7 @@
       value: s.name + ' ' + s.id,
       label: s.name,
       stash_obj: s,
-      color: s?.metadata.colour,
+      color: ffToBlue("#" + s?.metadata.colour),
     }));
 
     console.log('getStashesForLeague: stashes')
@@ -229,6 +235,36 @@
   //   return stashId.toLowerCase().includes(search) ? 1 : 0;
   // }
 
+  function lightenColor(color, amount = 0.15) {
+    try {
+      // console.log(color)
+      return lighten(amount, color);
+    } catch {
+      return color;
+    }
+  }
+
+  function isBright(hex, threshold = 186) {
+    // if (hex === '#ff') {
+    //   return true
+    // }
+
+    // Expand shorthand hex (#abc → #aabbcc)
+    let normalized = hex.replace(/^#/, '');
+    if (normalized.length === 3) {
+      normalized = normalized.split('').map(c => c + c).join('');
+    }
+
+    const r = parseInt(normalized.substring(0, 2), 16);
+    const g = parseInt(normalized.substring(2, 4), 16);
+    const b = parseInt(normalized.substring(4, 6), 16);
+
+    // Perceived brightness formula (ITU-R BT.601)
+    const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+
+    return brightness > threshold;
+  }
+
   onMount(() => {
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem('selected_league')
@@ -297,10 +333,14 @@
         <Command.Input placeholder="Search stashes..." />
         <Command.List>
           <Command.Empty>No stashes found.</Command.Empty>
-          <Command.Group value="stashes">
+          <Command.Group value="stashes" class='py-0 px-0'>
             {#each stashes as stash}
               <Command.Item
-                style={`color: #${stash.color}`}
+                class='rounded-none'
+                style="
+                      --stashColor: {stash.color};
+                      --stashColorLight: {lightenColor(stash.color)};
+                      color: {isBright(stash.color) ? 'black' : 'white'}"
                 value={stash.value}
                 onSelect={() => {
                   selected_stash = stash.label;
@@ -332,3 +372,9 @@
 <div class='mt-10'>
 <StashBrowser jewelData={bulk_result} sideLen={800} cellsPerSide={selected_stash_size} mode={mode}/>
 </div>
+
+<!-- <style>
+  .commandStash &[aria-selected="true"] {
+    background-color: var(--stashColor);
+  }
+</style> -->
