@@ -1097,7 +1097,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bits-ui@npm:^2.11.0":
+"bits-ui@npm:2.11.4":
   version: 2.11.4
   resolution: "bits-ui@npm:2.11.4"
   dependencies:
@@ -2828,10 +2828,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tailwind-merge@npm:3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: 10c0/b84c6a78d4669fa12bf5ab8f0cdc4400a3ce0a7c006511af4af4be70bb664a27466dbe13ee9e3b31f50ddf6c51d380e8192ce0ec9effce23ca729d71a9f63818
+  languageName: node
+  linkType: hard
+
 "tailwind-merge@npm:^3.3.0":
   version: 3.3.0
   resolution: "tailwind-merge@npm:3.3.0"
   checksum: 10c0/a50cd141100486f98541dfab3705712af5860556689b7496dc6b0284374f02d12d5471f0f40035f6bb8b1c749c422060a1f3e5f8900057d8a7786b111c8472e6
+  languageName: node
+  linkType: hard
+
+"tailwind-variants@npm:3.1.1":
+  version: 3.1.1
+  resolution: "tailwind-variants@npm:3.1.1"
+  peerDependencies:
+    tailwind-merge: ">=3.0.0"
+    tailwindcss: "*"
+  peerDependenciesMeta:
+    tailwind-merge:
+      optional: true
+  checksum: 10c0/58b4d50ac3d4abd67a8cb26cbae9ec83f3e4a48234aeedc0c9a0a23f7111495caad55c1641d4314dea242cd9aa71db2f0e6ceb2f914c393d570075d7f12a01ac
   languageName: node
   linkType: hard
 
@@ -2843,15 +2863,6 @@ __metadata:
   peerDependencies:
     tailwindcss: "*"
   checksum: 10c0/404b88293067009c72b5c22e662ad6994438278b7ebcf4dedf9782832d98206f56f2918e39e202c590e7bb4a99b6272e3482fae3058fcd1cb7cc6e1c9ccf2435
-  languageName: node
-  linkType: hard
-
-"tailwindcss-animate@npm:^1.0.7":
-  version: 1.0.7
-  resolution: "tailwindcss-animate@npm:1.0.7"
-  peerDependencies:
-    tailwindcss: "*"
-  checksum: 10c0/ec7dbd1631076b97d66a1fbaaa06e0725fccfa63119221e8d87a997b02dcede98ad88bb1ef6665b968f5d260fcefb10592e0299ca70208d365b37761edf5e19a
   languageName: node
   linkType: hard
 
@@ -2922,7 +2933,7 @@ __metadata:
     "@sveltejs/vite-plugin-svelte": "npm:^5.0.0"
     "@tailwindcss/vite": "npm:^4.0.0"
     "@zerodevx/svelte-toast": "npm:^0.9.6"
-    bits-ui: "npm:^2.11.0"
+    bits-ui: "npm:2.11.4"
     canvas: "npm:^3.1.0"
     clsx: "npm:^2.1.1"
     dotenv: "npm:^16.5.0"
@@ -2934,10 +2945,10 @@ __metadata:
     mode-watcher: "npm:^1.0.7"
     svelte: "npm:^5.25.0"
     svelte-sonner: "npm:^1.0.3"
-    tailwind-merge: "npm:^3.3.0"
-    tailwind-variants: "npm:^1.0.0"
+    tailwind-merge: "npm:3.3.1"
+    tailwind-variants: "npm:3.1.1"
     tailwindcss: "npm:^4.0.0"
-    tailwindcss-animate: "npm:^1.0.7"
+    tw-animate-css: "npm:1.4.0"
     vite: "npm:^6.2.6"
   languageName: unknown
   linkType: soft
@@ -2982,6 +2993,13 @@ __metadata:
   dependencies:
     safe-buffer: "npm:^5.0.1"
   checksum: 10c0/4c7a1b813e7beae66fdbf567a65ec6d46313643753d0beefb3c7973d66fcec3a1e7f39759f0a0b4465883499c6dc8b0750ab8b287399af2e583823e40410a17a
+  languageName: node
+  linkType: hard
+
+"tw-animate-css@npm:1.4.0":
+  version: 1.4.0
+  resolution: "tw-animate-css@npm:1.4.0"
+  checksum: 10c0/6cfbc19ccc73883ec80ef1f9147f43e736cb01ee99c8172968b37eb81b720523d30e38b1a96aef92db3c586d864204db5510b51744ddacbbf0ad8e3c7fb56ec7
   languageName: node
   linkType: hard
 

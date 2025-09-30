@@ -5,7 +5,6 @@ const config = {
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	safelist: ["dark"],
-	// plugins: [require('tailwindcss-animate')],
 	theme: {
 		container: {
 			center: true,
@@ -57,20 +56,6 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans]
-			},
-			keyframes: {
-				"accordion-down": {
-				from: { maxHeight: "0", opacity: '0' },
-				to: { maxHeight: "500px", opacity: '1' },
-				},
-				"accordion-up": {
-				from: { maxHeight: "500px", opacity: '1' },
-				to: { maxHeight: "0", opacity: '0' },
-				},
-			},
-			animation: {
-				"accordion-down": "accordion-down 0.2s ease-out",
-				"accordion-up": "accordion-up 0.2s ease-out",
 			},
 		}
 	},

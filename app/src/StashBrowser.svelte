@@ -20,7 +20,8 @@
         const backgroundColor = mode.current === 'dark' ? '#333333' : '#999999'
         const gridColor = mode.current === 'dark' ? '#999999' : '#CCCCCC'
         const gridStrokeW = 2
-        const mouseOverZoomScale = 1.3
+        const bodyFontSize = 18
+        const mouseOverZoomScale = 1.15
 
         // TODO gonna need to make this reactive
         const ttWidth = 300
@@ -176,12 +177,12 @@
 
                 // tooltip
                 const ttGroup = new Konva.Group({
-                    clip: {
-                        x: 0,
-                        y: 0,
-                        width: ttWidth,
-                        height: ttHeight
-                    }
+                    // clip: {
+                    //     x: 0,
+                    //     y: 0,
+                    //     width: ttWidth,
+                    //     height: ttHeight
+                    // }
                 })
 
                 // const ttImage = new Image();
@@ -212,7 +213,7 @@
                     fill: 'black',
                     opacity: 1,
                     stroke: LEGION_COLORS_DESAT.get(r.jewel_type),
-                    strokeWidth: 4,
+                    strokeWidth: gridStrokeW,
                     zIndex: 0
                 })
 
@@ -265,7 +266,7 @@
                             text: `${r.general} #${r.seed}`,
                             fill: LEGION_COLORS.get(r.jewel_type),
                             fontFamily: 'Fontin-Regular',
-                            fontSize: 18,
+                            fontSize: bodyFontSize,
                             align: 'center',
                         })
                         ttGenSeed.offsetX(ttGenSeed.width() / 2)
@@ -284,7 +285,7 @@
                                 // text: 'borgus',
                                 fill: LEGION_COLORS.get(r.jewel_type),
                                 fontFamily: 'Fontin-Regular',
-                                fontSize: 18,
+                                fontSize: bodyFontSize,
                                 // padding: 15,
                                 lineHeight: 1.5,
                                 align: 'center'
@@ -310,7 +311,7 @@
                         }
 
                         const ttMatches = new Konva.Text({
-                            x: 50,
+                            x: 0,
                             y: y_accum,
                             text: matchText,
                             // fill: LEGION_COLORS.get(r.jewel_type),
