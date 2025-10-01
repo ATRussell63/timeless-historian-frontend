@@ -515,3 +515,9 @@ black: #0D0D0D
 .apexcharts-pie-area {
   stroke: hsl(var(--accent-mid));
 }
+
+.pageTitle {
+    font-family: Fontin-SmallCaps;
+    font-size: 48px;
+    margin-left: 5px;
+}

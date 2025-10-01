@@ -105,3 +105,54 @@ export async function getJewelsFromStashTab(league, stash_id) {
     return response.stash.items.filter(i => i.typeLine === 'Timeless Jewel')
 }
 
+import { toast } from '@zerodevx/svelte-toast';
+import { search_result, waiting_on_api } from '../store';
+
+export async function searchDBForJewel(jewel) {
+    console.log('searching db for jewel')
+    console.log(jewel)
+    try {
+            const request_body = {
+                    "jewel_type": jewel.jewel_type,
+                    "seed": jewel.seed,
+                    "general": jewel.general,
+                    "mf_mods": jewel.mf_mods
+                }
+            let url = '/api/search';
+            if (!import.meta.env.PROD) {
+                url = 'http://localhost:5000' + url.replace('/api', '');
+            }
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request_body)
+            });
+
+            const data = { body: request_body, response: await response.json() };
+            console.log('setting search result')
+            console.log(data)
+            search_result.set(data);
+            if (response.ok && Object.keys(data.response.results).length > 0) {
+                // TODO - restore this redirect in the actual search page
+                // goto('/search/results');
+            } else {
+                // display an error somewhere
+                toast.pop()
+                toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
+                           {duration: 3000,
+                            theme: {
+                                '--toastColor': 'hsl(var(--foreground))',
+                                '--toastBackground': 'hsl(var(--background))',
+                                '--toastBarBackground': 'red',
+                                }
+                           })
+            }
+
+            } catch (err) {
+            error = err.message;
+            } finally {
+            waiting_on_api.set(false);
+        }
+}

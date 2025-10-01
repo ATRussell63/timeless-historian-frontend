@@ -1,25 +1,22 @@
 <script>
     import * as Card from "$lib/components/ui/card";
-    
-    
-    
     import { Button } from "$lib/components/ui/button/index.js";
-    import Separator from "$lib/components/ui/separator/separator.svelte";
-    
+    import Separator from "$lib/components/ui/separator/separator.svelte";    
     import * as Select from "$lib/components/ui/select";
     import ChevronLeft from "lucide-svelte/icons/chevron-left";
     import ResultChart from "../../../ResultChart.svelte";
-    
-    
-    
     import KaruiSymbol from '$lib/images/KaruiSymbol.svg';
     import { cn } from "$lib/utils";
     import { mode } from 'mode-watcher';
     import ResultsBrowser from "../../../ResultsBrowser.svelte";
+    import { forceHidden, clearSelection } from "../../../resultsBrowserStore";
 
     let backgroundStyle = `background-size: 110% 110%; background-image: url(${KaruiSymbol});`
 
     let { data } = $props();
+    // reset force flag if it was set by bulk search
+    clearSelection();
+    forceHidden.set(false);
     console.log('data')
     console.log(data)
     const body = data.body;
@@ -501,5 +498,5 @@
     <p class="contentTitle">Results Browser</p>
 </div>
 
-<ResultsBrowser body={body} results={data.response.results}/>
+<ResultsBrowser totalW={1618} />
 </div>

@@ -7,14 +7,30 @@
     import VaalSymbol from '$lib/images/VaalSymbol.svg'
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
     import { scale } from 'svelte/transition';
+    import { searchDBForJewel } from '$lib/api';
+    import { bulk_result, search_result } from './store';
+    import { clearSelection, forceHidden } from './resultsBrowserStore';
 
-    let { jewelData, sideLen, cellsPerSide, mode } = $props();
+    let { sideLen, cellsPerSide, mode } = $props();
 
     Konva.showWarnings = false
     
     let stage = null;
 
+    function drawBlankStage() {
+        console.log('clearing stash stage...')
+        clearSelection()
+        stage = new Konva.Stage({
+            container: 'stashContainer',
+            width: sideLen,
+            height: sideLen
+        });
+    }
+
     function drawStash() {
+        console.log('drawing...')
+        console.log($bulk_result)
+
         const cellSize = sideLen / cellsPerSide;
         const numHitsFontSize = cellSize - 20;
         const backgroundColor = mode.current === 'dark' ? '#333333' : '#999999'
@@ -28,7 +44,7 @@
         let ttHeight = 400
 
         stage = new Konva.Stage({
-            container: 'container',
+            container: 'stashContainer',
             width: sideLen,
             height: sideLen
         });
@@ -128,7 +144,7 @@
         }
 
         // draw the jewels
-        $jewelData.forEach((r) => {
+        $bulk_result.forEach((r) => {
             // note to self, need to make the backend respond with the type of each jewel later
             const tile = new Konva.Rect({
                 x: r.x * cellSize + cellSize / 2,
@@ -390,6 +406,12 @@
                     jewelMouseoverZoomOut.start()
                     // console.log('out')
                 })
+
+                tileTarget.on('click', function (e) {
+                    forceHidden.set(false)
+                    clearSelection()
+                    searchDBForJewel(r)
+                })
                 
                 // numHits.on('mousemove', function (e) {
                 //     e.target.getStage().container().style.cursor = 'pointer';
@@ -415,18 +437,23 @@
 
         tileLayer.add(allTilesGroup);
         zoomTileLayer.add(highlightTileGroup)
-        // add layers to stage
-        stage.add(baseLayer);
-        stage.add(gridLines);
-        stage.add(tileLayer);
-        stage.add(zoomTileLayer);
-        stage.add(ttLayer);
-        stage.add(mouseoverLayer);
-        ttLayer.hide();
+
+        // only draw anything if bulk_result exists
+        if ($bulk_result) {
+            // add layers to stage
+            stage.add(baseLayer);
+            stage.add(gridLines);
+            stage.add(tileLayer);
+            stage.add(zoomTileLayer);
+            stage.add(ttLayer);
+            stage.add(mouseoverLayer);
+            ttLayer.hide();
+        }
     }
 
     onMount(() => {
-        if (!$jewelData) {
+        if (!$bulk_result) {
+            drawBlankStage();
             return;
         }
 
@@ -435,7 +462,7 @@
 
     onDestroy(() => {
         if (stage) {
-            stage.destroy();
+            stage.remove();
             stage = null;
         }
     });
@@ -444,16 +471,19 @@
     // on update to props, re-render
     $effect(() => {
         if (stage) {
-            stage.destroy();
+            stage.remove();
             stage = null;
         }
 
-        if (!$jewelData) {
+        if (!$bulk_result) {
+            console.log('borgus')
+            console.log($bulk_result)
+            drawBlankStage();
             return;
         }
         drawStash();
     });
 </script>
 
-<div id='container'>
+<div id='stashContainer'>
 </div>

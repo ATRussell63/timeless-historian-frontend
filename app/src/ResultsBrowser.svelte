@@ -11,48 +11,82 @@
     import Separator from "$lib/components/ui/separator/separator.svelte";
     import { cn } from "$lib/utils";
     import { mode } from 'mode-watcher';
+    import { search_result } from "./store";
+    import { onMount } from "svelte";
+    import { hoverData, selectedJewel, selectedLeague, clearSelection, forceHidden } from "./resultsBrowserStore";
+    import { get } from "svelte/store";
 
-    let { body, results } = $props();
+    const { totalW } = $props();
 
-    let hoverData = $state(null);
-    let selectedJewel = $state(null);
-    let selectedLeague = $state(null);
-    let minMatchingMFMods = $state(0);
+    let minMatchingMFMods = $state(0)
+
+    const body = $derived.by(() => {
+        // clearSelection()
+        if ($search_result?.body) {
+            return $search_result.body
+        }
+        return null;
+    });
+    const results = $derived.by(() => {
+        if ($search_result?.response) {
+            console.log('results browser results')
+            console.log($search_result.response.results)
+            return $search_result.response.results
+        }
+        return null;
+    });
 
     // init switches to preference
     let matchGeneral = $state(localStorage.getItem('matchGeneral') === 'true');
     let hardcoreOnly = $state(localStorage.getItem('matchHardcore') === 'true');
 
-    let displayedResponse = $state($state.snapshot(results));
-
-    function applyFilters() {
-        let results_snap = $state.snapshot(results);
-
-        // league filters
-        if (hardcoreOnly === true) {
-            results_snap = Object.fromEntries(
-                Object.entries(results_snap).filter(
-                    ([key, value]) => value.hardcore,
-                ),
-            );
+    function filterJewel(jewel) {
+        if (matchGeneral && jewel.general !== matchGeneral) {
+            return false
         }
-
-        // jewel filters
-        Object.keys(results_snap).forEach((league) => {
-            results_snap[league].jewels = results_snap[league].jewels.filter((jewel) => {
-                let mf = jewel.mf_mods_match_count >= minMatchingMFMods;
-                let gen = true;
-                if (matchGeneral && body.general !== 'Any') {
-                    gen = jewel.general_match;
-                }
-                return mf && gen;
-            });
-        });
-        displayedResponse = results_snap;
+        if (minMatchingMFMods > 0 && (jewel.mf_mods_match_count ?? 0) < minMatchingMFMods) {
+            return false
+        }
+        return true
     }
+
+    let displayedResults = $derived.by(() => {
+        if (results) {
+            // first filter out leagues if hardcore only is toggled
+            const visibleLeagues = {
+                ...Object.fromEntries(
+                    Object.entries(results).filter(([key, value]) => {
+                        if (hardcoreOnly) {
+                            return value.hardcore
+                        } else {
+                            return true
+                        }
+                    })
+                )
+            }
+
+            if (visibleLeagues === {}) {
+                return {}
+            }
+            
+            // filter each league's jewels based on other filter criteria
+            return Object.fromEntries(
+                Object.entries(visibleLeagues).map(([key, value]) => [
+                    key,
+                    {
+                        ...value,
+                        jewels: value.jewels.filter(filterJewel)
+                    }
+                ])
+            )
+        }
+        return {}
+    });
+
 </script>
 
-<div class="flex flex-row mt-5 justify-between h-[1150px]">
+{#if body && results && !$forceHidden}
+<div class={cn(`flex flex-row mt-5 justify-between h-[1150px] w-[${totalW}px]`)}>
     <div class="flex flex-col h-full w-[400px] flex-none">
         <Card.Root class="p-4 transparentBackground">
             <Card.Content class="flex flex-col p-0 gap-4">
@@ -64,8 +98,8 @@
                         bind:checked={hardcoreOnly}
                         onCheckedChange={(v) => {
                             hardcoreOnly = v;
+                            clearSelection()
                             localStorage.setItem('matchHardcore', `${v}`)
-                            applyFilters();
                         }}
                     />
                 </div>
@@ -77,12 +111,12 @@
                         bind:checked={matchGeneral}
                         onCheckedChange={(v) => {
                             matchGeneral = v;
+                            clearSelection()
                             localStorage.setItem('matchGeneral', `${v}`)
-                            applyFilters();
                         }}
                     />
                 </div>
-                {#if body.jewel_type === "Militant Faith"}
+                {#if body?.jewel_type === "Militant Faith"}
                     <div class="flex flex-row justify-between items-center">
                         <span class="searchParamLabel mr-10"
                             >Minimum Matching Devotion Mods</span
@@ -91,7 +125,7 @@
                             selected={minMatchingMFMods}
                             onSelectedChange={(v) => {
                                 minMatchingMFMods = v.value;
-                                applyFilters();
+                                clearSelection()
                             }}
                         >
                             <Select.Trigger
@@ -112,12 +146,12 @@
             </Card.Content>
         </Card.Root>
         <ScrollArea class="h-full rounded-md border mt-5 transparentBackground">
-            <Accordion.Root type="single" value={Object.entries(displayedResponse).length === 1 ? `item-${Object.entries(displayedResponse)[0][1].league_id}` : ''}>
-                {#each Object.entries(displayedResponse) as [key, value]}
+            <Accordion.Root type="multiple" value={Object.entries(displayedResults).length === 1 ? `item-${Object.entries(displayedResults)[0][1].league_id}` : ''}>
+                {#each Object.entries(displayedResults) as [key, value]}
                     <Accordion.Item value={`item-${value.league_id}`}>
                         <Accordion.Trigger 
                             onclick={() => {
-                                            selectedLeague = key;
+                                            selectedLeague.set(key);
                                         }}
                             class={cn("my-4 " + (selectedLeague === key ? 'selectedLeagueTrigger' : 'unselectedLeagueTrigger'))}>
                             <span
@@ -130,19 +164,23 @@
                                     <Button
                                         variant='outline'
                                         onmouseenter={() => {
-                                            hoverData = jewel;
+                                            // console.log('mouse in')
+                                            hoverData.set($state.snapshot(jewel));
+                                            // console.log($hoverData)
                                         }}
                                         onmouseleave={() => {
-                                            if (selectedJewel) {
-                                                hoverData = selectedJewel;
+                                            if ($selectedJewel) {
+                                                // console.log('mouse out')
+                                                hoverData.set(structuredClone(get(selectedJewel)));
+                                                // console.log($hoverData)
                                             } else {
-                                                hoverData = null;
+                                                hoverData.set(null);
                                             }
                                         }}
                                         onclick={() => {
-                                            selectedJewel = jewel;
+                                            selectedJewel.set(jewel);
                                         }}
-                                        class={cn("jewelResultRowButton rounded-none flex justify-between py-10 " + (selectedJewel === jewel ? 'selectedJewelButton': ''))}
+                                        class={cn("jewelResultRowButton rounded-none flex justify-between py-10 " + (JSON.stringify($selectedJewel) === JSON.stringify(jewel) ? 'selectedJewelButton': ''))}
                                     >
                                         <div
                                             class="flex flex-col items-start gap-2"
@@ -161,7 +199,7 @@
                                             class="flex flex-col items-end gap-2"
                                         >
                                             <Badge variant="secondary"
-                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : 'jewelBadge')}
+                                                class={cn(JSON.stringify($selectedJewel) === JSON.stringify(jewel) ? 'selectedJewelBadge' : 'jewelBadge')}
                                                 >Week {jewel.start_week}{jewel.start_week ===
                                                 jewel.end_week
                                                     ? ""
@@ -170,7 +208,7 @@
                                             >
                                             {#if jewel["vip"] && jewel["vip"] !== ""}
                                                 <Badge variant="secondary"
-                                                class={cn(selectedJewel === jewel ? 'selectedJewelBadge' : 'jewelBadge')}
+                                                class={cn(JSON.stringify($selectedJewel) === JSON.stringify(jewel) ? 'selectedJewelBadge' : 'jewelBadge')}
                                                     >{jewel.vip}</Badge
                                                 >
                                             {/if}
@@ -188,18 +226,17 @@
     <!-- <div class='flex-col flex-auto ml-5 h-full'> -->
     <Card.Root class="flex flex-col grow-7 self-stretch ml-5 h-full transparentBackground">
         <Card.Content class="flex flex-row h-full justify-center p-0">
-            {#if hoverData}
+            {#if $hoverData}
                 <div
                     class="flex flex-col flex-auto w-full flex items-center justify-end"
                 >
                     <div class='w-full h-full my-4'>
-                    <JewelDetailsCard data={hoverData} sampleMode={body.seed === 'Any'}></JewelDetailsCard>
+                    <JewelDetailsCard sampleMode={body.seed === 'Any'}></JewelDetailsCard>
                     </div>
                     <Separator class="mb-2"></Separator>
                      <!-- <div class='flex flex-row w-full justify-center' style='background-color: black; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;'> -->
                       <div class='flex flex-row w-full justify-center' style=''>
                     <JewelDrawing
-                        drawData={hoverData?.drawing}
                         w={1050}
                         h={850}
                         mode={mode}
@@ -226,3 +263,7 @@
         </Card.Content>
     </Card.Root>
 </div>
+{:else}
+<div class={cn(`w-[${totalW}px]`)}>
+</div>
+{/if}

@@ -1,13 +1,13 @@
 <script>
   import * as Select from "$lib/components/ui/select";
-  import { account_leagues, stashes_per_league, api_jewel_data, bulk_result } from "./store";
+  import { account_leagues, stashes_per_league, api_jewel_data, bulk_result, search_result, waiting_on_api } from "./store";
   import { PUBLIC_CURRENT_LEAGUE } from "$env/static/public";
   import { leagues } from "$lib/data/leagues";
   // import { stashes_standard } from "$lib/data/stashes";
   import { filterUnsupportedStashTypes, flattenStashes, getAccountStashes, getJewelsFromStashTab } from "$lib/api";
   import { parse_jewel_seed, parse_jewel_general } from "$lib/parse"
   import StashBrowser from "./StashBrowser.svelte";
-
+  import ResultsBrowser from "./ResultsBrowser.svelte";
   import CheckIcon from "@lucide/svelte/icons/check";
   import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
   import { RefreshCw } from "lucide-svelte";
@@ -18,6 +18,11 @@
   import { cn } from "$lib/utils.js";
   import { mode } from "mode-watcher";
   import { lighten } from "polished";
+  import { forceHidden } from "./resultsBrowserStore";
+
+  // clear any previous search data
+  console.log('clearing search results')
+  search_result.set(null)
 
   const current_leagues = $derived(
     $account_leagues
@@ -36,6 +41,7 @@
   let open = $state(false);
   let selected_stash = $state("");
   let triggerRef = $state(null);
+  // let niceHack = $state(1);
 
   function ffToBlue(colorString) {
     // for whatever reason blue comes out of the api as 'ff'
@@ -64,7 +70,12 @@
 
   async function selectLeagueTrigger() {
     console.log(`getting stashes for ${selected_league}`);
-    
+
+    forceHidden.set(true)
+    bulk_result.set(null)
+    // forces redraw of stashes
+    // niceHack = niceHack * -1;
+
     // if we already have the stashes for the requested league we can just swap and display it
     if (stashes_per_league[selected_league]) {
       stashes = stashes_per_league[selected_league]
@@ -95,6 +106,7 @@
         selectStashTrigger(s, true)
       } else {
         console.log('refreshStashData: resetting selection...')
+        forceHidden.set(true)
         bulk_result.set(null)
         selected_stash = ''
       }
@@ -115,18 +127,6 @@
   }
 
   async function bulkSearch(jewels) {
-    // jewels: [
-    //         {
-    //             i: 0    # index (yeah kinda redundant)
-    //             x: int, # coords for where the jewel is in the tab
-    //             y: int,
-    //             jewel_type: str,
-    //             seed: int,
-    //             general: str,
-    //             ?mf_mods: [str, str]
-    //         }...
-    //     ]
-
     let counter = 0
     let request_body = jewels.map((j) => ({
         i: counter++,
@@ -165,6 +165,7 @@
   }
 
   async function selectStashTrigger(stash, force=false) {
+    forceHidden.set(true)
     selected_stash_size = stash.type === 'QuadStash' ? 24 : 12
 
     const s_id = stash.id
@@ -195,17 +196,6 @@
       .concat(other_leagues)
       .find((f) => f.value === selected_league)?.label ?? "Select a League",
   );
-  // const stashTrigger = $derived.by(() => {
-  //   if (leagueTrigger !== "Select a League") {
-  //     return (
-  //       stashes.find((f) => f.value === selected_stash)?.label ??
-  //       "Select a Stash"
-  //     );
-  //   } else {
-  //     return " - ";
-  //   }
-  // });
-
 
   const selectedValue = $derived(
     frameworks.find((f) => f.value === value)?.label,
@@ -220,20 +210,6 @@
       triggerRef.focus();
     });
   }
-
-  // function getStashNameFromItemValue(itemValue) {
-  //   const sep = localStorage.getItem('stashSeparator')
-  //   return itemValue.split(sep)[0]
-  // }
-
-  // function stashFilter(
-  //   commandValue,
-  //   search,
-  //   commandKeywords
-  // ) {
-  //   const stashId = getStashNameFromItemValue(commandValue)
-  //   return stashId.toLowerCase().includes(search) ? 1 : 0;
-  // }
 
   function lightenColor(color, amount = 0.15) {
     try {
@@ -277,6 +253,7 @@
 </script>
 
 <div class="flex flex-row space-x-5">
+  <div class='flex flex-col w-full gap-4 px-4'>
   <Select.Root
     type="single"
     value={selected_league}
@@ -286,7 +263,7 @@
       selectLeagueTrigger();
     }}
   >
-    <Select.Trigger class="w-[180px]">
+    <Select.Trigger class="w-[250px]">
       {leagueTrigger}
     </Select.Trigger>
     <Select.Content>
@@ -312,65 +289,74 @@
       {/if}
     </Select.Content>
   </Select.Root>
+  <div class='flex flex-row gap-4'>
+    <Popover.Root bind:open>
+      <Popover.Trigger bind:ref={triggerRef}>
+        {#snippet child({ props })}
+          <Button
+            {...props}
+            variant="outline"
+            class="w-[250px] justify-between"
+            role="combobox"
+            aria-expanded={open}
+            disabled={selected_league === ""}
+          >
+            {selected_stash || "Select a stash..."}
+            <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
+          </Button>
+        {/snippet}
+      </Popover.Trigger>
+      <Popover.Content class="w-[250px] p-0">
+        <Command.Root>
+          <Command.Input placeholder="Search stashes..." />
+          <Command.List>
+            <Command.Empty>No stashes found.</Command.Empty>
+            <Command.Group value="stashes" class='py-0 px-0'>
+              {#each stashes as stash}
+                <Command.Item
+                  class='rounded-none'
+                  style="
+                        --stashColor: {stash.color};
+                        --stashColorLight: {lightenColor(stash.color)};
+                        color: {isBright(stash.color) ? 'black' : 'white'}"
+                  value={stash.value}
+                  onSelect={() => {
+                    selected_stash = stash.label;
+                    selectStashTrigger(stash.stash_obj);
+                    closeAndFocusTrigger();
+                  }}
+                >
+                  <CheckIcon
+                    class={cn(selected_stash !== stash.value && "text-transparent")}
+                  />
+                  {stash.label}
+                </Command.Item>
+              {/each}
+            </Command.Group>
+          </Command.List>
+        </Command.Root>
+      </Popover.Content>
+    </Popover.Root>
 
-  <Popover.Root bind:open>
-    <Popover.Trigger bind:ref={triggerRef}>
-      {#snippet child({ props })}
-        <Button
-          {...props}
-          variant="outline"
-          class="w-[200px] justify-between"
-          role="combobox"
-          aria-expanded={open}
-        >
-          {selected_stash || "Select a stash..."}
-          <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
-        </Button>
-      {/snippet}
-    </Popover.Trigger>
-    <Popover.Content class="w-[200px] p-0">
-      <Command.Root>
-        <Command.Input placeholder="Search stashes..." />
-        <Command.List>
-          <Command.Empty>No stashes found.</Command.Empty>
-          <Command.Group value="stashes" class='py-0 px-0'>
-            {#each stashes as stash}
-              <Command.Item
-                class='rounded-none'
-                style="
-                      --stashColor: {stash.color};
-                      --stashColorLight: {lightenColor(stash.color)};
-                      color: {isBright(stash.color) ? 'black' : 'white'}"
-                value={stash.value}
-                onSelect={() => {
-                  selected_stash = stash.label;
-                  selectStashTrigger(stash.stash_obj);
-                  closeAndFocusTrigger();
-                }}
-              >
-                <CheckIcon
-                  class={cn(selected_stash !== stash.value && "text-transparent")}
-                />
-                {stash.label}
-              </Command.Item>
-            {/each}
-          </Command.Group>
-        </Command.List>
-      </Command.Root>
-    </Popover.Content>
-  </Popover.Root>
-
-  <Button 
-    variant='secondary'
-    onclick={refreshStashData}>
-    <RefreshCw />
-  </Button>
-
-  
+    <Button
+      onclick={refreshStashData}>
+      <RefreshCw />
+    </Button>
+  </div>
+  </div>
+  <div class='mx-auto'>
+    <StashBrowser sideLen={800} cellsPerSide={selected_stash_size} mode={mode}/>
+  </div>
 </div>
 
-<div class='mt-10'>
-<StashBrowser jewelData={bulk_result} sideLen={800} cellsPerSide={selected_stash_size} mode={mode}/>
+{#if $search_result && !$forceHidden}
+<div class='flex flex-row'>
+    <span class='pageTitle mt-5'>Search Results</span>
+</div>
+{/if}
+
+<div class='flex flex-row'>
+  <ResultsBrowser totalW={1472} />
 </div>
 
 <!-- <style>

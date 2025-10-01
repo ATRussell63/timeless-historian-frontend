@@ -1,13 +1,14 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { base } from '$app/paths';
+    import { hoverData } from './resultsBrowserStore';
 
     const darkImages = import.meta.glob('$lib/images/drawing/dark/*.svg', { eager: true });
     const lightImages = import.meta.glob('$lib/images/drawing/light/*.svg', { eager: true });
 
     import Konva from 'konva';
 
-    let { drawData, w, h, mode } = $props();
+    let { w, h, mode } = $props();
 
     let stage = null;
 
@@ -45,10 +46,10 @@
             ['Lethal Pride' , 'LP']
         ])
 
-        const src_suffix = LEGION_ABBREV.get(drawData.jewel_type)
+        const src_suffix = LEGION_ABBREV.get($hoverData.drawing.jewel_type)
 
         stage = new Konva.Stage({
-        container: 'container',
+        container: 'drawingContainer',
         width: w,
         height: h
         });
@@ -72,7 +73,7 @@
             clipFunc: function (ctx) {
                 ctx.arc(stage.width() / 2,
                         stage.height() / 2,
-                        (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
+                        ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
                         0,
                         360)
             }
@@ -82,7 +83,7 @@
         let backdropOpacity = mode.current === 'dark' ? 0.5 : 0.2;
 
         // really hard to make out white on light grey
-        if (mode.current !== 'dark' && drawData.jewel_type == 'Elegant Hubris') {
+        if (mode.current !== 'dark' && $hoverData.drawing.jewel_type == 'Elegant Hubris') {
             // backdropFill = 'black'
             backdropOpacity = 0.5
         }
@@ -91,7 +92,7 @@
         const backdrop = new Konva.Circle({
             x: stage.width() / 2,
             y: stage.height() / 2,
-            radius: (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
+            radius: ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
             fill: backdropFill,
             opacity: backdropOpacity
         })
@@ -99,8 +100,8 @@
         const timelessRadius = new Konva.Circle({
             x: stage.width() / 2,
             y: stage.height() / 2,
-            radius: (drawData.radius + RADIUS_PADDING) * SCALE_FACTOR,
-            stroke: LEGION_COLORS.get(drawData.jewel_type),
+            radius: ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
+            stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
             strokeWidth: 10
         })
 
@@ -123,7 +124,7 @@
             width: 650,
             height: 400,
             fill: 'black',
-            stroke: LEGION_COLORS.get(drawData.jewel_type),
+            stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
             strokeWidth: 2,
             opacity: 0.8
             // draggable: true
@@ -145,7 +146,7 @@
         function make_straight_edge(edge) {
             let stroke = UN_COLOR;
             if (edge.a) {
-                stroke = LEGION_COLORS.get(drawData.jewel_type);
+                stroke = LEGION_COLORS.get($hoverData.drawing.jewel_type);
             }
 
             const sEdge = new Konva.Line({
@@ -162,7 +163,7 @@
         function make_curved_edge(edge) {
             let stroke = UN_COLOR;
             if (edge.a) {
-                stroke = LEGION_COLORS.get(drawData.jewel_type);
+                stroke = LEGION_COLORS.get($hoverData.drawing.jewel_type);
             }
             const cx = convert_coord(edge.c.x, 'x');
             const cy = convert_coord(edge.c.y, 'y');
@@ -191,26 +192,26 @@
         }
 
         // draw unallocated first
-        drawData.straight_edges.forEach((edge) => {
+        $hoverData.drawing.straight_edges.forEach((edge) => {
             if (!edge.a) {
                 make_straight_edge(edge)
             }
         })
         
-        drawData.curved_edges.forEach((edge) => {
+        $hoverData.drawing.curved_edges.forEach((edge) => {
             if (!edge.a) {
                 make_curved_edge(edge)
             }
         })
 
-        drawData.straight_edges.forEach((edge) => {
+        $hoverData.drawing.straight_edges.forEach((edge) => {
             if (edge.a) {
                 make_straight_edge(edge)
             }
         })
 
 
-        drawData.curved_edges.forEach((edge) => {
+        $hoverData.drawing.curved_edges.forEach((edge) => {
             if (edge.a) {
                 make_curved_edge(edge)
             }
@@ -294,7 +295,7 @@
         }
 
         // NODES
-        Object.values(drawData.nodes).forEach((node) => {
+        Object.values($hoverData.drawing.nodes).forEach((node) => {
             const nodeImage = new Image();
             const nx = convert_coord(node.c.x, 'x');
             const ny = convert_coord(node.c.y, 'y');
@@ -426,7 +427,7 @@
 
 
     onMount(() => {
-        if (!drawData) {
+        if (!$hoverData) {
             return;
         }
 
@@ -434,7 +435,7 @@
     });
 
     onDestroy(() => {
-        stage.destroy();
+        stage.remove();
         stage = null;
     });
 
@@ -442,11 +443,11 @@
     // on update to props, re-render
     $effect(() => {
         if (stage) {
-            stage.destroy();
+            stage.remove();
             stage = null;
         }
 
-        if (!drawData) {
+        if (!$hoverData) {
             return;
         }
         drawJewel();
@@ -454,12 +455,12 @@
 
 </script>
 
-<div id="container">
+<div id="drawingContainer">
 
 </div>
 
 <style>
-    #container {
+    #drawingContainer {
         margin-top: 5px;
         margin-bottom: 10px;
     }

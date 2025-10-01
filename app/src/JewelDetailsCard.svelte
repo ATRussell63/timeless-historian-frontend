@@ -24,8 +24,9 @@
     import Slayer from "$lib/images/classes/Slayer.png";
     import Trickster from "$lib/images/classes/Trickster.png";
     import Warden from "$lib/images/classes/Warden.png";
+    import { hoverData } from "./resultsBrowserStore";
 
-    let { data, sampleMode } = $props();
+    let { sampleMode } = $props();
 
     const imgMap = {
         Ascendant: Ascendant,
@@ -51,12 +52,13 @@
 </script>
 
 <div class="flex flex-row w-full h-full justify-between px-6">
+    {#if $hoverData}
     <div class="flex flex-col grow-7 basis-[700px]">
         <div class="flex-row w-full flex items-center overflow-hidden">
             <img
                 class="border-2 border-black rounded-sm border-solid h-24"
-                alt={data.ascendancy_name}
-                src={imgMap[data.ascendancy_name]}
+                alt={$hoverData.ascendancy_name}
+                src={imgMap[$hoverData.ascendancy_name]}
             />
             <div class="flex flex-col ml-4 mb-2">
                 <div class="flex flex-row items-end overflow-hidden">
@@ -64,22 +66,22 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="multiLang"
-                        style={cn(data.character_name.length >= 19 ? "font-size: 24px;" : "font-size: 36px;")}
-                        href={`https://www.pathofexile.com/account/view-profile/${data.account_name.replace("#", "-")}/characters?characterName=${encodeURIComponent(data.character_name)}`}
-                        >{data.character_name}</a
+                        style={cn($hoverData.character_name.length >= 19 ? "font-size: 24px;" : "font-size: 36px;")}
+                        href={`https://www.pathofexile.com/account/view-profile/${$hoverData.account_name.replace("#", "-")}/characters?characterName=${encodeURIComponent($hoverData.character_name)}`}
+                        >{$hoverData.character_name}</a
                     >
                     <ExternalLink class="w-5 h-5 ml-1 mb-3" />
                 </div>
                 <div class="flex flex-row gap-3">
                     <p class='mr-3' style="font-family:Fontin-Italic; margin-top: -3px;">
-                        {data.account_name}
+                        {$hoverData.account_name}
                     </p>
-                    {#if data.vip}
+                    {#if $hoverData.vip}
                         <Badge style="margin-top: -3px;"
-                            >{data.vip}</Badge
+                            >{$hoverData.vip}</Badge
                         >
                     {/if}
-                    {#if data.end_week == 1}
+                    {#if $hoverData.end_week == 1}
                         <Badge style="margin-top: -3px;" variant='destructive'
                             >Early League</Badge
                         >
@@ -88,11 +90,11 @@
                 <Separator class="mt-1" />
                 <div class="flex flex-row justify-between gap-5">
                     <p class="fontin">
-                        Level {data.character_level}
-                        {data.ascendancy_name}
+                        Level {$hoverData.character_level}
+                        {$hoverData.ascendancy_name}
                     </p>
                     <p class="fontin">
-                        {data.league_name} League Rank #{data.ladder_rank}
+                        {$hoverData.league_name} League Rank #{$hoverData.ladder_rank}
                     </p>
                 </div>
             </div>
@@ -102,44 +104,44 @@
                 <div class="flex flex-row items-center">
                     <p class='fontinBold mr-2'>General:</p>
                     <p  class='fontin'
-                        style={sampleMode || data.general_matches
+                        style={sampleMode || $hoverData.general_matches
                             ? "color: green;"
                             : "color: red;"}
                     >
-                        {data.general}
+                        {$hoverData.general}
                     </p>
-                    {#if sampleMode || data.general_matches}
+                    {#if sampleMode || $hoverData.general_matches}
                         <Check style="color: green;" />
                     {:else}
                         <X style="color: red;" />
                     {/if}
                 </div>
 
-                {#if data.mf_mods}
+                {#if $hoverData.mf_mods}
                     <div class="flex flex-row">
                         <p class='fontinBold mr-2'># Matching Devotion Modifiers:</p>
                         <p  class='fontin'
-                            style={sampleMode || data.mf_mods_match_count == 2
+                            style={sampleMode || $hoverData.mf_mods_match_count == 2
                                 ? "color: green;"
                                 : "color: red;"}
                         >
-                            ({sampleMode ? '2' : data.mf_mods_match_count}/2)
+                            ({sampleMode ? '2' : $hoverData.mf_mods_match_count}/2)
                         </p>
                     </div>
                 {/if}
                 <div class='flex flex-row'>
                 <p class='fontinBold mr-2'>
-                    Socket:</p><p class='fontin'> {data.socket.name}
-                    {data.socket.description
-                        ? "(" + data.socket.description + ")"
+                    Socket:</p><p class='fontin'> {$hoverData.socket.name}
+                    {$hoverData.socket.description
+                        ? "(" + $hoverData.socket.description + ")"
                         : ""}
                 </p>
                 </div>
                 <div class='flex flex-row'>
-                <p class='fontinBold mr-2'>Last Scan: </p><p class='fontin'>{data.scan_date}</p>
+                <p class='fontinBold mr-2'>Last Scan: </p><p class='fontin'>{$hoverData.scan_date}</p>
                 </div>
                 <div class='flex flex-row'>
-                <p class='fontinBold mr-2'>First Equipped:</p><p class='fontin'>{data.initial_scan_date}</p>
+                <p class='fontinBold mr-2'>First Equipped:</p><p class='fontin'>{$hoverData.initial_scan_date}</p>
                 </div>
             </div>
         </div>
@@ -147,14 +149,15 @@
     <Separator orientation="vertical"></Separator>
     <div class="flex flex-col px-6 grow-3 overflow-hidden">
         <p class="cardTitle pl-2 mb-3 mt-1">
-            Stats Granted by {data.jewel_type} {data.seed}
+            Stats Granted by {$hoverData.jewel_type} {$hoverData.seed}
         </p>
         <div class="w-full">
             <ScrollArea class="insetCard p-4 border rounded-md h-[200px] w-full">
-                {#each data.drawing.jewel_stats as stat}
+                {#each $hoverData.drawing.jewel_stats as stat}
                     <p style="font-family: Roboto;">{stat}</p>
                 {/each}
             </ScrollArea>
         </div>
     </div>
+    {/if}
 </div>

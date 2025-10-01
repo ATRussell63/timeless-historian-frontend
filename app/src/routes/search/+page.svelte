@@ -5,7 +5,7 @@
     import * as p from '$lib/parse';
     import { Textarea } from "$lib/components/ui/textarea";
     import { derived } from "svelte/store";
-    import { search_result } from "../../store";
+    import { search_result, waiting_on_api } from "../../store";
     import { redirect } from "@sveltejs/kit";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
@@ -17,6 +17,9 @@
     // console.log(import.meta.env);
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
 
+    // clear prior search results
+    search_result.set(null);
+
     let backgroundStyle = `background-size: 150% 150%; background-position: bottom 70% right 60%; background-image: url(${TemplarSymbol});`
     let text_input = $state('');
     let jewel_type = $derived(p.parse_jewel_type(text_input));
@@ -24,7 +27,6 @@
     let seed = $derived(p.parse_jewel_seed(text_input));
     let mf_mods = $derived(p.parse_jewel_mf_mods(text_input));
 
-    let loading = $state(false);
     let error = $state(null);
 
     function allFieldsGood() {
@@ -61,7 +63,7 @@
 //     })
 
     async function search() {
-        loading = true;
+        waiting_on_api.set(true);
         error = null;
 
         try {
@@ -103,7 +105,7 @@
             } catch (err) {
             error = err.message;
             } finally {
-            loading = false;
+            waiting_on_api.store(false);
         }
     }
 
@@ -235,7 +237,7 @@
     disabled={!allFieldsGood()}
     class='flex-1 h-12'
     onclick={search}>
-    <span class='searchButton'>{#if loading}Searching...{:else}Search{/if}</span>
+    <span class='searchButton'>{#if $waiting_on_api}Searching...{:else}Search{/if}</span>
 </Button>
 </div>
 <div class='flex flex-row mt-10 justify-center'>

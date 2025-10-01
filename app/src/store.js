@@ -13,3 +13,5 @@ export const stashes_per_league = writable({});
 export const api_jewel_data = writable({});
 
 export const bulk_result = writable(null);
+
+export const waiting_on_api = writable(false);

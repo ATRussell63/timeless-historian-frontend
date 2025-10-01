@@ -25,9 +25,5 @@
 </div>
 
 <style>
-    .pageTitle {
-        font-family: Fontin-SmallCaps;
-        font-size: 48px;
-        margin-left: 5px;
-    }
+    
 </style>
