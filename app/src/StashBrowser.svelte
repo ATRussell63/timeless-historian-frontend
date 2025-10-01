@@ -9,33 +9,37 @@
     import { scale } from 'svelte/transition';
     import { searchDBForJewel } from '$lib/api';
     import { bulk_result, search_result } from './store';
-    import { clearSelection, forceHidden } from './resultsBrowserStore';
+    import { clearSelection, forceHidden, stashMetadata } from './resultsBrowserStore';
+    import { isBright } from '$lib/utils';
 
     let { sideLen, cellsPerSide, mode } = $props();
 
     Konva.showWarnings = false
     
     let stage = null;
+    const tabLabelH = 40
+    const gridStrokeW = 2
 
     function drawBlankStage() {
         console.log('clearing stash stage...')
         clearSelection()
         stage = new Konva.Stage({
             container: 'stashContainer',
-            width: sideLen,
-            height: sideLen
+            width: sideLen + (4 * gridStrokeW),
+            height: sideLen + tabLabelH + (3 * gridStrokeW)
         });
     }
 
-    function drawStash() {
-        console.log('drawing...')
-        console.log($bulk_result)
+    function stageCenterX(k) {
+        k.offsetX(k.width() / 2)
+        k.x(stage.width() / 2)
+    }
 
+    function drawStash() {
         const cellSize = sideLen / cellsPerSide;
         const numHitsFontSize = cellSize - 20;
         const backgroundColor = mode.current === 'dark' ? '#333333' : '#999999'
         const gridColor = mode.current === 'dark' ? '#999999' : '#CCCCCC'
-        const gridStrokeW = 2
         const bodyFontSize = 18
         const mouseOverZoomScale = 1.15
 
@@ -45,8 +49,8 @@
 
         stage = new Konva.Stage({
             container: 'stashContainer',
-            width: sideLen,
-            height: sideLen
+            width: sideLen + (4 * gridStrokeW),
+            height: sideLen + tabLabelH + (3 * gridStrokeW)
         });
 
         const LEGION_COLORS = new Map([
@@ -100,6 +104,7 @@
             ['4% increased Totem Damage per 10 Devotion', 'Totem Damage']
         ])
         
+        const tabLabelLayer = new Konva.Layer();
         const baseLayer = new Konva.Layer();
         const gridLines = new Konva.Layer();
         const tileLayer = new Konva.Layer();
@@ -110,23 +115,68 @@
         const allTilesGroup = new Konva.Group();
         const highlightTileGroup = new Konva.Group();
 
+        // draw tab label
+        const tabLabelText = new Konva.Text({
+            x: 0,
+            y: 0,
+            text: $stashMetadata.name,
+            fill: isBright($stashMetadata.color) ? 'black' : 'white',
+            fontFamily: 'Fontin-Regular',
+            fontSize: bodyFontSize,
+            // padding: 15,
+            lineHeight: 1.5,
+            align: 'center'
+        })
+
+        stageCenterX(tabLabelText)
+        tabLabelText.offsetY(-tabLabelText.height() / 2 + 3)
+
+        const tabLabelRect = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: tabLabelText.width() + 20,
+            height: tabLabelH-4,
+            fill: $stashMetadata.color,
+            cornerRadius: [10, 10, 0, 0]
+        })
+
+        const tabLabelStashFrame = new Konva.Rect({
+            x: gridStrokeW,
+            y: tabLabelH,
+            width: stage.width() - 2 * gridStrokeW,
+            height: stage.height() - tabLabelH - 1 * gridStrokeW, 
+            stroke: $stashMetadata.color,
+            strokeWidth: gridStrokeW * 2,
+            cornerRadius: [2, 2, 2, 2]
+        })
+
+        stageCenterX(tabLabelRect)
+        tabLabelRect.offsetY(-5)
+
+        stageCenterX(tabLabelStashFrame)
+
+        tabLabelLayer.add(tabLabelStashFrame);
+        tabLabelLayer.add(tabLabelRect);
+        tabLabelLayer.add(tabLabelText);
+
         // draw background color
         const backdrop = new Konva.Rect({
             x: 0,
             y: 0,
-            width: sideLen,
+            width: sideLen + 6,
             height: sideLen,
             fill: backgroundColor,
             stroke: gridColor,
-            strokeWidth: gridStrokeW * 2,
+            strokeWidth: 0,
             opacity: 0.8
         })
 
+        stageCenterX(backdrop);
         baseLayer.add(backdrop);
         
 
         // draw the grid lines
-        for (let i = 0; i < cellsPerSide; i++) {
+        for (let i = 0; i < cellsPerSide + 1; i++) {
             const lineLat = new Konva.Line({
                 stroke: gridColor,
                 strokeWidth: gridStrokeW,
@@ -192,34 +242,7 @@
                 // if there were hits, make the tile into a button and add a tooltip
 
                 // tooltip
-                const ttGroup = new Konva.Group({
-                    // clip: {
-                    //     x: 0,
-                    //     y: 0,
-                    //     width: ttWidth,
-                    //     height: ttHeight
-                    // }
-                })
-
-                // const ttImage = new Image();
-                // let img = null
-                // ttImage.onload = () => {
-                //     img = new Konva.Image({
-                //         // x: LEGION_IMAGE_OFFSETS.get(r.jewel_type).x,
-                //         // y: LEGION_IMAGE_OFFSETS.get(r.jewel_type).y,
-                //         x: 0,
-                //         y: 0,
-                //         image: ttImage,
-                //         width: ttWidth * 1.5,
-                //         height: ttWidth * 1.5,
-                //         opacity: 0.7,
-                //         zIndex: 1
-                //     })
-
-                //     // ttGroup.add(img)
-                //     // console.log('img loaded')
-                // }
-                // ttImage.src = LEGION_IMAGES.get(r.jewel_type)
+                const ttGroup = new Konva.Group()
 
                 const ttBackground = new Konva.Rect({
                     x: 0,
@@ -438,12 +461,23 @@
         tileLayer.add(allTilesGroup);
         zoomTileLayer.add(highlightTileGroup)
 
+        function tabLabelNudge(layer) {
+            layer.offsetX(-2 * gridStrokeW)
+            layer.offsetY(-(gridStrokeW + tabLabelH))
+        }
+
+        const non_tab_label_layers = [baseLayer, gridLines, tileLayer, zoomTileLayer, mouseoverLayer];
+        non_tab_label_layers.forEach((l) => tabLabelNudge(l))
+
         // only draw anything if bulk_result exists
         if ($bulk_result) {
             // add layers to stage
             stage.add(baseLayer);
+            
+            
             stage.add(gridLines);
             stage.add(tileLayer);
+            stage.add(tabLabelLayer);
             stage.add(zoomTileLayer);
             stage.add(ttLayer);
             stage.add(mouseoverLayer);

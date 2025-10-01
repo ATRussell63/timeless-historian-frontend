@@ -15,6 +15,7 @@
     import { onMount } from "svelte";
     import { hoverData, selectedJewel, selectedLeague, clearSelection, forceHidden } from "./resultsBrowserStore";
     import { get } from "svelte/store";
+    import * as Select from "$lib/components/ui/select";
 
     const { totalW } = $props();
 

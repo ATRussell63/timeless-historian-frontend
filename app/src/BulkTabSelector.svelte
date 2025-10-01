@@ -19,6 +19,10 @@
   import { mode } from "mode-watcher";
   import { lighten } from "polished";
   import { forceHidden } from "./resultsBrowserStore";
+  import * as Card from '$lib/components/ui/card'
+  import { Label } from "$lib/components/ui/label/index.js";
+  import { isBright } from "$lib/utils.js";
+  import { stashMetadata } from "./resultsBrowserStore";
 
   // clear any previous search data
   console.log('clearing search results')
@@ -220,27 +224,6 @@
     }
   }
 
-  function isBright(hex, threshold = 186) {
-    // if (hex === '#ff') {
-    //   return true
-    // }
-
-    // Expand shorthand hex (#abc → #aabbcc)
-    let normalized = hex.replace(/^#/, '');
-    if (normalized.length === 3) {
-      normalized = normalized.split('').map(c => c + c).join('');
-    }
-
-    const r = parseInt(normalized.substring(0, 2), 16);
-    const g = parseInt(normalized.substring(2, 4), 16);
-    const b = parseInt(normalized.substring(4, 6), 16);
-
-    // Perceived brightness formula (ITU-R BT.601)
-    const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-
-    return brightness > threshold;
-  }
-
   onMount(() => {
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem('selected_league')
@@ -253,97 +236,105 @@
 </script>
 
 <div class="flex flex-row space-x-5">
-  <div class='flex flex-col w-full gap-4 px-4'>
-  <Select.Root
-    type="single"
-    value={selected_league}
-    onValueChange={(v) => {
-      selected_league = v;
-      localStorage.setItem('selected_league', v)
-      selectLeagueTrigger();
-    }}
-  >
-    <Select.Trigger class="w-[250px]">
-      {leagueTrigger}
-    </Select.Trigger>
-    <Select.Content>
-      {#if current_leagues.length > 0}
-        <Select.Group>
-          <Select.Label>Current League</Select.Label>
-          {#each current_leagues as league}
-            <Select.Item value={league.value} label={league.label}>
-              {league.label}
-            </Select.Item>
-          {/each}
-        </Select.Group>
-      {/if}
-      {#if current_leagues.length > 0}
-        <Select.Group>
-          <Select.Label>Others</Select.Label>
-          {#each other_leagues as league}
-            <Select.Item value={league.value} label={league.label}>
-              {league.label}
-            </Select.Item>
-          {/each}
-        </Select.Group>
-      {/if}
-    </Select.Content>
-  </Select.Root>
-  <div class='flex flex-row gap-4'>
-    <Popover.Root bind:open>
-      <Popover.Trigger bind:ref={triggerRef}>
-        {#snippet child({ props })}
-          <Button
-            {...props}
-            variant="outline"
-            class="w-[250px] justify-between"
-            role="combobox"
-            aria-expanded={open}
-            disabled={selected_league === ""}
-          >
-            {selected_stash || "Select a stash..."}
-            <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
-          </Button>
-        {/snippet}
-      </Popover.Trigger>
-      <Popover.Content class="w-[250px] p-0">
-        <Command.Root>
-          <Command.Input placeholder="Search stashes..." />
-          <Command.List>
-            <Command.Empty>No stashes found.</Command.Empty>
-            <Command.Group value="stashes" class='py-0 px-0'>
-              {#each stashes as stash}
-                <Command.Item
-                  class='rounded-none'
-                  style="
-                        --stashColor: {stash.color};
-                        --stashColorLight: {lightenColor(stash.color)};
-                        color: {isBright(stash.color) ? 'black' : 'white'}"
-                  value={stash.value}
-                  onSelect={() => {
-                    selected_stash = stash.label;
-                    selectStashTrigger(stash.stash_obj);
-                    closeAndFocusTrigger();
-                  }}
+  <div class='flex flex-col  gap-4 px-0 mt-10 mx-auto'>
+    <Card.Root class='transparentBackground'>
+      <Card.Content class='flex flex-col gap-2'>
+        <Select.Root
+          type="single"
+          value={selected_league}
+          onValueChange={(v) => {
+            selected_league = v;
+            localStorage.setItem('selected_league', v)
+            selectLeagueTrigger();
+          }}
+        >
+          <Select.Trigger class="w-[250px]">
+            {leagueTrigger}
+          </Select.Trigger>
+          <Select.Content>
+            {#if current_leagues.length > 0}
+              <Select.Group>
+                <Select.Label>Current League</Select.Label>
+                {#each current_leagues as league}
+                  <Select.Item value={league.value} label={league.label}>
+                    {league.label}
+                  </Select.Item>
+                {/each}
+              </Select.Group>
+            {/if}
+            {#if current_leagues.length > 0}
+              <Select.Group>
+                <Select.Label>Others</Select.Label>
+                {#each other_leagues as league}
+                  <Select.Item value={league.value} label={league.label}>
+                    {league.label}
+                  </Select.Item>
+                {/each}
+              </Select.Group>
+            {/if}
+          </Select.Content>
+        </Select.Root>
+        <div class='flex flex-row gap-4'>
+          <Popover.Root bind:open>
+            <Popover.Trigger bind:ref={triggerRef}>
+              {#snippet child({ props })}
+                <Button
+                  {...props}
+                  variant="outline"
+                  class="w-[250px] justify-between"
+                  role="combobox"
+                  aria-expanded={open}
+                  disabled={selected_league === ""}
                 >
-                  <CheckIcon
-                    class={cn(selected_stash !== stash.value && "text-transparent")}
-                  />
-                  {stash.label}
-                </Command.Item>
-              {/each}
-            </Command.Group>
-          </Command.List>
-        </Command.Root>
-      </Popover.Content>
-    </Popover.Root>
+                  {selected_stash || "Select a stash..."}
+                  <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
+                </Button>
+              {/snippet}
+            </Popover.Trigger>
+            <Popover.Content class="w-[250px] p-0">
+              <Command.Root>
+                <Command.Input placeholder="Search stashes..." />
+                <Command.List>
+                  <Command.Empty>No stashes found.</Command.Empty>
+                  <Command.Group value="stashes" class='py-0 px-0'>
+                    {#each stashes as stash}
+                      <Command.Item
+                        class='rounded-none'
+                        style="
+                              --stashColor: {stash.color};
+                              --stashColorLight: {lightenColor(stash.color)};
+                              color: {isBright(stash.color) ? 'black' : 'white'}"
+                        value={stash.value}
+                        onSelect={() => {
+                          selected_stash = stash.label;
+                          selectStashTrigger(stash.stash_obj);
+                          stashMetadata.set({
+                            name: stash.label,
+                            color: stash.color
+                          })
+                          closeAndFocusTrigger();
+                        }}
+                      >
+                        <CheckIcon
+                          class={cn(selected_stash !== stash.value && "text-transparent")}
+                        />
+                        {stash.label}
+                      </Command.Item>
+                    {/each}
+                  </Command.Group>
+                </Command.List>
+              </Command.Root>
+            </Popover.Content>
+          </Popover.Root>
+          <Button
+            onclick={refreshStashData}>
+            <RefreshCw />
+          </Button>
+        </div>
+        </Card.Content>
+    </Card.Root>
+  </div>
 
-    <Button
-      onclick={refreshStashData}>
-      <RefreshCw />
-    </Button>
-  </div>
-  </div>
   <div class='mx-auto'>
     <StashBrowser sideLen={800} cellsPerSide={selected_stash_size} mode={mode}/>
   </div>
@@ -355,8 +346,8 @@
 </div>
 {/if}
 
-<div class='flex flex-row'>
-  <ResultsBrowser totalW={1472} />
+<div class='flex flex-row w-[1618px]'>
+  <ResultsBrowser totalW={1618} />
 </div>
 
 <!-- <style>
