@@ -107,6 +107,7 @@ export async function getJewelsFromStashTab(league, stash_id) {
 
 import { toast } from '@zerodevx/svelte-toast';
 import { search_result, waiting_on_api } from '../store';
+import { tick } from 'svelte';
 
 export async function searchDBForJewel(jewel) {
     console.log('searching db for jewel')
@@ -155,4 +156,11 @@ export async function searchDBForJewel(jewel) {
             } finally {
             waiting_on_api.set(false);
         }
+}
+
+export async function searchDBThenScroll(jewel, scrollTarget) {
+    await searchDBForJewel(jewel)
+    await tick();
+    console.log('please work')
+    document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
 }

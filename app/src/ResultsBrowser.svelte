@@ -263,6 +263,7 @@
             {/if}
         </Card.Content>
     </Card.Root>
+    <div id='resultsScrollTarget'></div>
 </div>
 {:else}
 <div class={cn(`w-[${totalW}px]`)}>

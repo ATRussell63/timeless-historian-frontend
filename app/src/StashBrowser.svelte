@@ -7,7 +7,7 @@
     import VaalSymbol from '$lib/images/VaalSymbol.svg'
     import TemplarSymbol from '$lib/images/TemplarSymbol.svg'
     import { scale } from 'svelte/transition';
-    import { searchDBForJewel } from '$lib/api';
+    import { searchDBThenScroll } from '$lib/api';
     import { bulk_result, search_result } from './store';
     import { clearSelection, forceHidden, stashMetadata } from './resultsBrowserStore';
     import { isBright } from '$lib/utils';
@@ -433,17 +433,8 @@
                 tileTarget.on('click', function (e) {
                     forceHidden.set(false)
                     clearSelection()
-                    searchDBForJewel(r)
+                    searchDBThenScroll(r, 'resultsScrollTarget');
                 })
-                
-                // numHits.on('mousemove', function (e) {
-                //     e.target.getStage().container().style.cursor = 'pointer';
-                //     jewelMouseoverZoomIn.start()
-                // })
-                // numHits.on('mouseout', function (e) {
-                //     e.target.getStage().container().style.cursor = 'default';
-                //     jewelMouseoverZoomOut.start()
-                // })
             }
 
             tile.offsetX(tile.width() / 2);
