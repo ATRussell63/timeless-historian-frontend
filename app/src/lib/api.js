@@ -17,7 +17,7 @@ async function makeRequest(url) {
     }
 
     try {
-        const response = await fetch(url, 
+        const response = await fetch(url,
             {
                 method: 'GET',
                 headers: {
@@ -33,12 +33,11 @@ async function makeRequest(url) {
         console.log(response_headers)
 
         if (response_code !== 200) {
-            console.log(response_code)
             parseRequestError(response)
         }
 
         return response_body
-    } catch(e) {
+    } catch (e) {
         console.log('Error in makeRequest:')
         console.log(e)
     }
@@ -54,14 +53,10 @@ export async function getAccountLeagues() {
     // Get the character list and make a list of present leagues
     const acc_characters_response = await makeRequest(URLS.characters)
     const leagues = new Set(acc_characters_response.characters.map((c) => c.league))
-    console.log('account has characters in:')
-    console.log(leagues)
 
     // Sometimes old private leagues get stuck in here so we cross reference the available leagues
     const avail_leagues_response = await makeRequest(URLS.leagues)
     const avail_leagues = avail_leagues_response.leagues
-    console.log('current leagues:')
-    console.log(avail_leagues)
 
     return avail_leagues.filter(l => leagues.has(l.name))
 }
@@ -113,52 +108,72 @@ import { search_result, waiting_on_api } from '../store';
 import { tick } from 'svelte';
 import { logout } from '../store'
 
-export async function searchDBForJewel(jewel) {
-    console.log('searching db for jewel')
-    console.log(jewel)
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export async function searchDBForJewel(jewel, sample = false) {
     waiting_on_api.set(true)
 
     let redirectAfter = false
 
+    let request_body = {
+        "jewel_type": 'Any',
+        "seed": 'Any',
+        "general": 'Any',
+        "mf_mods": null
+    }
+
+    const limit = getRandomInt(15, 20)
+    let url = `/api/data/sample?limit=${limit}`;
+
+    if (!sample) {
+        request_body = {
+            "jewel_type": jewel.jewel_type,
+            "seed": jewel.seed,
+            "general": jewel.general,
+            "mf_mods": jewel.mf_mods
+        }
+        url = '/api/search';
+    }
+
+    if (!import.meta.env.PROD) {
+        url = 'http://localhost:5000' + url.replace('/api', '');
+    }
+
+    let method = sample ? 'GET' : 'POST'
+
     try {
-            const request_body = {
-                    "jewel_type": jewel.jewel_type,
-                    "seed": jewel.seed,
-                    "general": jewel.general,
-                    "mf_mods": jewel.mf_mods
-                }
-            let url = '/api/search';
-            if (!import.meta.env.PROD) {
-                url = 'http://localhost:5000' + url.replace('/api', '');
-            }
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
+        let req_obj = {
+            method: method,
+            headers: {
                 'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(request_body)
-            });
-
-            const data = { body: request_body, response: await response.json() };
-            console.log('setting search result')
-            console.log(data)
-            search_result.set(data);
-            if (response.ok && Object.keys(data.response.results).length > 0) {
-                redirectAfter = true
-            } else {
-                throwErrorToast('No jewels found', 'Search returned 0 results')
-                redirectAfter = false
-            }
-
-        } catch (err) {
-            parseRequestError(response);
-            throwErrorToast(error.message);
+            },
+        }
+        if (method === 'POST') {
+            req_obj['body'] = request_body
+        }
+        const response = await fetch(url, req_obj);
+        const data = { body: request_body, response: await response.json() };
+        search_result.set(data);
+        if (response.ok && Object.keys(data.response.results).length > 0) {
+            redirectAfter = true
+        } else {
+            throwErrorToast('No jewels found', 'Search returned 0 results')
             redirectAfter = false
-        } finally {
-            waiting_on_api.set(false);
         }
 
-        return redirectAfter
+    } catch (err) {
+        parseRequestError(response);
+        throwErrorToast(error.message);
+        redirectAfter = false
+    } finally {
+        waiting_on_api.set(false);
+    }
+
+    return redirectAfter
 }
 
 async function parseRequestError(response) {
@@ -172,7 +187,6 @@ async function parseRequestError(response) {
     } else if (response.status === 401) {
         // Unauthorized, either completely bogus token or expired
         // TODO - log the user out, probably want to give them a toast warning that the token expired too
-        console.log('drawing a token toast')
         throwErrorToast('Invalid/expired token', 'Please log in again')
         logout()
     } else {
@@ -185,18 +199,18 @@ async function parseRequestError(response) {
 function throwErrorToast(error_title, error_body) {
     toast.pop()
     toast.push(`<p style='font-family: Roboto-Bold;'>${error_title}</p><p style='font-family: Roboto;'>${error_body}</p>`,
-                {duration: 3000,
-                theme: {
-                    '--toastColor': 'hsl(var(--foreground))',
-                    '--toastBackground': 'hsl(var(--background))',
-                    '--toastBarBackground': 'red',
-                    }
-                })
+        {
+            duration: 3000,
+            theme: {
+                '--toastColor': 'hsl(var(--foreground))',
+                '--toastBackground': 'hsl(var(--background))',
+                '--toastBarBackground': 'red',
+            }
+        })
 }
 
 export async function searchDBThenScroll(jewel, scrollTarget) {
     await searchDBForJewel(jewel)
     await tick();
-    console.log('please work')
     document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
 }

@@ -15,7 +15,6 @@ function base64UrlEncode(buffer) {
 
 export async function redirectToAuthorize() {
     let code_verifier = generateCodeVerifier()
-    // let code_challenge = await generateCodeChallenge(code_verifier)
 
     const encoder = new TextEncoder();
     const data = encoder.encode(code_verifier);
@@ -35,6 +34,7 @@ export async function redirectToAuthorize() {
 
     localStorage.setItem('code_verifier', code_verifier);
     localStorage.setItem('oauth_state', state);
+    // TODO remove this in bulk release
     console.log('CODE VERIFIER')
     console.log(code_verifier)
     window.location.href = redirectURL;
@@ -67,11 +67,11 @@ export async function getAccessCode(oauth_code) {
         try {
             localStorage.setItem('token_exp', Date.now() + response_body.expires_in)
             localStorage.setItem('access_token', response_body.access_token)
-        } catch(e) {
+        } catch (e) {
             console.log('Error in response body:')
             console.log(response_body)
         }
-    } catch(e) {
+    } catch (e) {
         console.log('Error in token fetch:')
         console.log(e)
     }

@@ -319,7 +319,7 @@ black: #0D0D0D
   color: hsl(var(--foreground)) !important;
 }
 
-.TopNavNotActive, .topNavDisabledButton{
+.TopNavNotActive{
   /* box-shadow: inset 0 -4px 6px -4px rgba(0, 0, 0, 0.8); */
 }
 
@@ -328,7 +328,7 @@ black: #0D0D0D
   color: hsl(var(--foreground)) !important;
 }
 
-.dark .TopNavNotActive, .topNavDisabledButton{
+.dark .TopNavNotActive{
   /* box-shadow: inset 0 -4px 6px -4px rgba(255, 255, 255, 0.8); */
 }
 
@@ -489,8 +489,6 @@ black: #0D0D0D
 .selectedJewelButton {
   background-color: hsl(var(--foreground));
   color: hsl(var(--background));
-  /* border: 5px; */
-  /* border-color: gold; */
 }
 
 .selectedJewelBadge {
