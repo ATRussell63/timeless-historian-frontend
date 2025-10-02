@@ -123,19 +123,20 @@
                             >Minimum Matching Devotion Mods</span
                         >
                         <Select.Root
-                            selected={minMatchingMFMods}
-                            onSelectedChange={(v) => {
-                                minMatchingMFMods = v.value;
+                            type='single'
+                            value={minMatchingMFMods}
+                            onValueChange={(v) => {
+                                minMatchingMFMods = v;
                                 clearSelection()
                             }}
                         >
                             <Select.Trigger
-                                class="flex flex-row justify-center w-12"
+                                class="flex flex-row justify-center"
                             >
                                 {minMatchingMFMods}
                             </Select.Trigger>
                             <Select.Content
-                                class="flex flex-row justify-center w-12"
+                                class="flex flex-row justify-center"
                             >
                                 <Select.Item value="0">0</Select.Item>
                                 <Select.Item value="1">1</Select.Item>
