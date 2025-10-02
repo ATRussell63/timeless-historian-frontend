@@ -316,6 +316,7 @@
 <div class="mb-4 flex flex-row items-center justify-between">
     <div class="flex items-center">
         <span class="contentTitle">Results Summary - </span>
+        <div class='flex flex-row gap-2 items-center'>
         <div class="queryDetail">
             <span class="queryHeaderLabel">Type: </span><span
                 class="queryHeader">{body.jewel_type}</span
@@ -332,15 +333,34 @@
             >
         </div>
         {#if body.jewel_type === "Militant Faith"}
+            <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
+             <!-- if mf mods is very long split it into two rows -->
+            {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
+            <div class='queryDetail'>
+                <span class="queryHeaderLabel">Devotion Mods: </span>
+            </div>
+            <div class='flex flex-col'>
+                <span
+                    class="queryHeader"
+                    >&#9679 {body.mf_mods[0]}</span
+                >
+                <span
+                    class="queryHeader"
+                    >&#9679 {body.mf_mods[1]}</span
+                >
+            </div>
+            {:else}
             <div class="queryDetail">
                 <span class="queryHeaderLabel">Devotion Mods: </span><span
                     class="queryHeader"
                     >{body.mf_mods[0]}, {body.mf_mods[1]}</span
                 >
             </div>
+            {/if}
         {/if}
     </div>
-    <Button class="pl-1 ml-5" variant="ghost" href="/search"
+    </div>
+    <Button class="pl-1 ml-4" variant="ghost" href="/search"
         ><ChevronLeft class="h-5" /><span
             style="text-decoration: underline; font-family: Roboto;"
             >Back to Search</span
