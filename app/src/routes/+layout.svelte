@@ -15,9 +15,18 @@
 	import { getAccessCode } from '$lib/oauth';
 	import { getAccountName, getAccountLeagues, getLeagueStashList } from '$lib/api';
 	import { account_name, account_leagues } from '../store';
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 
 	let { children, data } = $props();
 	data_summary.set(data)
+
+	let toastOptions = {
+		theme: {
+			'--toastColor': 'black',
+			'--toastBackground': 'white',
+			'--toastBarBackground': 'grey',
+		}
+	}
 
 	onMount(async () => {
 		// referred from ggg oauth authorization
@@ -34,7 +43,9 @@
 			}
 		}
 
-		localStorage.setItem('access_token', '87d5c62513a2071d090ab9b1432daeeb2c15d563');
+
+
+		localStorage.setItem('access_token', '2a7f226ac4ee27b596ab0922b26552efda627994');
 		localStorage.setItem('token_exp', Date.now() + 36000)
 
 		// verify that token has not expired yet
@@ -86,6 +97,7 @@
   <main class={cn("flex flex-col border rounded-t-xl h-full")} style="margin-top: 0px;">
 	
 	 {@render children()}
+	 <SvelteToast {toastOptions}/>
   </main>
    </div>
 

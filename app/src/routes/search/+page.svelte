@@ -9,9 +9,9 @@
     import { redirect } from "@sveltejs/kit";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-    import { SvelteToast } from '@zerodevx/svelte-toast';
     import { toast } from '@zerodevx/svelte-toast';
     import { mode } from "mode-watcher";
+    import { searchDBForJewel } from "$lib/api";
     // const baseURL = import.meta.env.PUBLIC_API_URL;
     // import 'dotenv/config';
     // console.log(import.meta.env);
@@ -63,50 +63,17 @@
 //     })
 
     async function search() {
-        waiting_on_api.set(true);
-        error = null;
-
-        try {
-            const request_body = {
-                    "jewel_type": jewel_type,
-                    "seed": seed,
-                    "general": general,
-                    "mf_mods": mf_mods
-                }
-            let url = '/api/search';
-            if (!import.meta.env.PROD) {
-                url = 'http://localhost:5000' + url.replace('/api', '');
-            }
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(request_body)
-            });
-
-            const data = { body: request_body, response: await response.json() };
-            search_result.set(data);
-            if (response.ok && Object.keys(data.response.results).length > 0) {
-                goto('/search/results');
-            } else {
-                // display an error somewhere
-                toast.pop()
-                toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
-                           {duration: 3000,
-                            theme: {
-                                '--toastColor': 'hsl(var(--foreground))',
-                                '--toastBackground': 'hsl(var(--background))',
-                                '--toastBarBackground': 'red',
-                                }
-                           })
-            }
-
-            } catch (err) {
-            error = err.message;
-            } finally {
-            waiting_on_api.store(false);
+        const jewel = {
+            "jewel_type": jewel_type,
+            "seed": seed,
+            "general": general,
+            "mf_mods": mf_mods
         }
+        searchDBForJewel(jewel).then(okToRedirect => {
+            if (okToRedirect) {
+                goto('/search/results');
+            }
+        })
     }
 
     async function sample() {
@@ -163,13 +130,6 @@
         }
     }
 
-    let toastOptions = {
-        theme: {
-            '--toastColor': 'black',
-            '--toastBackground': 'white',
-            '--toastBarBackground': 'grey',
-        }
-    }
 </script>
 
 <svelte:head>
@@ -253,7 +213,7 @@
 </div>
 
 
-<SvelteToast {toastOptions}/>
+<!-- <SvelteToast {toastOptions}/> -->
 
 <style>
     .searchPageTitle {

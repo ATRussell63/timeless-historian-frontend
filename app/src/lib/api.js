@@ -26,19 +26,22 @@ async function makeRequest(url) {
             });
         const response_body = await response.json();
         const response_headers = await response.headers;
+        const response_code = await response.status
         console.log(`response from ${url}:`)
         console.log(response_body)
         console.log('response headers')
         console.log(response_headers)
+
+        if (response_code !== 200) {
+            console.log(response_code)
+            parseRequestError(response)
+        }
+
         return response_body
     } catch(e) {
         console.log('Error in makeRequest:')
         console.log(e)
     }
-}
-
-function parseRateLimitHeader() {
-
 }
 
 export async function getAccountName() {
@@ -108,10 +111,15 @@ export async function getJewelsFromStashTab(league, stash_id) {
 import { toast } from '@zerodevx/svelte-toast';
 import { search_result, waiting_on_api } from '../store';
 import { tick } from 'svelte';
+import { logout } from '../store'
 
 export async function searchDBForJewel(jewel) {
     console.log('searching db for jewel')
     console.log(jewel)
+    waiting_on_api.set(true)
+
+    let redirectAfter = false
+
     try {
             const request_body = {
                     "jewel_type": jewel.jewel_type,
@@ -136,26 +144,54 @@ export async function searchDBForJewel(jewel) {
             console.log(data)
             search_result.set(data);
             if (response.ok && Object.keys(data.response.results).length > 0) {
-                // TODO - restore this redirect in the actual search page
-                // goto('/search/results');
+                redirectAfter = true
             } else {
-                // display an error somewhere
-                toast.pop()
-                toast.push(`<p style='font-family: Roboto-Bold;'>No jewels found</p><p style='font-family: Roboto;'>Search returned 0 results</p>`,
-                           {duration: 3000,
-                            theme: {
-                                '--toastColor': 'hsl(var(--foreground))',
-                                '--toastBackground': 'hsl(var(--background))',
-                                '--toastBarBackground': 'red',
-                                }
-                           })
+                throwErrorToast('No jewels found', 'Search returned 0 results')
+                redirectAfter = false
             }
 
-            } catch (err) {
-            error = err.message;
-            } finally {
+        } catch (err) {
+            parseRequestError(response);
+            throwErrorToast(error.message);
+            redirectAfter = false
+        } finally {
             waiting_on_api.set(false);
         }
+
+        return redirectAfter
+}
+
+async function parseRequestError(response) {
+    if (response.status === 429) {
+        // we got rate limited, throw an error saying how long we're banned for
+        const retryAfter = response.headers.get('Retry-After')
+        throwErrorToast(
+            'Rate Limit Exceeded',
+            `Try again in ${retryAfter} seconds.`
+        )
+    } else if (response.status === 401) {
+        // Unauthorized, either completely bogus token or expired
+        // TODO - log the user out, probably want to give them a toast warning that the token expired too
+        console.log('drawing a token toast')
+        throwErrorToast('Invalid/expired token', 'Please log in again')
+        logout()
+    } else {
+        console.log('Unrecognized error:')
+        console.log(response)
+        console.log(await response.json())
+    }
+}
+
+function throwErrorToast(error_title, error_body) {
+    toast.pop()
+    toast.push(`<p style='font-family: Roboto-Bold;'>${error_title}</p><p style='font-family: Roboto;'>${error_body}</p>`,
+                {duration: 3000,
+                theme: {
+                    '--toastColor': 'hsl(var(--foreground))',
+                    '--toastBackground': 'hsl(var(--background))',
+                    '--toastBarBackground': 'red',
+                    }
+                })
 }
 
 export async function searchDBThenScroll(jewel, scrollTarget) {

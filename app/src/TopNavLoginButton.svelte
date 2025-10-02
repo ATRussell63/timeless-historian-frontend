@@ -2,16 +2,8 @@
     import Button from "$lib/components/ui/button/button.svelte";
     import { ExternalLink, LogOut } from "lucide-svelte";
     import { redirectToAuthorize } from "$lib/oauth";
-    import { account_name } from "./store";
+    import { account_name, logout } from "./store";
     import { get } from "svelte/store";
-
-
-    function logout() {
-        account_name.set(null);
-        localStorage.removeItem('token_exp')
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('account_name')
-    }
     // console.log(get(account_name))
     // account_name.set('Rooballeux#4717')
 </script>
