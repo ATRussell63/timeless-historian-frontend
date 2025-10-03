@@ -25,6 +25,7 @@
     flattenStashes,
     getAccountStashes,
     getJewelsFromStashTab,
+    getAccountLeagues
   } from "$lib/api";
   import {
     account_leagues,
@@ -205,10 +206,18 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
+    if ($account_leagues.length === 0) {
+      let acc_leagues = await getAccountLeagues();
+      console.log("Account leagues: ");
+      console.log(acc_leagues);
+      account_leagues.set(acc_leagues);
+    }
+
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem("selected_league");
-    if (prevSelectedLeague) {
+    console.log($account_leagues)
+    if (prevSelectedLeague && $account_leagues.map((l) => l.name).includes(prevSelectedLeague)) {
       selected_league = prevSelectedLeague;
       selectLeagueTrigger();
     }

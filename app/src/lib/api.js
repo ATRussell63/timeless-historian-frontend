@@ -153,7 +153,7 @@ export async function searchDBForJewel(jewel, sample = false) {
             },
         }
         if (method === 'POST') {
-            req_obj['body'] = request_body
+            req_obj['body'] = JSON.stringify(request_body)
         }
         const response = await fetch(url, req_obj);
         const data = { body: request_body, response: await response.json() };
@@ -167,7 +167,6 @@ export async function searchDBForJewel(jewel, sample = false) {
 
     } catch (err) {
         parseRequestError(response);
-        throwErrorToast(error.message);
         redirectAfter = false
     } finally {
         waiting_on_api.set(false);

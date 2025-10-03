@@ -17,8 +17,12 @@ export const bulk_result = writable(null);
 export const waiting_on_api = writable(false);
 
 export function logout() {
-    account_name.set(null);
+    account_name.set(null)
+    account_leagues.set([])
+    stashes_per_league.set({})
     localStorage.removeItem('token_exp')
     localStorage.removeItem('access_token')
     localStorage.removeItem('account_name')
+    localStorage.removeItem('code_verifier')
+    localStorage.removeItem('oauth_state')
 }

@@ -34,24 +34,28 @@
 	};
 
 	onMount(async () => {
-		// referred from ggg oauth authorization
+		
 		const oauth_code = $page.url.searchParams.get("code");
 		const oauth_state = $page.url.searchParams.get("state");
+
+		// referred from ggg oauth authorization
 		if (oauth_code && oauth_state) {
 			if (oauth_state !== localStorage.getItem("oauth_state")) {
 				console.log(
 					`ERROR: oauth_state received does not match stored value. Received state: ${oauth_state}`,
 				);
 			} else {
-				getAccessCode(oauth_code);
+				await getAccessCode(oauth_code);
 			}
 		}
 
-		localStorage.setItem(
-			"access_token",
-			"2a7f226ac4ee27b596ab0922b26552efda627994",
-		);
-		localStorage.setItem("token_exp", Date.now() + 36000);
+		if (!import.meta.env.PROD) {
+			localStorage.setItem(
+				"access_token",
+				"2a7f226ac4ee27b596ab0922b26552efda627994",
+			);
+			localStorage.setItem("token_exp", Date.now() + 36000);
+		}
 
 		// verify that token has not expired yet
 		if (localStorage.getItem("token_exp") < Date.now()) {
@@ -67,12 +71,6 @@
 		}
 
 		account_name.set(localStorage.getItem("account_name"));
-
-		let acc_leagues = await getAccountLeagues();
-		console.log("Account leagues: ");
-		console.log(acc_leagues);
-		account_leagues.set(acc_leagues);
-		localStorage.setItem("account_leagues", acc_leagues);
 	});
 </script>
 
