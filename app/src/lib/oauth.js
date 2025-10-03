@@ -28,48 +28,37 @@ export async function redirectToAuthorize() {
     redirectURL += '&response_type=code'
     redirectURL += '&scope=' + encodeURIComponent('account:profile account:leagues account:stashes account:characters')
     redirectURL += '&state=' + state
-    redirectURL += '&redirect_uri=https://www.timelesshistorian.xyz'
+    redirectURL += '&redirect_uri=https://www.timelesshistorian.xyz/'
     redirectURL += '&code_challenge=' + code_challenge
     redirectURL += '&code_challenge_method=S256'
 
     localStorage.setItem('code_verifier', code_verifier);
     localStorage.setItem('oauth_state', state);
-    // TODO remove this in bulk release
-    console.log('CODE VERIFIER')
-    console.log(code_verifier)
     window.location.href = redirectURL;
 }
 
 export async function getAccessCode(oauth_code) {
     const code_verifier = localStorage.getItem('code_verifier');
 
-    const tokenURL = 'https://www.pathofexile.com/oauth/token'
-    const body = new URLSearchParams({
-        'client_id': 'timelesshistorian',
-        // 'client_secret': '',
-        'grant_type': 'authorization_code',
-        'code': oauth_code,
-        'redirect_uri': 'https://www.timelesshistorian.xyz',
-        'scope': encodeURIComponent('account:profile account:leagues account:stashes'),
-        'code_verifier': code_verifier
-    })
+    const request_body = {
+        oauth_code: oauth_code,
+        code_verifier: code_verifier
+    }
 
     try {
-        let response = await fetch(tokenURL, {
+        let response = await fetch('/fs/token', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: body
+            body: JSON.stringify(request_body)
         })
 
-        let response_body = await response.json();
+        const fs_response = await response.json();
+        const { body, headers, status } = fs_response
         try {
-            localStorage.setItem('token_exp', Date.now() + response_body.expires_in)
-            localStorage.setItem('access_token', response_body.access_token)
+            localStorage.setItem('token_exp', Date.now() + (body.expires_in * 1000))
+            localStorage.setItem('access_token', body.access_token)
         } catch (e) {
             console.log('Error in response body:')
-            console.log(response_body)
+            console.log(fs_response)
         }
     } catch (e) {
         console.log('Error in token fetch:')

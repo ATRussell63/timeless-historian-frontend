@@ -20,7 +20,7 @@
 		getAccountLeagues,
 		getLeagueStashList,
 	} from "$lib/api";
-	import { account_name, account_leagues } from "../store";
+	import { account_name, account_leagues, logout } from "../store";
 
 	let { children, data } = $props();
 	data_summary.set(data);
@@ -42,7 +42,7 @@
 		if (oauth_code && oauth_state) {
 			if (oauth_state !== localStorage.getItem("oauth_state")) {
 				console.log(
-					`ERROR: oauth_state received does not match stored value. Received state: ${oauth_state}`,
+					`ERROR: oauth_state received does not match stored value. ${oauth_state} !== ${localStorage.getItem("oauth_state")}`,
 				);
 			} else {
 				await getAccessCode(oauth_code);
@@ -59,10 +59,8 @@
 
 		// verify that token has not expired yet
 		if (localStorage.getItem("token_exp") < Date.now()) {
-			console.log("Access token is expired, clearing storage.");
-			localStorage.removeItem("token_exp");
-			localStorage.removeItem("access_token");
-			localStorage.removeItem("account_name");
+			console.log("Access token is expired, logging out.");
+			logout()
 		} else if (localStorage.getItem("account_name") === null) {
 			// token is not expired but we haven't populated the account data yet
 			let acc_name = await getAccountName();

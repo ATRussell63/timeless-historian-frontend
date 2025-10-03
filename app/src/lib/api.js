@@ -1,15 +1,15 @@
-const api_base_url = 'https://api.pathofexile.com'
-
 const URLS = {
-    profile: api_base_url + '/profile',
-    leagues: api_base_url + '/account/leagues',
-    stashes: api_base_url + '/stash',
-    characters: api_base_url + '/character'
+    profile: '/profile',
+    leagues: '/account/leagues',
+    stashes: '/stash',
+    characters: '/character'
 }
 
 const SUPPORTED_STASH_TYPES = ['PremiumStash', 'QuadStash', 'NormalStash']
 
-async function makeRequest(url) {
+async function makeGGGAPIRequest(url) {
+    /** Avoids CORS by proxying the request via the sveltekit server */
+
     const access_token = localStorage.getItem('access_token')
     if (!access_token) {
         console.log('No token to make request!')
@@ -17,26 +17,30 @@ async function makeRequest(url) {
     }
 
     try {
-        const response = await fetch(url,
+        const response = await fetch('/fs',
             {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + access_token
-                }
+                method: 'POST',
+                body: JSON.stringify({
+                    url: url,
+                    token: access_token
+                })
             });
         const response_body = await response.json();
-        const response_headers = await response.headers;
-        const response_code = await response.status
-        console.log(`response from ${url}:`)
-        console.log(response_body)
-        console.log('response headers')
-        console.log(response_headers)
 
-        if (response_code !== 200) {
-            parseRequestError(response)
+        // response_body is a proxy for the actual response data
+        const { body, headers, status } = response_body
+        console.log(`response from ${url}:`)
+        console.log(body)
+        console.log('response headers')
+        console.log(headers)
+        console.log('response status')
+        console.log(status)
+
+        if (status !== 200) {
+            parseRequestError(status, headers)
         }
 
-        return response_body
+        return body
     } catch (e) {
         console.log('Error in makeRequest:')
         console.log(e)
@@ -44,18 +48,18 @@ async function makeRequest(url) {
 }
 
 export async function getAccountName() {
-    const response = await makeRequest(URLS.profile)
+    const response = await makeGGGAPIRequest(URLS.profile)
     return response.name
 }
 
 export async function getAccountLeagues() {
     // We want to only include leagues that the account actually plays
     // Get the character list and make a list of present leagues
-    const acc_characters_response = await makeRequest(URLS.characters)
+    const acc_characters_response = await makeGGGAPIRequest(URLS.characters)
     const leagues = new Set(acc_characters_response.characters.map((c) => c.league))
 
     // Sometimes old private leagues get stuck in here so we cross reference the available leagues
-    const avail_leagues_response = await makeRequest(URLS.leagues)
+    const avail_leagues_response = await makeGGGAPIRequest(URLS.leagues)
     const avail_leagues = avail_leagues_response.leagues
 
     return avail_leagues.filter(l => leagues.has(l.name))
@@ -72,7 +76,7 @@ export async function getLeagueStashList(league) {
 }
 
 export async function getAccountStashes(league) {
-    const response = await makeRequest(URLS.stashes + '/' + league)
+    const response = await makeGGGAPIRequest(URLS.stashes + '/' + league)
     return response.stashes
 }
 
@@ -98,7 +102,7 @@ export function filterUnsupportedStashTypes(stashes) {
 }
 
 export async function getJewelsFromStashTab(league, stash_id) {
-    const response = await makeRequest(URLS.stashes + '/' + league + '/' + stash_id)
+    const response = await makeGGGAPIRequest(URLS.stashes + '/' + league + '/' + stash_id)
 
     return response.stash.items.filter(i => i.typeLine === 'Timeless Jewel')
 }
@@ -166,7 +170,7 @@ export async function searchDBForJewel(jewel, sample = false) {
         }
 
     } catch (err) {
-        parseRequestError(response);
+        parseRequestError(await response.status, await response.headers);
         redirectAfter = false
     } finally {
         waiting_on_api.set(false);
@@ -175,23 +179,23 @@ export async function searchDBForJewel(jewel, sample = false) {
     return redirectAfter
 }
 
-async function parseRequestError(response) {
-    if (response.status === 429) {
+async function parseRequestError(status, headers) {
+    if (status === 429) {
         // we got rate limited, throw an error saying how long we're banned for
-        const retryAfter = response.headers.get('Retry-After')
+        const retryAfter = headers['Retry-After']
         throwErrorToast(
             'Rate Limit Exceeded',
             `Try again in ${retryAfter} seconds.`
         )
-    } else if (response.status === 401) {
+    } else if (status === 401) {
         // Unauthorized, either completely bogus token or expired
         // TODO - log the user out, probably want to give them a toast warning that the token expired too
         throwErrorToast('Invalid/expired token', 'Please log in again')
         logout()
     } else {
         console.log('Unrecognized error:')
-        console.log(response)
-        console.log(await response.json())
+        console.log(status)
+        console.log(headers)
     }
 }
 
