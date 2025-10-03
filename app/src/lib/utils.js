@@ -46,3 +46,24 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function isBright(hex, threshold = 186) {
+    // if (hex === '#ff') {
+    //   return true
+    // }
+
+    // Expand shorthand hex (#abc → #aabbcc)
+    let normalized = hex.replace(/^#/, '');
+    if (normalized.length === 3) {
+      normalized = normalized.split('').map(c => c + c).join('');
+    }
+
+    const r = parseInt(normalized.substring(0, 2), 16);
+    const g = parseInt(normalized.substring(2, 4), 16);
+    const b = parseInt(normalized.substring(4, 6), 16);
+
+    // Perceived brightness formula (ITU-R BT.601)
+    const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+
+    return brightness > threshold;
+}

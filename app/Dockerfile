@@ -1,4 +1,4 @@
-FROM node:20-slim as builder
+FROM node:22.12.0-slim AS builder
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn .yarn
@@ -11,7 +11,7 @@ COPY . .
 # RUN dotenv yarn build
 RUN yarn build
 
-FROM node:20-slim
+FROM node:22.12.0-slim
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json ./package.json

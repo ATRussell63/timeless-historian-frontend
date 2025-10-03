@@ -5,16 +5,16 @@
 
     let colors = [];
 
-    if (theme === 'legion') {
+    if (theme === "legion") {
         colors = [
-            '#009933', // templar
-            '#CC3333', // vaal
+            "#009933", // templar
+            "#CC3333", // vaal
             // '#46268C', // legion purple
-            '#7D5CF2', //lavender
-            '#CC6633', // karui
+            "#7D5CF2", //lavender
+            "#CC6633", // karui
             // '#CCCCCC',  // eternal
-            '#FF9933', // maraketh
-        ]
+            "#FF9933", // maraketh
+        ];
     }
 
     function shuffleArray(array) {
@@ -25,11 +25,11 @@
         return array;
     }
 
-    colors = shuffleArray(colors)
+    colors = shuffleArray(colors);
 
-    let titleFontSize = '20px';
+    let titleFontSize = "20px";
     if (title.length > 30) {
-        titleFontSize = '16px';
+        titleFontSize = "16px";
     }
 
     const options = {
@@ -60,16 +60,16 @@
             enabled: true,
             style: {
                 fontFamily: "Roboto, sans-serif",
-                colors: ['hsl(var(--foreground))']
+                colors: ["hsl(var(--foreground))"],
             },
-            formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+            formatter: function (value, { seriesIndex, dataPointIndex, w }) {
                 // only show wedges larger than x%
                 if (value >= 10) {
-                    return w.config.labels[seriesIndex]
+                    return w.config.labels[seriesIndex];
                 } else {
-                    return ''
+                    return "";
                 }
-            }
+            },
         },
         legend: {
             show: false,
@@ -78,45 +78,24 @@
         },
         title: {
             text: title,
-            align: 'center',
+            align: "center",
             offsetY: -10,
             style: {
                 fontSize: titleFontSize,
-                fontFamily: 'Fontin-SmallCaps',
+                fontFamily: "Fontin-SmallCaps",
                 fontWeight: 500,
-                color: 'hsl(var(--foreground))',
-                // marginBottom: '10px'
-            }
+                color: "hsl(var(--foreground))"
+            },
         },
         tooltip: {
             // style: {
             //     fontFamily: "Roboto-Light, sans-serif",
             //     fontSize: '12px'
             // }
-            custom: function({series, seriesIndex, dataPointIndex, w}) {
-                return `<div class='chartTooltipWrapper'><span class='chartTooltipText'>${w.config.labels[seriesIndex]}: ${w.config.series[seriesIndex]}</span></div>`
-            }
-        }
-        // yaxis: {
-        //     labels: {
-        //         formatter: function (value) {
-        //             return value;
-        //         },
-        //     },
-        // },
-        // xaxis: {
-        //     labels: {
-        //         formatter: function (value) {
-        //             return value;
-        //         },
-        //     },
-        //     axisTicks: {
-        //         show: false,
-        //     },
-        //     axisBorder: {
-        //         show: false,
-        //     },
-        // },
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                return `<div class='chartTooltipWrapper'><span class='chartTooltipText'>${w.config.labels[seriesIndex]}: ${w.config.series[seriesIndex]}</span></div>`;
+            },
+        },
     };
 </script>
 

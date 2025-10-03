@@ -12,6 +12,7 @@ node_modules
 Thumbs.db
 
 # Env
+.NOTE
 .env
 .env.*
 !.env.example
