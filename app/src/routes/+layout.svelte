@@ -4,7 +4,7 @@
 	import { cn } from "$lib/utils";
 	import { page } from "$app/stores";
 	import { onMount } from "svelte";
-	import { data_summary } from "../store";
+	import { data_summary, mobile_layout } from "../store";
 	import { afterNavigate } from "$app/navigation";
 	import ThemeSelector from "../ThemeSelector.svelte";
 	import { mode, ModeWatcher } from "mode-watcher";
@@ -14,6 +14,7 @@
 	import { SvelteToast } from "@zerodevx/svelte-toast";
 	import Sidebar from "../Sidebar.svelte";
 	import TopNav from "../TopNav.svelte";
+	import MobileNavMenu from "../mobileNavMenu.svelte";
 
 	import {
 		getAccountName,
@@ -33,7 +34,15 @@
 		},
 	};
 
+	
+
 	onMount(async () => {
+		const isMobile = () => {
+			mobile_layout.set(window.innerWidth < 640)
+		}
+
+		isMobile()
+		window.addEventListener('resize', isMobile)
 		
 		const oauth_code = $page.url.searchParams.get("code");
 		const oauth_state = $page.url.searchParams.get("state");
@@ -52,7 +61,7 @@
 		if (!import.meta.env.PROD) {
 			localStorage.setItem(
 				"access_token",
-				"2a7f226ac4ee27b596ab0922b26552efda627994",
+				"71db05ae96d7a7b40ab6ae7a0e07ca50f4dec89e",
 			);
 			localStorage.setItem("token_exp", Date.now() + 36000);
 		}
@@ -69,21 +78,32 @@
 		}
 
 		account_name.set(localStorage.getItem("account_name"));
+
+		return () => {
+			window.removeEventListener('resize', isMobile)
+		}
 	});
 </script>
 
 <ModeWatcher disableTransitions={false} />
 <div class={cn("app " + (mode.current === "dark" ? "dark" : ""))}>
+	{#if $mobile_layout}
+	<MobileNavMenu />
+	{/if}
 	<div class="flex flex-row min-h-screen justify-center">
 		<!-- Left Margin -->
+		 {#if !$mobile_layout}
 		<div class="flex flex-col gap-5 mr-5 items-end mt-[78px]">
 			<Sidebar />
 			<ThemeSelector />
 		</div>
+		{/if}
 
 		<!-- Main Content -->
-		<div class="flex flex-col basis-1/3 max-w-[1700px]">
+		<div class="flex flex-col basis-1/3 max-w-[200px] sm:max-w-[600px] 2xl:max-w-[1700px]">
+			{#if !mobile_layout}
 			<TopNav></TopNav>
+			{/if}
 			<main
 				class={cn("flex flex-col border rounded-t-xl h-full")}
 				style="margin-top: 0px;"
