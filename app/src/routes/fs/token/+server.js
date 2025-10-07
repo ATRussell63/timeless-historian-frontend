@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit'
+import { CLIENT_SECRET } from '$env/static/private';
 
 const tokenURL = 'https://www.pathofexile.com/oauth/token'
 
@@ -10,6 +11,7 @@ export async function POST({ request }) {
     try {
         const request_body = new URLSearchParams({
             'client_id': 'timelesshistorian',
+            'client_secret': CLIENT_SECRET,
             'grant_type': 'authorization_code',
             'code': r.oauth_code,
             'redirect_uri': 'https://www.timelesshistorian.xyz/',
@@ -17,8 +19,8 @@ export async function POST({ request }) {
             'code_verifier': r.code_verifier
         })
 
-        console.log('pinging /token with:')
-        console.log(request_body)
+        // console.log('pinging /token with:')
+        // console.log(request_body)
 
         const response = await fetch(tokenURL, {
             method: 'POST',
@@ -31,8 +33,8 @@ export async function POST({ request }) {
         })
 
         const body = await response.json()
-        console.log('/token response:')
-        console.log(body)
+        // console.log('/token response:')
+        // console.log(body)
         return json({
             body: body,
             headers: response.headers,

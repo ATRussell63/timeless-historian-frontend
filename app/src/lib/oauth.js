@@ -34,7 +34,10 @@ export async function redirectToAuthorize() {
 
     localStorage.setItem('code_verifier', code_verifier);
     localStorage.setItem('oauth_state', state);
-    window.location.href = redirectURL;
+
+    setTimeout(() => {
+        window.location.href = redirectURL;
+    }, 100);
 }
 
 export async function getAccessCode(oauth_code) {
