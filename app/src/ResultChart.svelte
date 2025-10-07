@@ -46,6 +46,7 @@
         },
         plotOptions: {
             pie: {
+                expandOnClick: false,
                 labels: {
                     show: true,
                 },

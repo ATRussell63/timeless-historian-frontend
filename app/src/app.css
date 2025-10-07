@@ -440,12 +440,12 @@ black: #0D0D0D
 
 .resultsSummaryText {
   font-family: Roboto;
-  font-size: 18px;
+  /* font-size: 18px; */
 }
 
 .resultsSummaryTitle {
   font-family: Fontin-SmallCaps;
-  font-size: 28px;
+  /* font-size: 28px; */
 }
 
 .roboto {
