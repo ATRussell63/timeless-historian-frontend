@@ -4,6 +4,7 @@
     import { base } from "$app/paths";
     import { hoverData } from "./resultsBrowserStore";
     import { LEGION_COLORS, LEGION_ABBREV } from "./drawingConstants";
+    import { Pointer } from "lucide-svelte";
 
     const darkImages = import.meta.glob("$lib/images/drawing/dark/*.svg", {
         eager: true,
@@ -12,12 +13,59 @@
         eager: true,
     });
 
-    let { w, h, mode } = $props();
+    let { mode } = $props();
 
+    const RADIUS_PADDING = 50;
+    const MARGIN = 20;
+
+    Konva.showWarnings = false;
     let stage = null;
+    let container;
+    let observer;
+    let currentScale;
+
+    function getDesignScale() {
+        if ($hoverData) {
+            const s = ($hoverData.drawing.radius + RADIUS_PADDING) * 2;
+            return s;
+        } else {
+            console.log("hey I didnt find hoverdata :(");
+            return 3600;
+        }
+    }
+
+    function ignoreScale(val) {
+        return val / currentScale;
+    }
+
+    function resizeStage() {
+
+        if (!container || !stage) return;
+        const { width, height } = container.getBoundingClientRect();
+        const size = Math.min(width, height);
+
+        try {
+            if (stage.width() !== width || stage.height() !== height) {
+                const usableSize = size - MARGIN * 2;
+                stage.width(width);
+                stage.height(height);
+                currentScale = usableSize / getDesignScale();
+                const layers = stage.getLayers();
+                for (const layer of layers) {
+                    layer.x(width / 2);
+                    layer.y(height / 2);
+                    layer.scale({ x: currentScale, y: currentScale });
+                    layer.batchDraw();
+                }
+            }
+        } catch (e) {
+            return;
+        }
+    }
 
     function drawJewel() {
-        const SCALE_FACTOR = 0.22;
+        console.log("drawinge....");
+
         const NODE_SIZE = 256;
         const TT_FONT_BODY = "#8183BF";
         const TT_FONT_TITLE = "#F8E5C9";
@@ -25,41 +73,36 @@
         const TT_FONT_REMINDER = "#7F7F7F";
         const TT_WIDTH = "";
         const TT_W_PADDING = 10;
-        const RADIUS_PADDING = 50;
+
         const UN_COLOR = mode.current === "dark" ? "#666666" : "#333333";
         const TT_TITLE_SIZE = 20;
         const TT_BODY_SIZE = 16;
         const TT_REMINDER_SIZE = 14;
+        let tt_shown_via_click = false;
 
         const src_suffix = LEGION_ABBREV.get($hoverData.drawing.jewel_type);
 
+        const stageW = container.getBoundingClientRect();
+        const stageH = container.getBoundingClientRect();
+
         stage = new Konva.Stage({
             container: "drawingContainer",
-            width: w,
-            height: h,
+            width: stageW,
+            height: stageH,
         });
 
-        function convert_coord(n, dim) {
-            switch (dim) {
-                case "x":
-                    return stage.width() / 2 + n * SCALE_FACTOR;
-                case "y":
-                    return stage.height() / 2 + n * SCALE_FACTOR;
-            }
-        }
-
-        const baseLayer = new Konva.Layer(); // backdrop
-        const mouseoverLayer = new Konva.Layer(); // mouseover detectors
-        const maskLayer = new Konva.Layer();
-        const ttLayer = new Konva.Layer(); // tooltip
+        const baseLayer = new Konva.Layer({name: 'base'}); // backdrop
+        const mouseoverLayer = new Konva.Layer({name: 'mouseover'}); // mouseover detectors
+        const maskLayer = new Konva.Layer({name: 'mask'});
+        const ttLayer = new Konva.Layer({name: 'tooltip'}); // tooltip
 
         // clipping group that trims the overall radius and punches holes for each node
         const edgeCropper = new Konva.Group({
             clipFunc: function (ctx) {
                 ctx.arc(
-                    stage.width() / 2,
-                    stage.height() / 2,
-                    ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
+                    0,
+                    0,
+                    $hoverData.drawing.radius + RADIUS_PADDING,
                     0,
                     360,
                 );
@@ -81,27 +124,27 @@
 
         // draw the radius
         const backdrop = new Konva.Circle({
-            x: stage.width() / 2,
-            y: stage.height() / 2,
-            radius: ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
+            x: 0,
+            y: 0,
+            radius: $hoverData.drawing.radius + RADIUS_PADDING,
             fill: backdropFill,
             opacity: backdropOpacity,
         });
 
         const timelessRadius = new Konva.Circle({
-            x: stage.width() / 2,
-            y: stage.height() / 2,
-            radius: ($hoverData.drawing.radius + RADIUS_PADDING) * SCALE_FACTOR,
+            x: 0,
+            y: 0,
+            radius: $hoverData.drawing.radius + RADIUS_PADDING,
             stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
-            strokeWidth: 10,
+            strokeWidth: 60,
         });
 
         baseLayer.add(backdrop);
 
         // TOOLTIP
         const ttGroup = new Konva.Group({
-            offsetX: -8,
-            offsetY: -8,
+            offsetX: 0,
+            offsetY: 0,
         });
 
         const ttBackground = new Konva.Rect({
@@ -111,7 +154,7 @@
             height: 400,
             fill: "black",
             stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
-            strokeWidth: 2,
+            strokeWidth: ignoreScale(2),
             opacity: 0.8,
         });
 
@@ -134,14 +177,9 @@
             }
 
             const sEdge = new Konva.Line({
-                points: [
-                    convert_coord(edge.c[0].x, "x"),
-                    convert_coord(edge.c[0].y, "y"),
-                    convert_coord(edge.c[1].x, "x"),
-                    convert_coord(edge.c[1].y, "y"),
-                ],
+                points: [edge.c[0].x, edge.c[0].y, edge.c[1].x, edge.c[1].y],
                 stroke: stroke,
-                strokeWidth: 3,
+                strokeWidth: ignoreScale(3),
                 lineCap: "square",
                 lineJoin: "square",
             });
@@ -153,19 +191,19 @@
             if (edge.a) {
                 stroke = LEGION_COLORS.get($hoverData.drawing.jewel_type);
             }
-            const cx = convert_coord(edge.c.x, "x");
-            const cy = convert_coord(edge.c.y, "y");
+            const cx = edge.c.x;
+            const cy = edge.c.y;
 
             const arc = new Konva.Arc({
                 x: cx,
                 y: cy,
-                innerRadius: edge.r * SCALE_FACTOR,
-                outerRadius: edge.r * SCALE_FACTOR,
+                innerRadius: edge.r,
+                outerRadius: edge.r,
                 rotation: edge.o,
                 angle: edge.t,
                 fill: "yellow",
                 stroke: stroke,
-                strokeWidth: 3,
+                strokeWidth: ignoreScale(3),
             });
             edgeCropper.add(arc);
         }
@@ -206,16 +244,16 @@
             if (jewel_titles.includes(node.l.title)) {
                 kText.fontFamily("Fontin-SmallCaps");
                 kText.fill(TT_FONT_UNIQUE);
-                kText.fontSize(TT_TITLE_SIZE + 4);
+                kText.fontSize(ignoreScale(TT_TITLE_SIZE + 4));
             } else {
                 kText.fontFamily("Fontin-Regular");
                 kText.fill(TT_FONT_TITLE);
-                kText.fontSize(TT_TITLE_SIZE);
+                kText.fontSize(ignoreScale(TT_TITLE_SIZE));
             }
 
             kText.align("center");
             kText.text(node.l.title);
-            kText.padding(10);
+            kText.padding(ignoreScale(10));
             kText.offsetX(0);
         };
 
@@ -225,7 +263,7 @@
             kText.text(t);
             kText.fontFamily("Fontin-Regular");
             kText.fill(TT_FONT_BODY);
-            kText.fontSize(TT_BODY_SIZE);
+            kText.fontSize(ignoreScale(TT_BODY_SIZE));
 
             const jewel_titles = [
                 "Glorious Vanity",
@@ -239,8 +277,8 @@
             } else {
                 kText.align("left");
             }
-            kText.padding(10);
-            kText.offsetY(-ttTitle.height() + 10);
+            kText.padding(ignoreScale(10));
+            kText.offsetY(-ttTitle.height() + ignoreScale(10));
         };
 
         const tt_reminder_fmt = function (node, kText) {
@@ -252,7 +290,7 @@
             kText.text(t);
             kText.fontFamily("Fontin-Italic");
             kText.fill(TT_FONT_REMINDER);
-            kText.fontSize(TT_REMINDER_SIZE);
+            kText.fontSize(ignoreScale(TT_REMINDER_SIZE));
 
             const jewel_titles = [
                 "Glorious Vanity",
@@ -267,30 +305,31 @@
                 kText.align("left");
             }
 
-            let body_height = node.l.body.length == 0 ? 10 : ttBody.height();
+            let body_height = node.l.body.length == 0 ? ignoreScale(5) : ttBody.height();
 
-            kText.offsetX(-TT_W_PADDING);
-            kText.offsetY(-(ttTitle.height() + body_height - 10));
+            kText.offsetX(-ignoreScale(TT_W_PADDING));
+            kText.offsetY(-(ttTitle.height() + body_height - ignoreScale(10)));
         };
 
         // NODES
         Object.values($hoverData.drawing.nodes).forEach((node) => {
             const nodeImage = new Image();
-            const nx = convert_coord(node.c.x, "x");
-            const ny = convert_coord(node.c.y, "y");
+            const nx = node.c.x;
+            const ny = node.c.y;
 
             // images are always rects so we draw a circle to act as a mouseover target
             const nodeMouseoverDetector = new Konva.Circle({
+                name: 'mouseoverDetector',
                 x: nx,
                 y: ny,
-                radius: (NODE_SIZE / 3) * SCALE_FACTOR,
+                radius: NODE_SIZE / 3,
                 stroke: "black",
                 fill: "white",
                 strokeWidth: 0,
                 opacity: 0,
             });
 
-            nodeMouseoverDetector.on("mousemove", () => {
+            function drawTooltip () {
                 tt_title_fmt(node, ttTitle);
                 tt_body_fmt(node, ttBody);
 
@@ -307,7 +346,7 @@
                     ttBody.getTextWidth(),
                     ttReminder.getTextWidth(),
                 );
-                ttBackground.width(maxW + 20);
+                ttBackground.width(maxW + ignoreScale(20));
 
                 // HACK
                 if (ttTitle.fontFamily() === "Fontin-SmallCaps") {
@@ -319,54 +358,76 @@
                 // set tooltip height
                 let cumH = ttTitle.height();
                 if (node.l.body.length > 0) {
-                    cumH += ttBody.height() - 10;
+                    cumH += ttBody.height() - ignoreScale(10);
                 }
                 if (node.l.replaced_title) {
-                    cumH += ttReminder.height() + 10;
+                    cumH += ttReminder.height() + ignoreScale(10);
                 }
 
                 ttBackground.height(cumH);
 
                 //update position
-                const mousePos = stage.getPointerPosition();
+                const mousePos = mouseoverLayer.getRelativePointerPosition();
 
-                let offset_x = 10;
-                let offset_y = 10;
+                let offset_x = ignoreScale(5)
+                let offset_y = ignoreScale(5)
 
-                let push_margin = 30;
+                let push_margin_bottom = ignoreScale(20)
+                let push_margin_right = ignoreScale(20)
 
-                if (
-                    mousePos.x + ttBackground.width() + offset_x + push_margin >
-                    stage.width()
-                ) {
-                    offset_x =
-                        stage.width() -
-                        (mousePos.x + ttBackground.width() + push_margin);
-                }
+                let tooltipX = mousePos.x + offset_x
+                let tooltipY = mousePos.y + offset_y
 
-                if (
-                    mousePos.y +
-                        ttBackground.height() +
-                        offset_y +
-                        push_margin >
-                    stage.height()
-                ) {
-                    offset_y =
-                        stage.height() -
-                        (mousePos.y + ttBackground.height() + push_margin);
+                const tooltipW = ttBackground.width()
+                const tooltipH = ttBackground.height()
+
+                const stageWidthWorld = ignoreScale(stage.width())
+                const stageHeightWorld = ignoreScale(stage.height())
+
+                const centerX = stage.width() / 2 / currentScale
+                const centerY = stage.height() / 2 / currentScale
+
+                const minX = -centerX + push_margin_bottom
+                const maxX = centerX - push_margin_right
+                const minY = -centerY
+                const maxY = centerY
+
+                tooltipX = Math.min(tooltipX, maxX - tooltipW)
+                tooltipX = Math.max(tooltipX, minX)
+
+                if (tooltipY + tooltipH > maxY) {
+                    tooltipY = mousePos.y - tooltipH - offset_y
+                } else {
+                    tooltipY = mousePos.y + offset_y
                 }
 
                 ttGroup.position({
-                    x: mousePos.x + offset_x,
-                    y: mousePos.y + offset_y,
+                    x: tooltipX,
+                    y: tooltipY,
                 });
+            }
 
-                ttLayer.show();
+            nodeMouseoverDetector.on("mousemove", () => {
+                if (!tt_shown_via_click) {
+                    drawTooltip();
+                    ttLayer.show();
+                }
             });
 
             nodeMouseoverDetector.on("mouseout", () => {
-                ttLayer.hide();
+                // console.log("off");
+                if (!tt_shown_via_click) {
+                    ttLayer.hide();
+                }
             });
+
+            nodeMouseoverDetector.on('tap', () => {
+                console.log('clicking time')
+                tt_shown_via_click = true
+                drawTooltip()
+                ttLayer.show()
+            })
+
             mouseoverLayer.add(nodeMouseoverDetector);
 
             nodeImage.onload = () => {
@@ -374,11 +435,11 @@
                     x: nx,
                     y: ny,
                     image: nodeImage,
-                    width: NODE_SIZE * SCALE_FACTOR,
-                    height: NODE_SIZE * SCALE_FACTOR,
+                    width: NODE_SIZE,
+                    height: NODE_SIZE,
                 });
-                img.offsetX((NODE_SIZE * SCALE_FACTOR) / 2);
-                img.offsetY((NODE_SIZE * SCALE_FACTOR) / 2);
+                img.offsetX(NODE_SIZE / 2);
+                img.offsetY(NODE_SIZE / 2);
                 edgeCropper.add(img);
             };
 
@@ -397,16 +458,40 @@
             nodeImage.src = src;
         });
 
+        stage.on('click', (e) => {
+            if (!e.target.hasName('mouseoverDetector')) {
+                ttLayer.hide()
+                tt_shown_via_click = false
+            }
+        })
+        stage.on('tap', (e) => {
+            if (!e.target.hasName('mouseoverDetector')) {
+                ttLayer.hide()
+                tt_shown_via_click = false
+            }
+        })
+
         baseLayer.add(edgeCropper);
         maskLayer.add(timelessRadius);
         stage.add(baseLayer);
         stage.add(maskLayer);
         stage.add(mouseoverLayer);
-
         stage.add(ttLayer);
+
+        resizeStage();
+
+        observer = new ResizeObserver(() => {
+            requestAnimationFrame(resizeStage);
+        });
+        observer.observe(container);
+
+        console.log("done :^)");
     }
 
     onMount(() => {
+        container.style.position = "relative";
+        container.style.overflow = "hidden";
+
         if (!$hoverData) {
             return;
         }
@@ -415,15 +500,21 @@
     });
 
     onDestroy(() => {
+        observer?.disconnect();
         stage.remove();
         stage = null;
+        observer = null;
     });
 
     // on update to props, re-render
     $effect(() => {
+        console.log("update");
+
         if (stage) {
+            observer?.disconnect();
             stage.remove();
             stage = null;
+            observer = null;
         }
 
         if (!$hoverData) {
@@ -433,11 +524,17 @@
     });
 </script>
 
-<div id="drawingContainer"></div>
+<div class="w-full aspect-square min-h-[200px]">
+    <div
+        bind:this={container}
+        id="drawingContainer"
+        class="w-full h-full"
+    ></div>
+</div>
 
 <style>
-    #drawingContainer {
-        margin-top: 5px;
-        margin-bottom: 10px;
-    }
+    /* #drawingContainer {
+        width: 100%;
+        height: 100%;
+    } */
 </style>
