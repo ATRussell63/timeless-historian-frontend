@@ -5,6 +5,7 @@
     import { hoverData } from "./resultsBrowserStore";
     import { LEGION_COLORS, LEGION_ABBREV } from "./drawingConstants";
     import { Pointer } from "lucide-svelte";
+    import { mobile_layout } from "./store";
 
     const darkImages = import.meta.glob("$lib/images/drawing/dark/*.svg", {
         eager: true,
@@ -39,7 +40,6 @@
     }
 
     function resizeStage() {
-
         if (!container || !stage) return;
         const { width, height } = container.getBoundingClientRect();
         const size = Math.min(width, height);
@@ -91,10 +91,10 @@
             height: stageH,
         });
 
-        const baseLayer = new Konva.Layer({name: 'base'}); // backdrop
-        const mouseoverLayer = new Konva.Layer({name: 'mouseover'}); // mouseover detectors
-        const maskLayer = new Konva.Layer({name: 'mask'});
-        const ttLayer = new Konva.Layer({name: 'tooltip'}); // tooltip
+        const baseLayer = new Konva.Layer({ name: "base" }); // backdrop
+        const mouseoverLayer = new Konva.Layer({ name: "mouseover" }); // mouseover detectors
+        const maskLayer = new Konva.Layer({ name: "mask" });
+        const ttLayer = new Konva.Layer({ name: "tooltip" }); // tooltip
 
         // clipping group that trims the overall radius and punches holes for each node
         const edgeCropper = new Konva.Group({
@@ -263,7 +263,12 @@
             kText.text(t);
             kText.fontFamily("Fontin-Regular");
             kText.fill(TT_FONT_BODY);
-            kText.fontSize(ignoreScale(TT_BODY_SIZE));
+
+            if (mobile_layout) {
+                kText.fontSize(ignoreScale(TT_BODY_SIZE - 2));
+            } else {
+                kText.fontSize(ignoreScale(TT_BODY_SIZE));
+            }
 
             const jewel_titles = [
                 "Glorious Vanity",
@@ -319,7 +324,7 @@
 
             // images are always rects so we draw a circle to act as a mouseover target
             const nodeMouseoverDetector = new Konva.Circle({
-                name: 'mouseoverDetector',
+                name: "mouseoverDetector",
                 x: nx,
                 y: ny,
                 radius: NODE_SIZE / 3,
@@ -329,7 +334,7 @@
                 opacity: 0,
             });
 
-            function drawTooltip () {
+            function drawTooltip() {
                 tt_title_fmt(node, ttTitle);
                 tt_body_fmt(node, ttBody);
 
@@ -369,36 +374,36 @@
                 //update position
                 const mousePos = mouseoverLayer.getRelativePointerPosition();
 
-                let offset_x = ignoreScale(5)
-                let offset_y = ignoreScale(5)
+                let offset_x = ignoreScale(5);
+                let offset_y = ignoreScale(5);
 
-                let push_margin_bottom = ignoreScale(20)
-                let push_margin_right = ignoreScale(20)
+                let push_margin_bottom = ignoreScale(20);
+                let push_margin_right = ignoreScale(20);
 
-                let tooltipX = mousePos.x + offset_x
-                let tooltipY = mousePos.y + offset_y
+                let tooltipX = mousePos.x + offset_x;
+                let tooltipY = mousePos.y + offset_y;
 
-                const tooltipW = ttBackground.width()
-                const tooltipH = ttBackground.height()
+                const tooltipW = ttBackground.width();
+                const tooltipH = ttBackground.height();
 
-                const stageWidthWorld = ignoreScale(stage.width())
-                const stageHeightWorld = ignoreScale(stage.height())
+                const stageWidthWorld = ignoreScale(stage.width());
+                const stageHeightWorld = ignoreScale(stage.height());
 
-                const centerX = stage.width() / 2 / currentScale
-                const centerY = stage.height() / 2 / currentScale
+                const centerX = stage.width() / 2 / currentScale;
+                const centerY = stage.height() / 2 / currentScale;
 
-                const minX = -centerX + push_margin_bottom
-                const maxX = centerX - push_margin_right
-                const minY = -centerY
-                const maxY = centerY
+                const minX = -centerX + push_margin_bottom;
+                const maxX = centerX - push_margin_right;
+                const minY = -centerY;
+                const maxY = centerY;
 
-                tooltipX = Math.min(tooltipX, maxX - tooltipW)
-                tooltipX = Math.max(tooltipX, minX)
+                tooltipX = Math.min(tooltipX, maxX - tooltipW);
+                tooltipX = Math.max(tooltipX, minX);
 
                 if (tooltipY + tooltipH > maxY) {
-                    tooltipY = mousePos.y - tooltipH - offset_y
+                    tooltipY = mousePos.y - tooltipH - offset_y;
                 } else {
-                    tooltipY = mousePos.y + offset_y
+                    tooltipY = mousePos.y + offset_y;
                 }
 
                 ttGroup.position({
@@ -421,12 +426,12 @@
                 }
             });
 
-            nodeMouseoverDetector.on('tap', () => {
-                console.log('clicking time')
-                tt_shown_via_click = true
-                drawTooltip()
-                ttLayer.show()
-            })
+            nodeMouseoverDetector.on("tap", () => {
+                console.log("clicking time");
+                tt_shown_via_click = true;
+                drawTooltip();
+                ttLayer.show();
+            });
 
             mouseoverLayer.add(nodeMouseoverDetector);
 
@@ -458,18 +463,18 @@
             nodeImage.src = src;
         });
 
-        stage.on('click', (e) => {
-            if (!e.target.hasName('mouseoverDetector')) {
-                ttLayer.hide()
-                tt_shown_via_click = false
+        stage.on("click", (e) => {
+            if (!e.target.hasName("mouseoverDetector")) {
+                ttLayer.hide();
+                tt_shown_via_click = false;
             }
-        })
-        stage.on('tap', (e) => {
-            if (!e.target.hasName('mouseoverDetector')) {
-                ttLayer.hide()
-                tt_shown_via_click = false
+        });
+        stage.on("tap", (e) => {
+            if (!e.target.hasName("mouseoverDetector")) {
+                ttLayer.hide();
+                tt_shown_via_click = false;
             }
-        })
+        });
 
         baseLayer.add(edgeCropper);
         maskLayer.add(timelessRadius);

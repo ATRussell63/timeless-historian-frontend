@@ -90,6 +90,14 @@
         }
         return {};
     });
+
+    function scrollToJewelDetails() {
+        document.getElementById('jewelDetails')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end'
+        })
+    }
+
 </script>
 
 {#if body && results && !$forceHidden}
@@ -309,9 +317,7 @@
                                 class="flex flex-row w-full justify-center"
                                 style=""
                             >
-                                <JewelDrawing
-                                    {mode}
-                                />
+                                <JewelDrawing {mode} />
                             </div>
                         </div>
                     {:else if Object.keys(results).length > 0}
@@ -427,7 +433,7 @@
                                     )}
                                 >
                                     <span
-                                        class="text-[18px] lg:text-[24px]"
+                                        class="text-[22px] lg:text-[24px]"
                                         style="font-family: Fontin-SmallCaps"
                                         >{key} ({value.jewels.length})</span
                                     >
@@ -439,8 +445,9 @@
                                         <Button
                                             variant="outline"
                                             onclick={() => {
+                                                selectedJewel.set(jewel);
                                                 hoverData.set(jewel);
-                                                // console.log($hoverData)
+                                                scrollToJewelDetails();
                                             }}
                                             class={cn(
                                                 "jewelResultRowButton rounded-none flex justify-between py-10 " +
@@ -513,10 +520,14 @@
                         {/each}
                     </Accordion.Root>
                 </ScrollArea>
-                
-                <JewelDrawing
-                {mode}
-            />
+                <Card.Root class='mt-6'>
+                    <Card.Content>
+                        <JewelDetailsCard sampleMode={body.seed === "Any"} />
+                         <div id='jewelDetails'></div>
+                        <JewelDrawing {mode} />
+                        
+                    </Card.Content>
+                </Card.Root>
             </div>
         </div>
     {/if}
