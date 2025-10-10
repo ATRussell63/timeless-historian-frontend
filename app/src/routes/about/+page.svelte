@@ -18,7 +18,8 @@
     <title>Timeless Historian - About</title>
 </svelte:head>
 
-<div class="flex flex-col lg:mb-2 px-2 lg:px-6 pt-3 gap-20 min-w-[364px] lg:min-w-[1200px]" style={backgroundStyle}>
+
+<div class="flex flex-col lg:mb-2 px-2 lg:px-6 pt-3 gap-20 lg:min-w-[1200px]" style={backgroundStyle}>
     <div class="flex flex-row justify-center mt-20 items-center">
         <div class="flex flex-row items-center justify-center gap-8 lg:gap-20">
             <div>
@@ -54,7 +55,7 @@
                 <div class="flex flex-row justify-center mb-4 text-[24px]">
                     <h1>Background</h1>
                 </div>
-                <div class="flex flex-col gap-2 px-0 text-[12px] lg:px-6">
+                <div class="flex flex-col gap-2 px-0 text-[14px] lg:px-6">
                     <p>
                         In the early leagues after Legion, only the most
                         dedicated players were able to hunt down the best jewel
@@ -191,7 +192,7 @@
                 <div class="flex flex-row justify-center mb-4 text-[24px]">
                     <h1>FAQ</h1>
                 </div>
-                <div class="flex flex-col gap-2 px-0 text-[12px] lg:px-6">
+                <div class="flex flex-col gap-2 px-0 text-[14px] lg:px-6">
                     <h2 class='mt-4 mb-2 text-[16px]'>What is this site?</h2>
                     <p>
                         Timeless Historian is a historial database for timeless
@@ -256,6 +257,7 @@
         </Card.Root>
     </div>
 </div>
+
 
 <style>
     p {

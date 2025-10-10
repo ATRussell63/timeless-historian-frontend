@@ -74,6 +74,7 @@
 			window.removeEventListener("resize", isMobile);
 		};
 	});
+
 </script>
 
 <ModeWatcher disableTransitions={false} />
@@ -92,7 +93,7 @@
 
 		<!-- Main Content -->
 		<div
-			class="flex flex-col basis-1/3 px-2 w-full sm:max-w-[600px] 2xl:max-w-[1700px]"
+			class="flex flex-col basis-1/3 grow px-2 w-full sm:max-w-[600px] 2xl:max-w-[1700px]"
 		>
 			{#if !$mobile_layout}
 				<TopNav></TopNav>

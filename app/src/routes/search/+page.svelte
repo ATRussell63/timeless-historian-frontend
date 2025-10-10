@@ -198,7 +198,7 @@
 </svelte:head>
 
 <div
-    class="flex flex-col h-full min-w-[364px] lg:min-w-[1400px] px-10 py-10"
+    class="flex flex-col h-full lg:min-w-[1400px] px-10 py-10"
     style={backgroundStyle}
 >
     {#if !$mobile_layout}
