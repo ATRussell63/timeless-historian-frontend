@@ -37,7 +37,7 @@
     <Drawer.Root direction="left" bind:open={isOpen}>
         <Drawer.Trigger class=''>
             <div class="flex flex-row items-center justify-between h-[48px]">
-                <Button class="h-[48px] sidebarButton mx-0 my-0 px-3 py-0 rounded-none bg-background" variant="link" href="/">
+                <Button class="h-[48px] sidebarButton mx-0 my-0 px-3 py-0 rounded-none bg-background" variant="link">
                     <div>
                         <img
                             class="thLogo absolute scale-100 dark:scale-0"

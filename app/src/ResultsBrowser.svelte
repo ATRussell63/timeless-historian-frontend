@@ -92,9 +92,9 @@
     });
 
     function scrollToJewelDetails() {
-        document.getElementById('jewelDetails')?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end'
+        window.scrollTo({
+            top: 1400,
+            behavior: 'smooth'
         })
     }
 
@@ -520,14 +520,16 @@
                         {/each}
                     </Accordion.Root>
                 </ScrollArea>
+                {#if $hoverData}
                 <Card.Root class='mt-6'>
                     <Card.Content>
                         <JewelDetailsCard sampleMode={body.seed === "Any"} />
-                         <div id='jewelDetails'></div>
+                         <!-- <div id='jewelDetails'></div> -->
                         <JewelDrawing {mode} />
                         
                     </Card.Content>
                 </Card.Root>
+                {/if}
             </div>
         </div>
     {/if}
