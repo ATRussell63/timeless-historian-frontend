@@ -57,11 +57,11 @@
             </div>
         </Drawer.Trigger>
         <Drawer.Content>
-            <Button class='rounded-none bg-background h-14 border-b-1 py-8' variant='ghost'>
+            <div class='flex flex-row rounded-none bg-background h-14 border-b-1 py-8 items-center justify-center'>
                 <span class='menuButton'>
                     Menu
                 </span>
-            </Button>
+            </div>
             {#each menuButtons as mb}
             <Button class='rounded-none bg-accent dark:bg-card h-14 border-b-1' variant='link' onclick={() => {closeNav(mb.href)}}>
                 <span class='menuButton'>

@@ -530,6 +530,7 @@
                     </Card.Content>
                 </Card.Root>
                 {/if}
+                <div id="resultsScrollTarget"></div>
             </div>
         </div>
     {/if}

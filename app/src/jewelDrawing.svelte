@@ -30,7 +30,6 @@
             const s = ($hoverData.drawing.radius + RADIUS_PADDING) * 2;
             return s;
         } else {
-            console.log("hey I didnt find hoverdata :(");
             return 3600;
         }
     }
@@ -46,6 +45,7 @@
 
         try {
             if (stage.width() !== width || stage.height() !== height) {
+                console.log('resize')
                 const usableSize = size - MARGIN * 2;
                 stage.width(width);
                 stage.height(height);
@@ -64,8 +64,6 @@
     }
 
     function drawJewel() {
-        console.log("drawinge....");
-
         const NODE_SIZE = 256;
         const TT_FONT_BODY = "#8183BF";
         const TT_FONT_TITLE = "#F8E5C9";
@@ -420,14 +418,12 @@
             });
 
             nodeMouseoverDetector.on("mouseout", () => {
-                // console.log("off");
                 if (!tt_shown_via_click) {
                     ttLayer.hide();
                 }
             });
 
             nodeMouseoverDetector.on("tap", () => {
-                console.log("clicking time");
                 tt_shown_via_click = true;
                 drawTooltip();
                 ttLayer.show();
@@ -485,12 +481,8 @@
 
         resizeStage();
 
-        observer = new ResizeObserver(() => {
-            requestAnimationFrame(resizeStage);
-        });
+        observer = new ResizeObserver(resizeStage);
         observer.observe(container);
-
-        console.log("done :^)");
     }
 
     onMount(() => {
@@ -513,8 +505,6 @@
 
     // on update to props, re-render
     $effect(() => {
-        console.log("update");
-
         if (stage) {
             observer?.disconnect();
             stage.remove();
@@ -538,8 +528,4 @@
 </div>
 
 <style>
-    /* #drawingContainer {
-        width: 100%;
-        height: 100%;
-    } */
 </style>

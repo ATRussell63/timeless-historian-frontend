@@ -52,7 +52,7 @@
 		if (!import.meta.env.PROD) {
 			localStorage.setItem(
 				"access_token",
-				"71db05ae96d7a7b40ab6ae7a0e07ca50f4dec89e",
+				"8596c90907d3790e2b4946395080df3cadf419da",
 			);
 			localStorage.setItem("token_exp", Date.now() + 36000);
 		}
