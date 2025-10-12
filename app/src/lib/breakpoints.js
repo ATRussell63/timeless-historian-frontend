@@ -29,26 +29,28 @@ const xxs = new Breakpoint(
 
 const xs = new Breakpoint(
     'xs',       //name
-    325,        //stageW
-    5,          //stageMargin
+    390,        //stageW
+    0,          //stageMargin
     2,          //stroke
     16,         //bodyFontSize
     20,         //titleFontSize
     5,          //textMargin
-    12          //tabLabelFontSize
+    20          //tabLabelFontSize
 )
 
 const s = new Breakpoint(
     's',       //name
-    325,        //stageW
-    5,          //stageMargin
+    420,        //stageW
+    0,          //stageMargin
     2,          //stroke
     16,         //bodyFontSize
     20,         //titleFontSize
     5,          //textMargin
-    12          //tabLabelFontSize
+    20          //tabLabelFontSize
 )
 
+
+// TODO - will revisit the larger breakpoints when we tackle non-mobile again
 const m = new Breakpoint(
     'm',      //name
     325,        //stageW

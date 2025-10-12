@@ -23,6 +23,7 @@
         clearSelection,
         forceHidden,
     } from "./resultsBrowserStore";
+    import { tick } from "svelte";
 
     const { totalW } = $props();
 
@@ -92,10 +93,12 @@
     });
 
     function scrollToJewelDetails() {
-        window.scrollTo({
-            top: 1400,
-            behavior: 'smooth'
-        })
+        // window.scrollTo({
+        //     top: 1400,
+        //     behavior: 'smooth'
+        // })
+        const jd = document.getElementById('drawingContainer')
+        jd.scrollIntoView({behavior: 'smooth', block: 'nearest'})
     }
 
 </script>
@@ -444,9 +447,10 @@
                                     {#each value.jewels as jewel}
                                         <Button
                                             variant="outline"
-                                            onclick={() => {
+                                            onclick={async () => {
                                                 selectedJewel.set(jewel);
                                                 hoverData.set(jewel);
+                                                await tick();
                                                 scrollToJewelDetails();
                                             }}
                                             class={cn(

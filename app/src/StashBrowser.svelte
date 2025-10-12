@@ -41,13 +41,11 @@
 
         try {
             if (stage.width() !== width) {
-                console.log('resize')
                 // see if we need a new breakpoint
                 const newBreakpoint = getBreakpoint(width)
                 if (newBreakpoint.name !== bp.name) {
                     console.log('new breakpoint: ' + newBreakpoint.name)
                     bp = newBreakpoint
-                    // redraw everything
                     drawStash()
                 }
             }
@@ -236,7 +234,6 @@
                         tooltip.updatePosition(bp, stage, tabLabelHeight, backdrop)
                         tooltip.group.show();
                     } catch (e) {
-                        console.log('halp')
                         console.log(e)
                         return;
                     }
@@ -296,6 +293,12 @@
                     clearSelection();
                     searchDBThenScroll(r, "resultsScrollTarget");
                 });
+
+                tileTarget.on("tap", function (e) {
+                    forceHidden.set(false);
+                    clearSelection();
+                    searchDBThenScroll(r, "resultsScrollTarget");
+                });
             }
 
             selfCenter(tile)
@@ -329,7 +332,7 @@
     onMount(() => {
         container.style.position = "relative";
         container.style.overflow = "hidden";
-        console.log('mounting')
+        bp = getBreakpoint(container.getBoundingClientRect().width)
 
         if (!$bulk_result) {
             return;
@@ -345,7 +348,6 @@
     });
 
     $effect(() => {
-        console.log('$effect')
         if (stage) {
             observer?.disconnect();
             stage.remove();

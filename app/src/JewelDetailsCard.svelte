@@ -58,7 +58,7 @@
 <div class="flex flex-row w-full h-full justify-between px-6">
     {#if $hoverData}
         <div class="flex flex-col grow-7 basis-[700px]">
-            <div class="flex-row w-full flex items-center overflow-hidden">
+            <div class="flex-row w-full flex overflow-hidden">
                 <img
                     class="border-2 border-black rounded-sm border-solid h-24"
                     alt={$hoverData.ascendancy_name}
@@ -190,7 +190,7 @@
 <div class="flex flex-row w-full h-full justify-between mb-4">
     {#if $hoverData}
         <div class="flex flex-col grow-7 basis-[700px]">
-            <div class="flex-row w-full flex items-center overflow-hidden">
+            <div class="flex-row w-full flex overflow-hidden">
                 <img
                     class="border-2 border-black rounded-sm border-solid h-24"
                     alt={$hoverData.ascendancy_name}
@@ -204,8 +204,8 @@
                             class="multiLang"
                             style={cn(
                                 $hoverData.character_name.length >= 19
-                                    ? "font-size: 18px;"
-                                    : "font-size: 24px;",
+                                    ? "font-size: 14px;"
+                                    : "font-size: 16px;",
                             )}
                             href={`https://www.pathofexile.com/account/view-profile/${$hoverData.account_name.replace("#", "-")}/characters?characterName=${encodeURIComponent($hoverData.character_name)}`}
                             >{$hoverData.character_name}</a
@@ -301,7 +301,7 @@
             </div>
             <Separator class='my-2'/>
             <div class="flex flex-col grow-3 overflow-hidden">
-                <p class="cardTitle pl-2 mt-1 mb-2">
+                <p class="cardTitle pl-2 mt-1 mb-2 text-[14px]">
                     Stats Granted by {$hoverData.jewel_type}
                     {$hoverData.seed}
                 </p>
