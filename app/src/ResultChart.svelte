@@ -1,5 +1,21 @@
 <script>
     import { Chart, A, Dropdown, DropdownItem, Popover } from "flowbite-svelte";
+    import { size_breakpoint } from "./store";
+
+    function getHeightForBP() {
+        switch($size_breakpoint) {
+            case 'xxs':
+            case 'xs':
+            case 'sm':
+                return 240;
+            case 'md':
+            case 'lg':
+                return 300;
+            case 'xl':
+            case '2xl':
+                return 400;
+        }
+    }
 
     let { values, labels, theme, title } = $props();
 
@@ -36,7 +52,7 @@
         series: values,
         colors: colors,
         chart: {
-            height: 420,
+            height: getHeightForBP(),
             width: "100%",
             type: "pie",
         },
