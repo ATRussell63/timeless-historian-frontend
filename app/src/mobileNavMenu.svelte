@@ -7,6 +7,7 @@
     import { derived } from "svelte/store";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
+    import { mode } from "mode-watcher";
     import MobileNavThemeSwitch from "./mobileNavThemeSwitch.svelte";
 
     const pageTitle = $derived.by(() => {
@@ -39,16 +40,19 @@
             <div class="flex flex-row items-center justify-between h-[48px]">
                 <Button class="h-[48px] sidebarButton mx-0 my-0 px-3 py-0 rounded-none bg-background" variant="link">
                     <div>
+                        {#if mode.current !== 'dark'}
                         <img
-                            class="thLogo absolute scale-100 dark:scale-0"
+                            class="h-[32px]"
                             src={THBlackLogo}
                             alt="TH Logo"
                         />
+                        {:else}
                         <img
-                            class="thLogo scale-0 dark:scale-100"
+                            class="h-[32px]"
                             src={THLightLogo}
                             alt="TH Logo"
                         />
+                        {/if}
                     </div>
                 </Button>
                 <span class="absolute left-1/2 -translate-x-1/2 text-background w-full max-w-[70%]" style="font-family: Trajan; font-size: 20px;">

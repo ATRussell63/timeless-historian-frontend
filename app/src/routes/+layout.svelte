@@ -5,7 +5,7 @@
 	import { page } from "$app/stores";
 	import { onMount } from "svelte";
 	import { derived } from "svelte/store";
-	import { data_summary, mobile_layout } from "../store";
+	import { data_summary, size_breakpoint } from "../store";
 	import { afterNavigate } from "$app/navigation";
 	import ThemeSelector from "../ThemeSelector.svelte";
 	import { mode, ModeWatcher } from "mode-watcher";
@@ -23,17 +23,18 @@
 		getLeagueStashList,
 	} from "$lib/api";
 	import { account_name, account_leagues, logout } from "../store";
+	import { getPageBreakpoint, isMobile } from "$lib/breakpoints";
 
 	let { children, data } = $props();
 	data_summary.set(data);
 
 	onMount(async () => {
-		const isMobile = () => {
-			mobile_layout.set(window.innerWidth < 640);
+		const setBP = () => {
+			size_breakpoint.set(getPageBreakpoint());
 		};
 
-		isMobile();
-		window.addEventListener("resize", isMobile);
+		setBP();
+		window.addEventListener("resize", setBP);
 
 		const oauth_code = $page.url.searchParams.get("code");
 		const oauth_state = $page.url.searchParams.get("state");
@@ -64,7 +65,7 @@
 		} else if (localStorage.getItem("account_name") === null) {
 			// token is not expired but we haven't populated the account data yet
 			let acc_name = await getAccountName();
-			console.log("Account name received is " + acc_name);
+			// console.log("Account name received is " + acc_name);
 			localStorage.setItem("account_name", acc_name);
 		}
 
@@ -79,13 +80,13 @@
 
 <ModeWatcher disableTransitions={false} />
 <div class={cn("app " + (mode.current === "dark" ? "dark" : ""))}>
-	{#if $mobile_layout}
+	{#if isMobile($size_breakpoint)}
 		<MobileNavMenu />
 	{/if}
 	<div class="flex flex-row min-h-screen justify-center">
 		<!-- Left Margin -->
-		{#if !$mobile_layout}
-			<div class="flex flex-col gap-5 mr-5 items-end mt-[78px]">
+		{#if !isMobile($size_breakpoint)}
+			<div class="flex flex-col sm:gap-2 lg:gap-2 sm:mr-0 lg:ml-2 items-end mt-[78px]">
 				<Sidebar />
 				<ThemeSelector />
 			</div>
@@ -93,13 +94,13 @@
 
 		<!-- Main Content -->
 		<div
-			class="flex flex-col basis-1/3 grow px-2 w-full sm:max-w-[600px] 2xl:max-w-[1700px]"
+			class="flex flex-col basis-1/3 grow px-2 w-full sm:max-w-[550px] md:max-w-[700px] lg:max-w-[850px] xl:min-w-[1000px] 2xl:min-w-[1400px]"
 		>
-			{#if !$mobile_layout}
-				<TopNav></TopNav>
+			{#if !isMobile($size_breakpoint)}
+				<TopNav />
 			{/if}
 			<main
-				class={cn("flex flex-col border rounded-t-xl h-full")}
+				class={cn("flex flex-col border rounded-t-xl h-full w-full")}
 				style="margin-top: 0px;"
 			>
 				{@render children()}
@@ -112,7 +113,7 @@
 			<!-- Right margin content if needed -->
 		</div>
 	</div>
-	{#if $mobile_layout}
+	{#if isMobile($size_breakpoint)}
 		<footer class="flex flex-row justify-center gap-2">
 			<div class="flex flex-col gap-1">
 				<div class="flex flex-row text-[10px] gap-1">
@@ -153,7 +154,7 @@
 		</footer>
 	{:else}
 		<footer class="flex flex-row justify-center gap-2">
-			<span class="ml-auto">Copyright © 2025 Aaron Russell</span>
+			<span>Copyright © 2025 Aaron Russell</span>
 			<span>|</span>
 			<span>Contact: timeless_auditor@gmail.com</span>
 			<span>|</span>
@@ -173,7 +174,7 @@
 				Gear Games</span
 			>
 			<span>|</span>
-			<span class="mr-auto"
+			<span
 				>Fontin (PoE Font) created by <a
 					target="_blank"
 					rel="noopener noreferrer"

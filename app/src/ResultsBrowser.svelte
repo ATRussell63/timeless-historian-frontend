@@ -15,7 +15,7 @@
 
     import JewelDetailsCard from "./JewelDetailsCard.svelte";
     import JewelDrawing from "./jewelDrawing.svelte";
-    import { search_result, mobile_layout } from "./store";
+    import { search_result, size_breakpoint } from "./store";
     import {
         hoverData,
         selectedJewel,
@@ -24,6 +24,7 @@
         forceHidden,
     } from "./resultsBrowserStore";
     import { tick } from "svelte";
+    import { isMobile } from "$lib/breakpoints";
 
     const { totalW } = $props();
 
@@ -93,26 +94,22 @@
     });
 
     function scrollToJewelDetails() {
-        // window.scrollTo({
-        //     top: 1400,
-        //     behavior: 'smooth'
-        // })
-        const jd = document.getElementById('drawingContainer')
+        const jd = document.getElementById('jewelSep')
         jd.scrollIntoView({behavior: 'smooth', block: 'nearest'})
     }
 
 </script>
 
 {#if body && results && !$forceHidden}
-    {#if !$mobile_layout}
+    {#if !isMobile($size_breakpoint) && $size_breakpoint !== 'lg'}
         <div
             class={cn(
-                `flex flex-row mt-5 justify-between h-[1150px] w-[${totalW}px]`,
+                `flex flex-row justify-between xl:h-[970px] 2xl:h-[1250px]`,
             )}
         >
-            <div class="flex flex-col h-full w-[400px] flex-none">
+            <div class="flex flex-col xl:w-[250px] 2xl:w-[400px] flex-none">
                 <Card.Root class="p-4 transparentBackground">
-                    <Card.Content class="flex flex-col p-0 gap-4">
+                    <Card.Content class="flex flex-col p-0 gap-4 xl:text-[14px] 2xl:text-[16px]">
                         <div class="flex flex-row justify-between items-center">
                             <span class="searchParamLabel mr-4"
                                 >Hardcore Leagues Only</span
@@ -199,8 +196,8 @@
                                                 : "unselectedLeagueTrigger"),
                                     )}
                                 >
-                                    <span
-                                        style="font-family: Fontin-SmallCaps; font-size: 24px;"
+                                    <span class={cn('fontinSmallCaps 2xl:text-[24px] ' +
+                                        (`${key} (${value.jewels.length})`.length > 22 ? 'xl:text-[12px]' : 'xl:text-[18px]'))}
                                         >{key} ({value.jewels.length})</span
                                     >
                                 </Accordion.Trigger>
@@ -242,16 +239,10 @@
                                                 class="flex flex-col items-start gap-2"
                                             >
                                                 <span
-                                                    class="multiLang"
-                                                    style={cn(
-                                                        jewel.character_name
-                                                            .length >= 19
-                                                            ? "font-size: 14px;"
-                                                            : "font-size: 18px;",
-                                                    )}
+                                                    class={cn("multiLang fontin" + (jewel.character_name.length >= 19 ? 'xl:text-[14px] 2xl:text-[16px]' : 'xl:text-[18px] 2xl:text-[20px]'))}
                                                     >{jewel.character_name}</span
                                                 >
-                                                <p class="fontin">
+                                                <p class="fontin xl:text-[14px] 2xl:text-[18px]">
                                                     Level {jewel.character_level}
                                                     {jewel.ascendancy_name}
                                                 </p>
@@ -303,39 +294,36 @@
             </div>
 
             <Card.Root
-                class="flex flex-col grow-7 self-stretch ml-5 h-full transparentBackground"
+                class="flex flex-col grow ml-5 transparentBackground"
             >
-                <Card.Content class="flex flex-row h-full justify-center p-0">
+                <Card.Content class="flex flex-row justify-center p-0">
                     {#if $hoverData}
                         <div
-                            class="flex flex-col flex-auto w-full flex items-center justify-end"
+                            class="flex flex-col flex-auto w-full flex items-center justify-start"
                         >
-                            <div class="w-full h-full my-4">
+                            <div class="w-full py-0 my-0">
                                 <JewelDetailsCard
                                     sampleMode={body.seed === "Any"}
                                 ></JewelDetailsCard>
                             </div>
-                            <Separator class="mb-2"></Separator>
+                            <Separator class="mb-2" id='jewelSep'></Separator>
                             <div
-                                class="flex flex-row w-full justify-center"
-                                style=""
+                                class="flex flex-row w-full justify-center mt-6"
                             >
-                                <JewelDrawing {mode} />
+                                <JewelDrawing />
                             </div>
                         </div>
                     {:else if Object.keys(results).length > 0}
-                        <div class="flex flex-row items-center justify-center">
-                            <ArrowLeft class="h-12 w-12" /><span
-                                class="ml-3"
-                                style="font-family: Fontin-SmallCaps; font-size: 60px;"
+                        <div class="flex flex-row items-center justify-center xl:mt-[300px] 2xl:mt-[400px]">
+                            <ArrowLeft class="2xl:h-12 2xl:w-12" /><span
+                                class="ml-3 fontinSmallCaps xl:text-[30px] 2xl:text-[42px]"
                                 >Select a league to view results</span
                             >
                         </div>
                     {:else}
                         <div class="flex flex-row items-center justify-center">
                             <span
-                                class="ml-5"
-                                style="font-family: Fontin-SmallCaps; font-size: 60px;"
+                                class="ml-5 fontinSmallCaps xl:text-[30px] 2xl:text-[60px]"
                                 >No Results Found</span
                             >
                         </div>
@@ -347,7 +335,7 @@
     {:else}
         <div>
             <div class="flex flex-col">
-                <Card.Root class="p-4 transparentBackground">
+                <Card.Root class="p-4 transparentBackground lg:max-w-[400px]">
                     <Card.Content class="flex flex-col p-0 gap-4">
                         <div class="flex flex-row justify-between items-center">
                             <span class="searchParamLabel mr-4"
@@ -414,7 +402,7 @@
                     </Card.Content>
                 </Card.Root>
                 <ScrollArea
-                    class="h-full rounded-md border mt-5 transparentBackground h-[400px]"
+                    class="h-full rounded-md border mt-5 transparentBackground h-[400px] lg:h-[500px]"
                 >
                     <Accordion.Root
                         type="multiple"
@@ -528,8 +516,9 @@
                 <Card.Root class='mt-6'>
                     <Card.Content>
                         <JewelDetailsCard sampleMode={body.seed === "Any"} />
+                        <Separator class="mb-2" id='jewelSep'></Separator>
                          <!-- <div id='jewelDetails'></div> -->
-                        <JewelDrawing {mode} />
+                        <JewelDrawing />
                         
                     </Card.Content>
                 </Card.Root>
@@ -538,6 +527,4 @@
             </div>
         </div>
     {/if}
-{:else if !$mobile_layout}
-    <div class={cn(`w-[${totalW}px]`)}></div>
 {/if}

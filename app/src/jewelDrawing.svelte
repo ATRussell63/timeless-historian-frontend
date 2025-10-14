@@ -5,7 +5,9 @@
     import { hoverData } from "./resultsBrowserStore";
     import { LEGION_COLORS, LEGION_ABBREV } from "./drawingConstants";
     import { Pointer } from "lucide-svelte";
-    import { mobile_layout } from "./store";
+    import { size_breakpoint } from "./store";
+    import { isMobile } from "$lib/breakpoints";
+    import { mode } from "mode-watcher";
 
     const darkImages = import.meta.glob("$lib/images/drawing/dark/*.svg", {
         eager: true,
@@ -13,8 +15,6 @@
     const lightImages = import.meta.glob("$lib/images/drawing/light/*.svg", {
         eager: true,
     });
-
-    let { mode } = $props();
 
     const RADIUS_PADDING = 50;
     const MARGIN = 20;
@@ -262,7 +262,7 @@
             kText.fontFamily("Fontin-Regular");
             kText.fill(TT_FONT_BODY);
 
-            if (mobile_layout) {
+            if (isMobile(size_breakpoint)) {
                 kText.fontSize(ignoreScale(TT_BODY_SIZE - 2));
             } else {
                 kText.fontSize(ignoreScale(TT_BODY_SIZE));

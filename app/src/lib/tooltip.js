@@ -12,7 +12,7 @@ export class SBTooltip {
             fill: "black",
             opacity: 1,
             stroke: 'white',
-            strokeWidth: breakpoint.stroke,
+            strokeWidth: 2,
         });
         
         this.jewelName = new Konva.Text({
@@ -57,13 +57,14 @@ export class SBTooltip {
             fill: 'white',
             fontFamily: 'Fontin-Regular',
             fontSize: breakpoint.bodyFontSize,
+            lineHeight: 1.5,
             align: 'center'
         })
 
         this.separator = new Konva.Line({
             name: 'ttSeparator',
             stroke: 'white',
-            strokeWidth: breakpoint.stroke,
+            strokeWidth: 2,
         })
 
         this.group = new Konva.Group();
@@ -106,7 +107,7 @@ export class SBTooltip {
                 t.fill(LEGION_COLORS.get(j_result.jewel_type))
             } else {
                 t.stroke(LEGION_COLORS_DESAT.get(j_result.jewel_type))
-                t.points([0, 0, widest + 4 * breakpoint.textMargin, 0])
+                t.points([0, breakpoint.textMargin / 2, widest + 4 * breakpoint.textMargin, breakpoint.textMargin / 2])
             }
             
             t.offsetX(t.width() / 2)
@@ -128,7 +129,7 @@ export class SBTooltip {
     updatePosition(breakpoint, stage, tabLabelH, backdrop) {
         const mousePos = stage.getPointerPosition();
         const base_offset_x = 0;
-        const base_offset_y = 0;
+        const base_offset_y = -tabLabelH;
         let offset_x = base_offset_x;
         let offset_y = base_offset_y;
         let push_margin = 40;
@@ -149,8 +150,9 @@ export class SBTooltip {
         const bottomY = tabLabelH + backdrop.height() + breakpoint.stroke
         const tooltipBottom = mousePos.y + this.background.height() + offset_y
 
+        const y_boost = breakpoint.name === 'lg' ? 15 : 0
         if (tooltipBottom + push_margin > bottomY) {
-            offset_y = (stage.height() - mousePos.y) -(this.background.height() + base_offset_y + push_margin);
+            offset_y = (stage.height() - mousePos.y) -(this.background.height() + base_offset_y + push_margin + y_boost);
         }
 
         this.group.position({

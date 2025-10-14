@@ -7,10 +7,10 @@
 
 {#if $account_name !== null}
   <div class="flex flex-row items-center">
-    <strong>{$account_name}</strong><Button
+    <strong class='overflow-hidden sm:max-w-[150px]'>{$account_name}</strong><Button
       variant="ghost"
-      class="mb-1 py-0 px-2 ml-4"
-      onclick={logout}>Logout<LogOut class="w-4 h-4 ml-1" /></Button
+      class="mb-1 py-0 px-2 ml-4 sm:text-[14px] md:text-[14px]"
+      onclick={logout}>Logout<LogOut class="w-4 sm:h-3 lg:h-4 ml-1" /></Button
     >
   </div>
 {:else}

@@ -4,7 +4,7 @@
     import { base } from "$app/paths";
     import { LEGION_COLORS, LEGION_ABBREV, LEGION_COLORS_DESAT, MF_MOD_ABBREVIATIONS } from "./drawingConstants";
     import { Pointer } from "lucide-svelte";
-    import { bulk_result, mobile_layout, cells_per_side } from "./store";
+    import { bulk_result, cells_per_side } from "./store";
     import { isBright } from "$lib/utils";
     import {
         clearSelection,
@@ -14,8 +14,7 @@
     import { searchDBThenScroll } from "$lib/api";
     import { getBreakpoint } from "$lib/breakpoints";
     import { SBTooltip } from "$lib/tooltip";
-
-    let { mode } = $props();
+    import { mode } from "mode-watcher";
 
     const ZOOM_SCALE = 1.15;
 
@@ -77,7 +76,7 @@
                     0,
                     bp.stageW - bp.stageMargin,
                     bp.stageH - bp.stageMargin,
-                    [2, 2, 2, 2]
+                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
                 )
             }
         });
@@ -103,7 +102,7 @@
             height: tabLabelHeight,
             width: tabLabelText.width() + 2 * bp.textMargin,
             fill: $stashMetadata.color,
-            cornerRadius: [4, 4, 0, 0],
+            cornerRadius: [2 * bp.borderRadius, 2 * bp.borderRadius, 0, 0],
         });
         stageCenterX(tabLabelRect)
 
@@ -115,7 +114,7 @@
             // height: bp.stageH - tabLabelHeight - bp.stroke,
             stroke: $stashMetadata.color,
             strokeWidth: bp.stroke * 2,
-            cornerRadius: [2, 2, 2, 2],
+            cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
         });
 
         stageCenterX(tabLabelStashFrame)
@@ -135,7 +134,7 @@
             height: tabLabelStashFrame.width() - (1/2) * bp.stroke,
             fill: backdropFill,
             opacity: backdropOpacity,
-            cornerRadius: [2, 2, 2, 2],
+            cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
         });
         selfCenter(backdrop)
         baseLayer.offsetX(-bp.stageW / 2);
@@ -247,6 +246,7 @@
                 ) {
                     if (!zoomInStart) zoomInStart = frame.time
 
+                    tile.stroke(LEGION_COLORS.get(r.jewel_type))
                     tile.moveTo(highlightTileGroup);
                     numHits.moveTo(highlightTileGroup);
                     const scale = ZOOM_SCALE;
@@ -265,6 +265,7 @@
                 ) {
                     if (!zoomOutStart) zoomOutStart = frame.time
 
+                    tile.stroke(gridColor)
                     tile.moveTo(allTilesGroup);
                     numHits.moveTo(allTilesGroup);
                     const scale = 1;
@@ -362,7 +363,7 @@
     });
 </script>
 
-<div class="w-full min-h-[200px] mt-4">
+<div class="w-full min-h-[200px] mt-4 xl:mt-0">
     <div
         bind:this={container}
         id="stashContainer"

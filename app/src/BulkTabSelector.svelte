@@ -34,9 +34,10 @@
     bulk_result,
     search_result,
     waiting_on_api,
-    mobile_layout,
+    size_breakpoint,
     cells_per_side
   } from "./store";
+  import { isMobile } from "$lib/breakpoints";
 
   // clear any previous search data
   bulk_result.set(null);
@@ -211,14 +212,11 @@
   onMount(async () => {
     if ($account_leagues.length === 0) {
       let acc_leagues = await getAccountLeagues();
-      console.log("Account leagues: ");
-      console.log(acc_leagues);
       account_leagues.set(acc_leagues);
     }
 
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem("selected_league");
-    console.log($account_leagues);
     if (
       prevSelectedLeague &&
       $account_leagues.map((l) => l.name).includes(prevSelectedLeague)
@@ -229,9 +227,9 @@
   });
 </script>
 
-{#if !$mobile_layout}
-<div class="flex flex-row lg:space-x-5">
-  <div class="flex flex-col gap-4 px-0 items-center">
+{#if !isMobile($size_breakpoint) && $size_breakpoint !== 'lg'}
+<div class="flex flex-row lg:space-x-5 mx-6">
+  <div class="flex flex-col gap-4 px-0 ml-6 mt-6 items-center">
     <Card.Root class="transparentBackground">
       <Card.Content class="flex flex-col gap-2">
         <Select.Root
@@ -333,14 +331,13 @@
       </Card.Content>
     </Card.Root>
   </div>
-
-  <div class="lg:mx-auto">
-    <!-- <StashBrowser {mode} /> -->
+  <div class="ml-auto mr-6 xl:w-[420px] 2xl:w-[800px]">
+    <StashBrowser />
   </div>
 </div>
 {:else}
 <div class="flex flex-col gap-4 px-6 items-center">
-  <Card.Root class="transparentBackground w-full">
+  <Card.Root class="transparentBackground w-full lg:max-w-[372px]">
     <Card.Content class="flex flex-col gap-2">
       <Select.Root
         type="single"
@@ -441,21 +438,8 @@
     </Card.Content>
   </Card.Root>
 </div>
-<!-- {#if $bulk_result} -->
-<StashBrowser {mode} />
-<!-- {/if} -->
+<StashBrowser />
 
 {/if}
 
-{#if $search_result && !$forceHidden}
-  <div class="flex flex-row">
-    <span class="pageTitle mt-5">Search Results</span>
-  </div>
-{/if}
-
-{#if !$mobile_layout}
-  <ResultsBrowser totalW={1618} />
-  {:else}
-  <ResultsBrowser totalW={180} />
-{/if}
 

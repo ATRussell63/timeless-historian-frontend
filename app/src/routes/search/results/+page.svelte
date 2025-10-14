@@ -12,11 +12,32 @@
     import { mode } from "mode-watcher";
     import ResultsBrowser from "../../../ResultsBrowser.svelte";
     import { forceHidden, clearSelection } from "../../../resultsBrowserStore";
-    import { mobile_layout } from "../../../store";
+    import { size_breakpoint } from "../../../store";
+    import { isMobile } from "$lib/breakpoints";
+    import { MF_MOD_ABBREVIATIONS } from "../../../drawingConstants";
 
     let backgroundStyle = $derived.by(() => {
-        const bg_size = $mobile_layout ? "700px 700px" : "110% 110%";
-        const bg_position = $mobile_layout ? "top 300px left -150px" : "";
+        let bg_size;
+        let bg_position;
+
+        switch($size_breakpoint) {
+            case 'xxs':
+            case 'xs':
+            case 'sm':
+            case 'md':
+                bg_size = "700px 700px"
+                bg_position = "top 300px left -150px"
+                break;
+            case 'lg':
+                bg_size = '120% 120%'
+                bg_position = ''
+                break;
+            case 'xl':
+            case '2xl':
+                bg_size = '110% 110%'
+                bg_position = ''
+        }
+
         return `background-repeat: no-repeat; background-size: ${bg_size}; background-position: ${bg_position}; background-image: url(${KaruiSymbol});`;
     });
 
@@ -39,6 +60,15 @@
         // TODO - this doesn't matter, right?
         selectedTradeLeague = "Settlers";
     }
+
+    const mf_abbrev = $derived.by(() => {
+        if (body.mf_mods.length > 0) {
+            return [MF_MOD_ABBREVIATIONS.get(body.mf_mods[0]),
+                    MF_MOD_ABBREVIATIONS.get(body.mf_mods[1])]
+        } else {
+            return []
+        }
+    })
 
     function totalResults(results) {
         let count = 0;
@@ -314,95 +344,138 @@
     <title>Timeless Historian - Search Results</title>
 </svelte:head>
 
-<div class="mb-2 px-6 py-8 lg:min-w-[1700px]" style={backgroundStyle}>
+<div class="flex flex-col gap-6 mb-2 px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
     <!-- Title row -->
-    {#if !$mobile_layout}
-        <div class="mb-4 flex flex-row items-center justify-between">
-            <div class="flex items-center">
-                <span class="contentTitle">Results Summary - </span>
-                <div class="flex flex-row gap-2 items-center">
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">Type: </span><span
-                            class="queryHeader">{body.jewel_type}</span
-                        >
-                    </div>
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">General: </span><span
-                            class="queryHeader">{body.general}</span
-                        >
-                    </div>
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">Seed: </span><span
-                            class="queryHeader">{body.seed}</span
-                        >
-                    </div>
-                    {#if body.jewel_type === "Militant Faith"}
-                        <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
-                        <!-- if mf mods is very long split it into two rows -->
-                        {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
-                            <div class="queryDetail">
-                                <span class="queryHeaderLabel"
-                                    >Devotion Mods:
-                                </span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="queryHeader"
-                                    >&#9679 {body.mf_mods[0]}</span
-                                >
-                                <span class="queryHeader"
-                                    >&#9679 {body.mf_mods[1]}</span
-                                >
-                            </div>
-                        {:else}
-                            <div class="queryDetail">
-                                <span class="queryHeaderLabel"
-                                    >Devotion Mods:
-                                </span><span class="queryHeader"
-                                    >{body.mf_mods[0]}, {body.mf_mods[1]}</span
-                                >
-                            </div>
-                        {/if}
-                    {/if}
+    {#if ['lg', 'xl'].includes($size_breakpoint)}
+    <div class="flex flex-row items-center justify-between">
+        <span class="fontinSmallCaps lg:text-[26px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
+        <div class='flex flex-col grow gap-2'>
+            <div class='flex flex-row gap-10 items-center justify-center'>
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">Type: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
+                    >
+                </div>
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">General: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
+                    >
+                </div>
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">Seed: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
+                    >
                 </div>
             </div>
-            <Button class="pl-1 ml-4" variant="ghost" href="/search"
-                ><ChevronLeft class="h-5" /><span
-                    style="text-decoration: underline; font-family: Roboto;"
-                    >Back to Search</span
-                ></Button
-            >
+            {#if body.jewel_type === "Militant Faith"}
+            <div class="flex flex-row items-center justify-center lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                            <span class="robotoBold mr-2 lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                                Devotion Mods:
+                            </span>
+                            <!-- <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]">{mf_abbrev[0]}, {mf_abbrev[1]}</span> -->
+                             <div class="flex flex-col">
+                            <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[0]}</span
+                            >
+                            <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[1]}</span
+                            >
+                        </div>
+                        </div>
+            {/if}
         </div>
+        <Button class="pl-0 pr-2" variant="ghost" href="/search">
+            <ChevronLeft class="h-5" />
+            <span style="text-decoration: underline; font-family: Roboto;">Back to Search</span>
+        </Button>
+    </div>
+    {:else if !isMobile($size_breakpoint)}
+    <div class="flex flex-row items-center justify-between">
+        <div class="flex items-center">
+            <span class="fontinSmallCaps lg:text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
+            <div class="flex flex-row gap-2 items-center">
+                <div class="flex flex-row lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold">Type: </span><span
+                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
+                    >
+                </div>
+                <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold">General: </span><span
+                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
+                    >
+                </div>
+                <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold">Seed: </span><span
+                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
+                    >
+                </div>
+                {#if body.jewel_type === "Militant Faith"}
+                    <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
+                    <!-- if mf mods is very long split it into two rows -->
+                    {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
+                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px] text-right">
+                            <span class="robotoBold"
+                                >Devotion Mods:
+                            </span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[0]}</span
+                            >
+                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[1]}</span
+                            >
+                        </div>
+                    {:else}
+                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                            <span class="robotoBold text-right"
+                                >Devotion Mods:
+                            </span><span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                                >{mf_abbrev[0]}, {mf_abbrev[1]}</span
+                            >
+                        </div>
+                    {/if}
+                {/if}
+            </div>
+        </div>
+        <Button class="pl-0 pr-2" variant="ghost" href="/search"
+            ><ChevronLeft class="h-5" /><span
+                style="text-decoration: underline; font-family: Roboto;"
+                >Back to Search</span
+            ></Button
+        >
+    </div>
     {:else}
         <div>
-            <span class="contentTitle">Results Summary</span>
+            <span class="fontinSmallCaps text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary</span>
             <Card.Root class="transparentBackground my-4">
                 <Card.Content class="flex flex-col gap-1 p-4">
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">Type: </span><span
-                            class="queryHeader">{body.jewel_type}</span
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                        <span class="robotoBold mr-2">Type: </span><span
+                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
                         >
                     </div>
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">General: </span><span
-                            class="queryHeader">{body.general}</span
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                        <span class="robotoBold mr-2">General: </span><span
+                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
                         >
                     </div>
-                    <div class="queryDetail">
-                        <span class="queryHeaderLabel">Seed: </span><span
-                            class="queryHeader">{body.seed}</span
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                        <span class="robotoBold mr-2">Seed: </span><span
+                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
                         >
                     </div>
                     {#if body.jewel_type === "Militant Faith"}
-                        <div class="queryDetail">
-                            <span class="queryHeaderLabel"
+                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                            <span class="robotoBold"
                                 >Devotion Mods:
                             </span>
                         </div>
                         <div class="flex flex-col px-3">
-                            <span class="queryHeader"
+                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
                                 >&#9679 {body.mf_mods[0]}</span
                             >
-                            <span class="queryHeader"
+                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
                                 >&#9679 {body.mf_mods[1]}</span
                             >
                         </div>
@@ -413,17 +486,17 @@
     {/if}
 
     <!-- Results Summary -->
-    {#if !$mobile_layout}
+    {#if !isMobile($size_breakpoint)}
         <Card.Root class="transparentBackground">
             <Card.Content class="flex flex-row justify-start">
-                <div class="flex flex-col p-3 pr-6">
+                <div class="flex flex-col pl-3 pr-6">
                     <div>
-                        <p class="resultsSummaryTitle mb-3 text-[28px]">
+                        <p class="fontinSmallCaps mb-3 lg:text-[24px] xl:text-[24px]">
                             Breakdown
                         </p>
                         <Card.Root class="insetCard mb-4">
                             <Card.Content>
-                                <p class="resultsSummaryText mb-0 text-[18px]">
+                                <p class="roboto mb-0 lg:text[14px] xl:text-[16px]">
                                     Total Results: <b
                                         >{totalResults(response)}</b
                                     >
@@ -431,14 +504,14 @@
                                 {#if body.seed !== "Any"}
                                     <div class="ml-5 mt-4">
                                         <p
-                                            class="resultsSummaryText mb-2 text-[18px]"
+                                            class="roboto mb-2 lg:text[14px] xl:text-[16px]"
                                         >
                                             Of the search results:
                                         </p>
                                         <div class="flex flex-col gap-1">
                                             {#if body.jewel_type === "Militant Faith"}
                                                 <p
-                                                    class="resultsSummaryText text-[18px]"
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
                                                 >
                                                     • &nbsp;<b
                                                         >{topAttr(
@@ -449,7 +522,7 @@
                                                     matching general
                                                 </p>
                                                 <p
-                                                    class="resultsSummaryText text-[18px]"
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
                                                 >
                                                     • &nbsp;<b
                                                         >{numMatchingDevoMods(
@@ -459,7 +532,7 @@
                                                     1 matching devotion modifier
                                                 </p>
                                                 <p
-                                                    class="resultsSummaryText text-[18px]"
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
                                                 >
                                                     • &nbsp;<b
                                                         >{numMatchingDevoMods(
@@ -469,7 +542,7 @@
                                                     devotion modifiers
                                                 </p>
                                                 <p
-                                                    class="resultsSummaryText text-[18px]"
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
                                                 >
                                                     • &nbsp;<b
                                                         >{numExactMatch()}</b
@@ -478,7 +551,7 @@
                                                 </p>
                                             {:else}
                                                 <p
-                                                    class="resultsSummaryText text-[18px]"
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
                                                 >
                                                     • &nbsp;<b
                                                         >{topAttr(
@@ -497,26 +570,26 @@
                     </div>
                     {#if body.seed !== "Any"}
                         <div class="mt-auto mb-3">
-                            <p class="resultsSummaryTitle text-[28px]">
+                            <p class="fontinSmallCaps lg:text-[18px] xl:text-[20px]">
                                 Search on the Official Trade Site:
                             </p>
                         </div>
                         <div class="flex flex-row gap-3">
                             <Button
-                                class="tradeSearch"
+                                class="fontin xl:text-[16px] 2xl:text-[20px]"
                                 disabled={!selectedTradeLeague}
                                 onclick={() => openTradeLink("seed")}
                                 >Any General</Button
                             >
                             <Button
-                                class="tradeSearch"
+                                class="fontin xl:text-[16px] 2xl:text-[20px]"
                                 disabled={!selectedTradeLeague}
                                 onclick={() => openTradeLink("general")}
                                 >Match General</Button
                             >
                             {#if body.jewel_type === "Militant Faith"}
                                 <Button
-                                    class="tradeSearch"
+                                    class="fontin xl:text-[16px] 2xl:text-[20px]"
                                     disabled={!selectedTradeLeague}
                                     onclick={() => openTradeLink("exact")}
                                     >General + Devo Mods</Button
@@ -525,8 +598,10 @@
                         </div>
                     {/if}
                 </div>
-                <Separator orientation="vertical" class="mx-auto"></Separator>
-                <div class="flex flex-row ml-3 mr-6 gap-6 items-center">
+                <Separator orientation="vertical" class="mr-4"></Separator>
+                {#if !['lg'].includes($size_breakpoint)}
+                <ScrollArea orientation='horizontal'>
+                <div class="flex flex-row w-max ml-3 mr-6 gap-6 items-center">
                     {#if body.seed === "Any"}
                         <ResultChart
                             values={Object.values(
@@ -567,26 +642,77 @@
                         title={"Top Socket: " + topSocket(response).value.name}
                     />
                 </div>
+                </ScrollArea>
+                {/if}
             </Card.Content>
         </Card.Root>
+        {#if ['lg'].includes($size_breakpoint)}
+        <Card.Root class='transparentBackground'>
+            <Card.Content>
+                <ScrollArea orientation='horizontal'>
+                    <div class="flex flex-row w-max ml-3 mr-6 gap-6 items-center">
+                        {#if body.seed === "Any"}
+                            <ResultChart
+                                values={Object.values(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                labels={Object.keys(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                theme="legion"
+                                title={"Top Jewel Type: " +
+                                    topAttr(response, "jewel_type").name}
+                            />
+                        {/if}
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "general"),
+                            )}
+                            labels={Object.keys(getAttrCounts(response, "general"))}
+                            theme="legion"
+                            title={"Top General: " +
+                                topAttr(response, "general").name}
+                        />
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            labels={Object.keys(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            theme="legion"
+                            title={"Top Ascendancy: " +
+                                topAttr(response, "ascendancy_name").name}
+                        />
+                        <ResultChart
+                            values={Object.values(getSocketCounts(response))}
+                            labels={Object.keys(getSocketCounts(response))}
+                            theme="legion"
+                            title={"Top Socket: " + topSocket(response).value.name}
+                        />
+                    </div>
+                </ScrollArea>
+            </Card.Content>
+        </Card.Root>
+        {/if}
     {:else}
         <Card.Root class="transparentBackground mb-4">
             <Card.Content>
                 <div>
-                    <p class="resultsSummaryTitle mb-3 text-[28px]">
+                    <p class="fontinSmallCaps mb-3 text-[24px]">
                         Breakdown
                     </p>
                     <Card.Root class="insetCard mb-4">
                         <Card.Content>
-                            <p class="resultsSummaryText mb-2 text-[16px]">
+                            <p class="roboto mb-2 text-[16px]">
                                 Total Results: <b>{totalResults(response)}</b>
                             </p>
                             {#if body.seed !== "Any"}
                                 <div class="ml-2">
-                                    <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col gap-1">
                                         {#if body.jewel_type === "Militant Faith"}
                                             <p
-                                                class="resultsSummaryText text-[14px]"
+                                                class="roboto text-[14px]"
                                             >
                                                 • &nbsp;<b
                                                     >{topAttr(
@@ -596,7 +722,7 @@
                                                 >&nbsp; with matching general
                                             </p>
                                             <p
-                                                class="resultsSummaryText text-[14px]"
+                                                class="roboto text-[14px]"
                                             >
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(1)}</b
@@ -604,7 +730,7 @@
                                                 devotion modifier
                                             </p>
                                             <p
-                                                class="resultsSummaryText text-[14px]"
+                                                class="roboto text-[14px]"
                                             >
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(2)}</b
@@ -612,14 +738,14 @@
                                                 modifiers
                                             </p>
                                             <p
-                                                class="resultsSummaryText text-[14px]"
+                                                class="roboto text-[14px]"
                                             >
                                                 • &nbsp;<b>{numExactMatch()}</b
                                                 >&nbsp; were an exact match
                                             </p>
                                         {:else}
                                             <p
-                                                class="resultsSummaryText text-[14px]"
+                                                class="roboto text-[14px]"
                                             >
                                                 • &nbsp;<b
                                                     >{topAttr(
@@ -636,27 +762,27 @@
                             {#if body.seed !== "Any"}
                                 <div class="mt-auto mb-3">
                                     <p
-                                        class="resultsSummaryTitle mt-4 text-[16px]"
+                                        class="fontinSmallCaps mt-4 text-[16px]"
                                     >
                                         Search on PoE Trade:
                                     </p>
                                 </div>
                                 <div class="flex flex-col gap-3">
                                     <Button
-                                        class="tradeSearch"
+                                        class="fontinSmallCaps text-[16px]"
                                         disabled={!selectedTradeLeague}
                                         onclick={() => openTradeLink("seed")}
                                         >Any General</Button
                                     >
                                     <Button
-                                        class="tradeSearch"
+                                        class="fontin text-[16px]"
                                         disabled={!selectedTradeLeague}
                                         onclick={() => openTradeLink("general")}
                                         >Match General</Button
                                     >
                                     {#if body.jewel_type === "Militant Faith"}
                                         <Button
-                                            class="tradeSearch"
+                                            class="fontin text-[16px]"
                                             disabled={!selectedTradeLeague}
                                             onclick={() =>
                                                 openTradeLink("exact")}
@@ -718,17 +844,13 @@
         >
     {/if}
 
-    <div class="flex flex-row justify-start mt-5">
-        {#if !$mobile_layout}
-            <p class="contentTitle">Results Browser</p>
+    <div class="flex flex-row justify-start">
+        {#if !isMobile($size_breakpoint)}
+            <p class="fontinSmallCaps lg:text-[26px] xl:text-[34px] xl:ml-[5px]">Results Browser</p>
         {:else}
-            <p class="contentTitle">Results</p>
+            <p class="fontinSmallCaps text-[24px] xl:text-[34px] xl:ml-[5px]">Results</p>
         {/if}
     </div>
 
-    {#if !$mobile_layout}
-        <ResultsBrowser totalW={1618} />
-    {:else}
-        <ResultsBrowser totalW={180} />
-    {/if}
+    <ResultsBrowser />
 </div>

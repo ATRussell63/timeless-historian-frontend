@@ -293,25 +293,15 @@ black: #0D0D0D
 
 .topNavButton {
   font-family: Fontin-SmallCaps;
-  font-size: 32px;
+  /* font-size: 32px; */
   color: hsl(var(--foreground));
   background-color: hsl(var(--background));
   border-bottom-width: 0px;
 }
 
-/* .dark .topNavButton {
-  font-family: Fontin-SmallCaps;
-  font-size: 32px;
-  color: hsl();
-} */
-
 .topNavButton:hover {
   color: hsl(var(--background));
   background-color: hsl(var(--foreground));
-}
-
-.TopNavActive {
-  /* border-bottom-width: 0px; */
 }
 
 .TopNavActive:hover {
@@ -319,36 +309,14 @@ black: #0D0D0D
   color: hsl(var(--foreground)) !important;
 }
 
-.TopNavNotActive{
-  /* box-shadow: inset 0 -4px 6px -4px rgba(0, 0, 0, 0.8); */
-}
-
 .dark .TopNavActive:hover {
   background-color: hsl(var(--background)) !important;
   color: hsl(var(--foreground)) !important;
 }
 
-.dark .TopNavNotActive{
-  /* box-shadow: inset 0 -4px 6px -4px rgba(255, 255, 255, 0.8); */
-}
-
-.sidebarButtonText {
+.trajan {
   font-family: Trajan;
-  font-size: 24px;
 }
-
-.sidebarHomeButtonText {
-  font-family: Trajan;
-  font-size: 32px;
-}
-
-
-.thLogo {
-  height: 32px;
-  width: 32px;
-}
-
-
 
 .searchButton {
   font-family: Fontin-Regular;
@@ -356,27 +324,6 @@ black: #0D0D0D
 
 .accordionTrigger {
   background-color: hsl(var(--background));
-}
-
-.contentTitle {
-  font-family: Fontin-SmallCaps;
-  font-size: 34px;
-  margin-left: 5px;
-}
-
-.queryHeaderLabel {
-  font-family: Roboto-Bold;
-}
-
-.queryHeader {
-  font-family: Roboto;
-  font-size: 14px;
-  margin-left: 5px;
-}
-
-.queryDetail {
-  margin-left: 10px;
-  font-size: 14px;
 }
 
 .searchParamLabel {
@@ -398,7 +345,6 @@ black: #0D0D0D
 }
 
 .transparentBackground {
-  /* background-color: rgba(255, 255, 255, 0.6); */
   background-color: hsl(var(--background) / 0.6);
 }
 
@@ -433,23 +379,12 @@ black: #0D0D0D
   font-family: Fontin-SmallCaps;
 }
 
-.tradeSearch {
-  font-family: Fontin-Regular;
-  font-size: 18px;
-}
-
-.resultsSummaryText {
-  font-family: Roboto;
-  /* font-size: 18px; */
-}
-
-.resultsSummaryTitle {
-  font-family: Fontin-SmallCaps;
-  /* font-size: 28px; */
-}
-
 .roboto {
   font-family: Roboto;
+}
+
+.robotoBold {
+  font-family: Roboto-Bold;
 }
 
 ._toastMsg {

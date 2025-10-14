@@ -3,6 +3,6 @@
     let { url, label } = $props();
 </script>
 
-<Button class="h-11 sidebarButton" href={url} variant="link">
-    <span class="sidebarButtonText">{label}</span>
+<Button href={url} variant="link">
+    <span class="trajan sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px]">{label}</span>
 </Button>

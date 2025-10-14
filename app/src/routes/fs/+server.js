@@ -15,7 +15,7 @@ export async function POST({ request }) {
         const token = r.token
         const url = api_base_url + r.url
 
-        console.log(`pinging ${url} with ${token}`)
+        // console.log(`pinging ${url} with ${token}`)
 
         const response = await fetch(url, {
             method: 'GET',
@@ -28,8 +28,8 @@ export async function POST({ request }) {
         })
 
         const body = await response.json();
-        console.log('response from ' + url)
-        console.log(body)
+        // console.log('response from ' + url)
+        // console.log(body)
 
         return json({
             body: body,

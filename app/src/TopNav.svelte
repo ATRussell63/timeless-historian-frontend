@@ -4,19 +4,12 @@
 </script>
 
 <nav class="bg-white text-white pt-8 pb-0 flex items-center justify-center">
-  <div class="flex flex-row pb-0 items-end h-[46px] w-full">
-    <div class="mr-auto" style="visibility:hidden;">
-      <TopNavLoginButton />
-    </div>
-    <div class="mr-2">
-      <TopNavButton label="Search" url="/search" />
-    </div>
-    <div class="ml-2">
-      <TopNavButton label="Bulk Search" url="/bulk" />
-    </div>
-    <div class="ml-auto">
-      <TopNavLoginButton />
-    </div>
+  <div class="flex flex-row pb-0 ml-4 justify-center items-end gap-2 h-[46px] w-full">
+    <div class='grow-2'></div>
+    <TopNavButton label="Search" url="/search" />
+    <TopNavButton label="Bulk Search" url="/bulk" />
+    <div class='grow-1'></div>
+    <TopNavLoginButton />
   </div>
 </nav>
 

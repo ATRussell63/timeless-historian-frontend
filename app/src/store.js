@@ -18,7 +18,7 @@ export const cells_per_side = writable(null);
 
 export const waiting_on_api = writable(false);
 
-export const mobile_layout = writable(false);
+export const size_breakpoint = writable(false);
 
 export function logout() {
     account_name.set(null)

@@ -10,21 +10,21 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { mode } from "mode-watcher";
-    import { mobile_layout } from "../../store";
+    import { size_breakpoint } from "../../store";
+    import { isMobile } from "$lib/breakpoints";
     import TemplarSymbol from "$lib/images/TemplarSymbol.svg";
 
     import { MF_MOD_ABBREVIATIONS } from "../../drawingConstants";
     import { searchDBForJewel } from "$lib/api";
     import * as p from "$lib/parse";
     import { search_result, waiting_on_api } from "../../store";
-    import { kbd } from "flowbite-svelte";
 
     // clear prior search results
     search_result.set(null);
 
     let backgroundStyle = $derived.by(() => {
-        const bg_size = $mobile_layout ? '700px 700px' : '140% 140%';
-        const bg_position = $mobile_layout ? 'top 20% right 50%' : 'bottom 50% right 50%';
+        const bg_size = isMobile($size_breakpoint) ? '700px 700px' : '140% 140%';
+        const bg_position = isMobile($size_breakpoint) ? 'top 20% right 50%' : 'bottom 50% right 50%';
         return `background-repeat: no-repeat; background-size: ${bg_size}; background-position: ${bg_position}; background-image: url(${TemplarSymbol});`
     });
 
@@ -162,12 +162,11 @@
             return false
         }
 
-        console.log(mobJewelType !== '')
+        // console.log(mobJewelType !== '')
         return mobSeed && !jewelSeedInvalid() && mobJewelType && mobGeneral
     }
 
     async function mobSubmit() {
-        console.log('searchinge...')
 
         // invert the MF mod map
         const invertedMFMap = new Map([...MF_MOD_ABBREVIATIONS].map(([k, v]) => [v, k]))
@@ -184,7 +183,6 @@
             mf_mods: mobMFFullText
         };
 
-        console.log(jewel)
         searchDBForJewel(jewel).then((okToRedirect) => {
             if (okToRedirect) {
                 goto("/search/results");
@@ -198,10 +196,10 @@
 </svelte:head>
 
 <div
-    class="flex flex-col h-full lg:min-w-[1400px] px-10 py-10"
+    class="flex flex-col h-full lg:min-w-[830px] xl:min-w-[900px] px-10 py-10"
     style={backgroundStyle}
 >
-    {#if !$mobile_layout}
+    {#if !isMobile($size_breakpoint)}
     <span class="searchPageTitle mb-4">Search</span>
     <div class="flex flex-row mt-2">
         <div class="mr-10 flex-1">
@@ -298,7 +296,7 @@
             </Card.Content>
         </Card.Root>
     </div>
-    {/if}
+    {:else}
     <div>
         <Card.Root class="transparentBackground">
                 <!-- <Card.Header>
@@ -391,7 +389,7 @@
                 </Card.Root>
             </div>
     </div>
-
+    {/if}
 </div>
 
 <style>

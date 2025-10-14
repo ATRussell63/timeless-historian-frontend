@@ -17,8 +17,8 @@ export async function POST({ request }) {
             'code_verifier': r.code_verifier
         })
 
-        console.log('pinging /token with:')
-        console.log(request_body)
+        // console.log('pinging /token with:')
+        // console.log(request_body)
 
         const response = await fetch(tokenURL, {
             method: 'POST',
@@ -31,8 +31,8 @@ export async function POST({ request }) {
         })
 
         const body = await response.json()
-        console.log('/token response:')
-        console.log(body)
+        // console.log('/token response:')
+        // console.log(body)
         return json({
             body: body,
             headers: response.headers,
