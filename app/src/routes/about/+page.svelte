@@ -22,8 +22,8 @@
 </svelte:head>
 
 
-<div class="flex flex-col lg:mb-2 px-2 lg:px-6 pt-3 gap-20 lg:min-w-[700px]" style={backgroundStyle}>
-    <div class="flex flex-row justify-center mt-20 items-center">
+<div class="flex flex-col lg:mb-2 px-2 lg:px-6 pt-3 gap-10 xl:gap-20 lg:min-w-[700px]" style={backgroundStyle}>
+    <div class="flex flex-row justify-center mt-12 mb-2 items-center">
         <div class="flex flex-row items-center justify-center gap-8 lg:gap-20">
             {#if mode.current !== 'dark'}
             <img
@@ -54,10 +54,10 @@
             {/if}
         </div>
     </div>
-    <div class="flex flex-col w-full px-2 lg:max-w-[1250px] mt-0 mx-auto lg:mt-20 lg:mb-30 items-center">
-        <Card.Root class="transparentBackground">
+    <div class="flex flex-col w-full px-2 md:max-w-[580px] lg:max-w-[850px] mx-auto items-center">
+        <Card.Root class="transparentBackground pb-6">
             <Card.Content>
-                <div class="flex flex-row justify-center mb-2 lg:mb-4 text-[24px] lg:text-[32px]">
+                <div class="flex flex-row justify-center mb-2 md:mb-4 text-[24px] lg:text-[32px]">
                     <h1>Background</h1>
                 </div>
                 <div class="flex flex-col gap-2 px-0 text-[14px] lg:text-[16px] lg:px-6">
@@ -179,7 +179,7 @@
             </Card.Content>
         </Card.Root>
     </div>
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row justify-center my-5 lg:my-10">
         {#if mode.current !== 'dark'}
         <img
             class="h-[32px] lg:h-[48px]"
@@ -194,8 +194,8 @@
         />
         {/if}
     </div>
-    <div class="flex flex-col w-full px-2 lg:max-w-[1250px] mt-0 mx-auto mb-8 lg:mt-20 items-center">
-        <Card.Root class="transparentBackground">
+    <div class="flex flex-col w-full px-2 md:max-w-[580px] lg:max-w-[850px] mb-8 mx-auto items-center">
+        <Card.Root class="transparentBackground pb-6">
             <Card.Content>
                 <div class="flex flex-row justify-center mb-2 lg:mb-4 text-[24px] lg:text-[32px]">
                     <h1>FAQ</h1>

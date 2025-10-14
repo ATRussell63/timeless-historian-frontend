@@ -336,8 +336,8 @@
   </div>
 </div>
 {:else}
-<div class="flex flex-col gap-4 px-6 items-center">
-  <Card.Root class="transparentBackground w-full lg:max-w-[372px]">
+<div class="flex flex-col gap-4 items-center">
+  <Card.Root class="transparentBackground w-full max-w-[300px]">
     <Card.Content class="flex flex-col gap-2">
       <Select.Root
         type="single"
@@ -348,7 +348,7 @@
           selectLeagueTrigger();
         }}
       >
-        <Select.Trigger class="w-full lg:w-[250px]">
+        <Select.Trigger class="w-full">
           {leagueTrigger}
         </Select.Trigger>
         <Select.Content>
@@ -431,7 +431,7 @@
             </Command.Root>
           </Popover.Content>
         </Popover.Root>
-        <Button onclick={refreshStashData}>
+        <Button class='min-w-[40px] px-1 py-0' onclick={refreshStashData}>
           <RefreshCw />
         </Button>
       </div>

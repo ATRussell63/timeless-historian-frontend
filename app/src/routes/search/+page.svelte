@@ -195,17 +195,18 @@
     <title>Timeless Historian - Search</title>
 </svelte:head>
 
-<div
+
+    {#if !isMobile($size_breakpoint)}
+    <div
     class="flex flex-col h-full lg:min-w-[830px] xl:min-w-[900px] px-10 py-10"
     style={backgroundStyle}
 >
-    {#if !isMobile($size_breakpoint)}
     <span class="searchPageTitle mb-4">Search</span>
     <div class="flex flex-row mt-2">
         <div class="mr-10 flex-1">
             <Card.Root class="transparentBackground">
                 <Card.Header>
-                    <Card.Title class="cardTitle"
+                    <Card.Title class="cardTitle leading-7"
                         >Hover your jewel in-game and press Ctrl+C to copy it,
                         then paste into the field below</Card.Title
                     >
@@ -296,14 +297,14 @@
             </Card.Content>
         </Card.Root>
     </div>
+    </div>
     {:else}
-    <div>
+    <div
+    class="flex flex-row h-full px-10 py-10 justify-center"
+    style={backgroundStyle}
+>
+    <div class='flex-col grow max-w-[400px]'>
         <Card.Root class="transparentBackground">
-                <!-- <Card.Header>
-                    <Card.Title class="cardTitle"
-                        >Search</Card.Title
-                    >
-                </Card.Header> -->
                 <Card.Content class='flex flex-col gap-2'>
                     <Select.Root 
                     type='single'
@@ -389,8 +390,8 @@
                 </Card.Root>
             </div>
     </div>
+    </div>
     {/if}
-</div>
 
 <style>
     .searchPageTitle {

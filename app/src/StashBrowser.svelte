@@ -11,10 +11,11 @@
         forceHidden,
         stashMetadata,
     } from "./resultsBrowserStore";
-    import { searchDBThenScroll } from "$lib/api";
+    import { searchDB } from "$lib/api";
     import { getBreakpoint } from "$lib/breakpoints";
     import { SBTooltip } from "$lib/tooltip";
     import { mode } from "mode-watcher";
+    import { tick } from "svelte";
 
     const ZOOM_SCALE = 1.15;
 
@@ -292,13 +293,15 @@
                 tileTarget.on("click", function (e) {
                     forceHidden.set(false);
                     clearSelection();
-                    searchDBThenScroll(r, "resultsScrollTarget");
+                    searchDB(r);
                 });
 
-                tileTarget.on("tap", function (e) {
+                tileTarget.on("tap", async function (e) {
                     forceHidden.set(false);
                     clearSelection();
-                    searchDBThenScroll(r, "resultsScrollTarget");
+                    await searchDB(r);
+                    await tick();
+                    document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
                 });
             }
 

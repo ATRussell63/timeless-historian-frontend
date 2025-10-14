@@ -104,7 +104,7 @@
     {#if !isMobile($size_breakpoint) && $size_breakpoint !== 'lg'}
         <div
             class={cn(
-                `flex flex-row justify-between xl:h-[970px] 2xl:h-[1250px]`,
+                `flex flex-row justify-between xl:h-[940px] 2xl:h-[1250px]`,
             )}
         >
             <div class="flex flex-col xl:w-[250px] 2xl:w-[400px] flex-none">
@@ -190,14 +190,14 @@
                                         selectedLeague.set(key);
                                     }}
                                     class={cn(
-                                        "my-4 " +
+                                        "my-4 px-2 " +
                                             (selectedLeague === key
                                                 ? "selectedLeagueTrigger"
                                                 : "unselectedLeagueTrigger"),
                                     )}
                                 >
                                     <span class={cn('fontinSmallCaps 2xl:text-[24px] ' +
-                                        (`${key} (${value.jewels.length})`.length > 22 ? 'xl:text-[12px]' : 'xl:text-[18px]'))}
+                                        (`${key} (${value.jewels.length})`.length > 22 ? 'xl:text-[14px]' : 'xl:text-[18px]'))}
                                         >{key} ({value.jewels.length})</span
                                     >
                                 </Accordion.Trigger>
@@ -417,7 +417,7 @@
                                         selectedLeague.set(key);
                                     }}
                                     class={cn(
-                                        "my-4 text-center " +
+                                        "my-2 md:my-4 text-center " +
                                             (selectedLeague === key
                                                 ? "selectedLeagueTrigger"
                                                 : "unselectedLeagueTrigger"),
@@ -516,7 +516,7 @@
                 <Card.Root class='mt-6'>
                     <Card.Content>
                         <JewelDetailsCard sampleMode={body.seed === "Any"} />
-                        <Separator class="mb-2" id='jewelSep'></Separator>
+                        <Separator class="mb-4" id='jewelSep'></Separator>
                          <!-- <div id='jewelDetails'></div> -->
                         <JewelDrawing />
                         

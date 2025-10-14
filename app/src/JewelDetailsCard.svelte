@@ -87,7 +87,7 @@
                             href={`https://www.pathofexile.com/account/view-profile/${$hoverData.account_name.replace("#", "-")}/characters?characterName=${encodeURIComponent($hoverData.character_name)}`}
                             >{$hoverData.character_name}</a
                         >
-                        <ExternalLink class="w-5 h-5 ml-1 mb-3" />
+                        <ExternalLink class="w-5 h-5 ml-1 mb-2 2xl:mb-3" />
                     </div>
                     <div class="flex flex-row gap-3">
                         <p
@@ -208,7 +208,7 @@
     {/if}
 </div>
 {:else if $size_breakpoint == 'lg'}
-<div class="flex flex-row w-full h-full justify-between px-6 mb-4">
+<div class="flex flex-row w-full h-full justify-between mb-4">
     {#if $hoverData}
         <div class="flex flex-col grow-7 basis-[700px]">
             <div class="flex-row w-full flex overflow-hidden">

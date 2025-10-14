@@ -21,7 +21,7 @@
 </svelte:head>
 
 <div
-    class="flex flex-col h-full lg:min-w-[830px] xl:min-w-[900px] 2xl:min-w-[1293px] px-10 py-10"
+    class="flex flex-col h-full lg:min-w-[830px] xl:min-w-[900px] 2xl:min-w-[1293px] px-4 sm:px-10 py-10"
     style={backgroundStyle}
 >
     {#if !isMobile($size_breakpoint)}

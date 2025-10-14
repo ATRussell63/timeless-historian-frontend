@@ -8,9 +8,9 @@
 
 class Breakpoint {
     constructor(name, stageW, stageMargin, stroke,
-                bodyFontSize, titleFontSize, textMargin, tabLabelFontSize, borderRadius) {
+                bodyFontSize, titleFontSize, textMargin, tabLabelFontSize, borderRadius, ttYNudge) {
         Object.assign(this, {name, stageW, stageMargin, stroke,
-                             bodyFontSize, titleFontSize, textMargin, tabLabelFontSize, borderRadius})
+                             bodyFontSize, titleFontSize, textMargin, tabLabelFontSize, borderRadius, ttYNudge})
         // I probably calculated this wrong but everything is drawn from the top anyway
         this.stageH = this.stageW + this.tabLabelFontSize + this.stroke * 4
     }
@@ -25,7 +25,8 @@ const xxs = new Breakpoint(
     20,         //titleFontSize
     5,          //textMargin
     20,         //tabLabelFontSize
-    2           //borderRadius
+    2,          //borderRadius
+    15          //ttYNudge
 )
 
 const xs = new Breakpoint(
@@ -37,7 +38,8 @@ const xs = new Breakpoint(
     20,         //titleFontSize
     5,          //textMargin
     20,         //tabLabelFontSize
-    2           //borderRadius
+    2,          //borderRadius
+    15          //ttYNudge
 )
 
 const s = new Breakpoint(
@@ -49,7 +51,8 @@ const s = new Breakpoint(
     20,         //titleFontSize
     5,          //textMargin
     20,         //tabLabelFontSize
-    2           //borderRadius
+    2,          //borderRadius
+    15          //ttYNudge
 )
 
 const m = new Breakpoint(
@@ -61,7 +64,8 @@ const m = new Breakpoint(
     20,         //titleFontSize
     5,          //textMargin
     20,         //tabLabelFontSize
-    2           //borderRadius
+    2,          //borderRadius
+    15          //ttYNudge
 )
 
 const lg = new Breakpoint(
@@ -73,7 +77,8 @@ const lg = new Breakpoint(
     24,         //titleFontSize
     6,          //textMargin
     28,         //tabLabelFontSize
-    4           //borderRadius
+    4,          //borderRadius
+    45          //ttYNudge
 )
 
 // unused
@@ -86,7 +91,8 @@ const xl = new Breakpoint(
     20,         //titleFontSize
     6,          //textMargin
     20,         //tabLabelFontSize
-    2           //borderRadius
+    2,          //borderRadius
+    30
 )
 
 export function getBreakpoint(screenWidth) {

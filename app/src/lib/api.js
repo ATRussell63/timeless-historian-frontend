@@ -212,8 +212,6 @@ function throwErrorToast(error_title, error_body) {
         })
 }
 
-export async function searchDBThenScroll(jewel, scrollTarget) {
+export async function searchDB(jewel) {
     await searchDBForJewel(jewel)
-    await tick();
-    document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
 }

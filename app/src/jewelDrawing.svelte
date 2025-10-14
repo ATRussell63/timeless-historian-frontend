@@ -17,7 +17,8 @@
     });
 
     const RADIUS_PADDING = 50;
-    const MARGIN = 20;
+    const SMALL_MARGIN = 5;
+    const XL_MARGIN = 20;
 
     Konva.showWarnings = false;
     let stage = null;
@@ -46,7 +47,14 @@
         try {
             if (stage.width() !== width || stage.height() !== height) {
                 console.log('resize')
-                const usableSize = size - MARGIN * 2;
+                // ghetto breakpoint idea
+                let margin
+                if (width > 500) {
+                    margin = XL_MARGIN
+                } else {
+                    margin = SMALL_MARGIN
+                }
+                const usableSize = size - margin * 2;
                 stage.width(width);
                 stage.height(height);
                 currentScale = usableSize / getDesignScale();
@@ -519,7 +527,7 @@
     });
 </script>
 
-<div class="w-full aspect-square min-h-[200px]">
+<div class="w-full aspect-square">
     <div
         bind:this={container}
         id="drawingContainer"

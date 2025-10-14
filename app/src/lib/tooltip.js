@@ -150,9 +150,8 @@ export class SBTooltip {
         const bottomY = tabLabelH + backdrop.height() + breakpoint.stroke
         const tooltipBottom = mousePos.y + this.background.height() + offset_y
 
-        const y_boost = breakpoint.name === 'lg' ? 15 : 0
         if (tooltipBottom + push_margin > bottomY) {
-            offset_y = (stage.height() - mousePos.y) -(this.background.height() + base_offset_y + push_margin + y_boost);
+            offset_y = (stage.height() - mousePos.y) -(this.background.height() + base_offset_y + push_margin + breakpoint.ttYNudge);
         }
 
         this.group.position({

@@ -344,7 +344,7 @@
     <title>Timeless Historian - Search Results</title>
 </svelte:head>
 
-<div class="flex flex-col gap-6 mb-2 px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
+<div class="flex flex-col gap-6 mb-2 px-4 sm:px-6 md:px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
     <!-- Title row -->
     {#if ['lg', 'xl'].includes($size_breakpoint)}
     <div class="flex flex-row items-center justify-between">
@@ -447,9 +447,9 @@
     </div>
     {:else}
         <div>
-            <span class="fontinSmallCaps text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary</span>
+            <span class="fontinSmallCaps text-[24px] sm:text-[28px] xl:text-[34px] xl:ml-[5px]">Results Summary</span>
             <Card.Root class="transparentBackground my-4">
-                <Card.Content class="flex flex-col gap-1 p-4">
+                <Card.Content class="flex flex-col gap-1 p-4 sm:p-6">
                     <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
                         <span class="robotoBold mr-2">Type: </span><span
                             class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
@@ -487,14 +487,14 @@
 
     <!-- Results Summary -->
     {#if !isMobile($size_breakpoint)}
-        <Card.Root class="transparentBackground">
-            <Card.Content class="flex flex-row justify-start">
+        <Card.Root class="transparentBackground lg:w-fit xl:w-full">
+            <Card.Content class="flex flex-row lg:justify-center xl:justify-start">
                 <div class="flex flex-col pl-3 pr-6">
                     <div>
                         <p class="fontinSmallCaps mb-3 lg:text-[24px] xl:text-[24px]">
                             Breakdown
                         </p>
-                        <Card.Root class="insetCard mb-4">
+                        <Card.Root class="insetCard mb-4 xl:min-w-[180px]">
                             <Card.Content>
                                 <p class="roboto mb-0 lg:text[14px] xl:text-[16px]">
                                     Total Results: <b
@@ -598,8 +598,8 @@
                         </div>
                     {/if}
                 </div>
-                <Separator orientation="vertical" class="mr-4"></Separator>
                 {#if !['lg'].includes($size_breakpoint)}
+                <Separator orientation="vertical" class="mr-4"></Separator>
                 <ScrollArea orientation='horizontal'>
                 <div class="flex flex-row w-max ml-3 mr-6 gap-6 items-center">
                     {#if body.seed === "Any"}
@@ -709,11 +709,9 @@
                             </p>
                             {#if body.seed !== "Any"}
                                 <div class="ml-2">
-                                    <div class="flex flex-col gap-1">
+                                    <div class="flex flex-col gap-1 roboto text-[14px] sm:text-[16px]">
                                         {#if body.jewel_type === "Militant Faith"}
-                                            <p
-                                                class="roboto text-[14px]"
-                                            >
+                                            <p>
                                                 • &nbsp;<b
                                                     >{topAttr(
                                                         response,
@@ -721,32 +719,24 @@
                                                     ).count}</b
                                                 >&nbsp; with matching general
                                             </p>
-                                            <p
-                                                class="roboto text-[14px]"
-                                            >
+                                            <p>
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(1)}</b
                                                 >&nbsp; with at least 1 matching
                                                 devotion modifier
                                             </p>
-                                            <p
-                                                class="roboto text-[14px]"
-                                            >
+                                            <p>
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(2)}</b
                                                 >&nbsp; matched both devotion
                                                 modifiers
                                             </p>
-                                            <p
-                                                class="roboto text-[14px]"
-                                            >
+                                            <p>
                                                 • &nbsp;<b>{numExactMatch()}</b
                                                 >&nbsp; were an exact match
                                             </p>
                                         {:else}
-                                            <p
-                                                class="roboto text-[14px]"
-                                            >
+                                            <p>
                                                 • &nbsp;<b
                                                     >{topAttr(
                                                         response,
@@ -762,7 +752,7 @@
                             {#if body.seed !== "Any"}
                                 <div class="mt-auto mb-3">
                                     <p
-                                        class="fontinSmallCaps mt-4 text-[16px]"
+                                        class="fontinSmallCaps mt-4 text-[16px] sm:text-[18px]"
                                     >
                                         Search on PoE Trade:
                                     </p>
