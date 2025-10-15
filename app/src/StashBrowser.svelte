@@ -219,7 +219,7 @@
                 text: r.seed_match,
                 fill: r.seed_match > 0 ? "black" : "#333333",
                 fontSize: numHitsFontSize,
-                fontFamily: "Fontin",
+                fontFamily: "Fontin, Fontin-Regular",
                 align: "center",
             });
 
