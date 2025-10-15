@@ -28,6 +28,8 @@
 	let { children, data } = $props();
 	data_summary.set(data);
 
+	let mounted = $state(false);
+
 	onMount(async () => {
 		const setBP = () => {
 			size_breakpoint.set(getPageBreakpoint());
@@ -35,6 +37,7 @@
 
 		setBP();
 		window.addEventListener("resize", setBP);
+		mounted = true;
 
 		const oauth_code = $page.url.searchParams.get("code");
 		const oauth_state = $page.url.searchParams.get("state");
@@ -79,6 +82,7 @@
 </script>
 
 <ModeWatcher disableTransitions={false} />
+{#if mounted}
 <div class={cn("app " + (mode.current === "dark" ? "dark" : ""))}>
 	{#if isMobile($size_breakpoint)}
 		<MobileNavMenu />
@@ -185,6 +189,7 @@
 		</footer>
 	{/if}
 </div>
+{/if}
 
 <style>
 	.app {

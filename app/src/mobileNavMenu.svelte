@@ -12,11 +12,20 @@
     import { account_name } from "./store";
     import { logout } from "./store";
     import { LogOut } from "lucide-svelte";
+    import { onMount } from "svelte";
+
+    let mounted = $state(false);
+
+    onMount(() => {
+        mounted = true;
+    })
 
     const pageTitle = $derived.by(() => {
-        const title = $page.data.title ?? document.title
-        if (title === "Timeless Historian") {
-            return title;
+        if (!mounted) return ''
+        const title = $page.data.title ?? document.title;
+
+        if (title === 'Timeless Historian') {
+            return title
         } else {
             return title.split('Timeless Historian - ')[1]
         }
