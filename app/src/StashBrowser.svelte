@@ -92,6 +92,7 @@
             fontFamily: "Fontin-Regular",
             fontSize: bp.tabLabelFontSize,
             align: "center",
+            preventDefault: false
         });
 
         stageCenterX(tabLabelText);
@@ -104,6 +105,7 @@
             width: tabLabelText.width() + 2 * bp.textMargin,
             fill: $stashMetadata.color,
             cornerRadius: [2 * bp.borderRadius, 2 * bp.borderRadius, 0, 0],
+            preventDefault: false
         });
         stageCenterX(tabLabelRect)
 
@@ -116,6 +118,7 @@
             stroke: $stashMetadata.color,
             strokeWidth: bp.stroke * 2,
             cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
+            preventDefault: false
         });
 
         stageCenterX(tabLabelStashFrame)
@@ -136,6 +139,7 @@
             fill: backdropFill,
             opacity: backdropOpacity,
             cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
+            preventDefault: false
         });
         selfCenter(backdrop)
         baseLayer.offsetX(-bp.stageW / 2);
@@ -166,12 +170,14 @@
                 stroke: gridColor,
                 strokeWidth: bp.stroke,
                 points: [0, i * cellSize, backdrop.width(), i * cellSize],
+                preventDefault: false
             });
 
             const lineLong = new Konva.Line({
                 stroke: gridColor,
                 strokeWidth: bp.stroke,
                 points: [i * cellSize, 0, i * cellSize, backdrop.height()],
+                preventDefault: false
             });
 
             gridGroup.add(lineLat);
@@ -226,6 +232,8 @@
 
             if (r.seed_match === 0) {
                 tile.opacity(0.5);
+                tile.preventDefault(false)
+                tileTarget.preventDefault(false)
             } else {
 
                 function drawTooltip() {

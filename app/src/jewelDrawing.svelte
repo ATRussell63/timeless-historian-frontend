@@ -135,6 +135,7 @@
             radius: $hoverData.drawing.radius + RADIUS_PADDING,
             fill: backdropFill,
             opacity: backdropOpacity,
+            preventDefault: false
         });
 
         const timelessRadius = new Konva.Circle({
@@ -143,6 +144,7 @@
             radius: $hoverData.drawing.radius + RADIUS_PADDING,
             stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
             strokeWidth: 60,
+            preventDefault: false
         });
 
         baseLayer.add(backdrop);
@@ -188,6 +190,7 @@
                 strokeWidth: ignoreScale(3),
                 lineCap: "square",
                 lineJoin: "square",
+                preventDefault: false
             });
             edgeCropper.add(sEdge);
         }
@@ -210,6 +213,7 @@
                 fill: "yellow",
                 stroke: stroke,
                 strokeWidth: ignoreScale(3),
+                preventDefault: false
             });
             edgeCropper.add(arc);
         }
@@ -536,4 +540,7 @@
 </div>
 
 <style>
+    #drawingContainer {
+        /* touch-action: pan-y; */
+    }
 </style>
