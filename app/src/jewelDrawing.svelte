@@ -540,7 +540,4 @@
 </div>
 
 <style>
-    #drawingContainer {
-        /* touch-action: pan-y; */
-    }
 </style>
