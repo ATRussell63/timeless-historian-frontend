@@ -2966,6 +2966,7 @@ __metadata:
     tailwind-variants: "npm:3.1.1"
     tailwindcss: "npm:^4.0.0"
     tw-animate-css: "npm:1.4.0"
+    vaul-svelte: "npm:^1.0.0-next.7"
     vite: "npm:^6.2.6"
   languageName: unknown
   linkType: soft
@@ -3042,6 +3043,18 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
+  languageName: node
+  linkType: hard
+
+"vaul-svelte@npm:^1.0.0-next.7":
+  version: 1.0.0-next.7
+  resolution: "vaul-svelte@npm:1.0.0-next.7"
+  dependencies:
+    runed: "npm:^0.23.2"
+    svelte-toolbelt: "npm:^0.7.1"
+  peerDependencies:
+    svelte: ^5.0.0
+  checksum: 10c0/7a459122b39c9ef6bd830b525d5f6acbc07575491e05c758d9dfdb993cc98ab4dee4a9c022e475760faaf1d7bd8460a1434965431d36885a3ee48315ffa54eb3
   languageName: node
   linkType: hard
 

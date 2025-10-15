@@ -10,7 +10,7 @@
 
 <Button
     class={cn(
-        "topNavButton bg-white text-black px-4 border rounded-t-sm rounded-b-none",
+        "topNavButton sm:text-[20px] md:text-[18px] lg:text-[24px] xl:text-[32px] bg-white text-black px-4 border rounded-t-sm rounded-b-none",
         isActive() && "TopNavActive h-[46px] translate-y-[2px]",
         !isActive() && "TopNavNotActive h-[44px]",
     )}

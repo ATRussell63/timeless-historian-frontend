@@ -29,12 +29,12 @@ async function makeGGGAPIRequest(url) {
 
         // response_body is a proxy for the actual response data
         const { body, headers, status } = response_body
-        console.log(`response from ${url}:`)
-        console.log(body)
-        console.log('response headers')
-        console.log(headers)
-        console.log('response status')
-        console.log(status)
+        // console.log(`response from ${url}:`)
+        // console.log(body)
+        // console.log('response headers')
+        // console.log(headers)
+        // console.log('response status')
+        // console.log(status)
 
         if (status !== 200) {
             parseRequestError(status, headers)
@@ -212,8 +212,6 @@ function throwErrorToast(error_title, error_body) {
         })
 }
 
-export async function searchDBThenScroll(jewel, scrollTarget) {
+export async function searchDB(jewel) {
     await searchDBForJewel(jewel)
-    await tick();
-    document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
 }

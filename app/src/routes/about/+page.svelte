@@ -3,51 +3,64 @@
     import THLogoWhite from "$lib/images/TH-Logo-White.svg";
     import VaalSymbol from "$lib/images/VaalSymbol.svg";
     import * as Card from "$lib/components/ui/card";
+    import { derived } from "svelte/store";
+    import { size_breakpoint } from "../../store";
+    import { isMobile } from "$lib/breakpoints";
+    import { mode } from "mode-watcher";
 
-    let backgroundStyle = `background-size: 190% 190%; background-position: bottom 40% left 50%; background-image: url(${VaalSymbol});`;
+    // TODO - want to conditionally turn on repeat-off at some point
+    let backgroundStyle = $derived.by(() => {
+        const bg_size = isMobile($size_breakpoint) ? '900px 900px' : '140% 140%';
+        const bg_position = isMobile($size_breakpoint) ? 'top 0% right 50%' : 'bottom 50% right 50%';
+        return `background-size: ${bg_size}; background-position: ${bg_position}; background-image: url(${VaalSymbol});`
+    });
+
 </script>
 
 <svelte:head>
     <title>Timeless Historian - About</title>
 </svelte:head>
 
-<div class="px-25 pt-3 pb-10 min-w-[1300px]" style={backgroundStyle}>
-    <div class="flex flex-row justify-center mt-20 items-center">
-        <div class="flex flex-row items-center justify-center gap-20">
-            <div>
-                <img
-                    class="mr-3 thLogo absolute scale-150 dark:scale-0"
-                    src={THLogoBlack}
-                    alt="TH Logo"
-                />
-                <img
-                    class="mr-3 thLogo scale-0 dark:scale-150"
-                    src={THLogoWhite}
-                    alt="TH Logo"
-                />
-            </div>
-            <h3 style="font-family: Trajan; font-size: 60px;">About</h3>
-            <div>
-                <img
-                    class="mr-3 thLogo absolute scale-150 dark:scale-0"
-                    src={THLogoBlack}
-                    alt="TH Logo"
-                />
-                <img
-                    class="mr-3 thLogo scale-0 dark:scale-150"
-                    src={THLogoWhite}
-                    alt="TH Logo"
-                />
-            </div>
+
+<div class="flex flex-col lg:mb-2 px-2 lg:px-6 pt-3 gap-10 xl:gap-20 lg:min-w-[700px]" style={backgroundStyle}>
+    <div class="flex flex-row justify-center mt-12 mb-2 items-center">
+        <div class="flex flex-row items-center justify-center gap-8 lg:gap-20">
+            {#if mode.current !== 'dark'}
+            <img
+                class="h-[20px] lg:h-[48px]"
+                src={THLogoBlack}
+                alt="TH Logo"
+            />
+            {:else}
+            <img
+                class="h-[25px] lg:h-[48px]"
+                src={THLogoWhite}
+                alt="TH Logo"
+            />
+            {/if}
+            <h3 style="font-family: Trajan;" class='text-[30px] lg:text-[60px]'>About</h3>
+            {#if mode.current !== 'dark'}
+            <img
+                class="h-[20px] lg:h-[48px]"
+                src={THLogoBlack}
+                alt="TH Logo"
+            />
+            {:else}
+            <img
+                class="h-[25px] lg:h-[48px]"
+                src={THLogoWhite}
+                alt="TH Logo"
+            />
+            {/if}
         </div>
     </div>
-    <div class="flex flex-col max-w-[1250px] mx-auto mt-20 mb-30">
-        <Card.Root class="transparentBackground">
+    <div class="flex flex-col w-full px-2 md:max-w-[580px] lg:max-w-[850px] mx-auto items-center">
+        <Card.Root class="transparentBackground pb-6">
             <Card.Content>
-                <div class="flex flex-row justify-center">
+                <div class="flex flex-row justify-center mb-2 md:mb-4 text-[24px] lg:text-[32px]">
                     <h1>Background</h1>
                 </div>
-                <div class="px-6">
+                <div class="flex flex-col gap-2 px-0 text-[14px] lg:text-[16px] lg:px-6">
                     <p>
                         In the early leagues after Legion, only the most
                         dedicated players were able to hunt down the best jewel
@@ -77,8 +90,8 @@
                         Ironically, not much has changed for sellers. There are
                         3 options:
                     </p>
-                    <div class="flex flex-col mx-10">
-                        <h2>• Dump tabs</h2>
+                    <div class="flex flex-col gap-2 mx-4 lg:mx-10">
+                        <h2 class='my-2 text-[16px] lg:text-[18px]'>• Dump tabs</h2>
                         <p>
                             This is by far the fastest method and arguably the
                             best way to make money from selling bulk jewels.
@@ -95,7 +108,7 @@
                             as at league start). However, it outright ignores the
                             potential for jackpots.
                         </p>
-                        <h2>• Trade queries</h2>
+                        <h2 class='my-2 text-[16px] lg:text-[18px]'>• Trade queries</h2>
                         <p>
                             In a perfectly rational world, this would be the
                             most effective way to price timeless jewels.
@@ -114,7 +127,7 @@
                             generals and devotion mods. Militant Faith in
                             particular has huge variance.
                         </p>
-                        <h2>• Actually look at the tree</h2>
+                        <h2 class='my-2 text-[16px] lg:text-[18px]'>• Actually look at the tree</h2>
                         <p>
                             Just import it into PoB and look at the nodes,
                             right?
@@ -166,26 +179,29 @@
             </Card.Content>
         </Card.Root>
     </div>
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row justify-center my-5 lg:my-10">
+        {#if mode.current !== 'dark'}
         <img
-            class="mr-3 thLogo absolute scale-150 dark:scale-0"
+            class="h-[32px] lg:h-[48px]"
             src={THLogoBlack}
             alt="TH Logo"
         />
+        {:else}
         <img
-            class="mr-3 thLogo scale-0 dark:scale-150"
+            class="h-[32px] lg:h-[48px]"
             src={THLogoWhite}
             alt="TH Logo"
         />
+        {/if}
     </div>
-    <div class="flex flex-col max-w-[1250px] mx-auto mt-20 mb-10">
-        <Card.Root class="transparentBackground">
-            <Card.Content class="mb-8">
-                <div class="flex flex-row justify-center">
+    <div class="flex flex-col w-full px-2 md:max-w-[580px] lg:max-w-[850px] mb-8 mx-auto items-center">
+        <Card.Root class="transparentBackground pb-6">
+            <Card.Content>
+                <div class="flex flex-row justify-center mb-2 lg:mb-4 text-[24px] lg:text-[32px]">
                     <h1>FAQ</h1>
                 </div>
-                <div class="flex flex-col mx-10">
-                    <h2>What is this site?</h2>
+                <div class="flex flex-col gap-2 px-0 text-[14px] lg:text-[16px] lg:px-6">
+                    <h2 class='mt-4 mb-2 text-[16px] lg:text-[18px]'>What is this site?</h2>
                     <p>
                         Timeless Historian is a historial database for timeless
                         jewels. The site periodically polls characters from the
@@ -202,7 +218,7 @@
                         What it <strong>isn't</strong> is a price checking tool or
                         a replacement for the official trade site.
                     </p>
-                    <h2>Why are SSF leagues not listed?</h2>
+                    <h2 class='mt-4 mb-2 text-[16px] lg:text-[18px]'>Why are SSF leagues not listed?</h2>
                     <p>
                         The theory behind Timeless Historian relies on the idea
                         that every equipped jewel reflects a decision.
@@ -219,18 +235,12 @@
                         thousands.
                     </p>
 
-                    <h2>Searching individual jewels is still cumbersome</h2>
-                    <p>
-                        I agree. My goal is to implement bulk searching with
-                        stash API integration in the future.
-                    </p>
-
-                    <h2>Is there an API?</h2>
+                    <h2 class='mt-4 mb-2 text-[16px] lg:text-[18px]'>Is there an API?</h2>
                     <p>
                         I don't currently have any plans to make a public API.
                     </p>
 
-                    <h2>
+                    <h2 class='mt-4 mb-2 text-[16px] lg:text-[18px]'>
                         There are no results for any of the jewels I'm
                         searching!
                     </h2>
@@ -241,8 +251,8 @@
                         result is still meaningful.
                     </p>
 
-                    <h2>How can I submit a bug report or other feedback?</h2>
-                    <p>You can email me at timeless_auditor@gmail.com .</p>
+                    <h2 class='mt-4 mb-2 text-[16px] lg:text-[18px]'>How can I submit a bug report or other feedback?</h2>
+                    <p>You can email me at timeless_auditor@gmail.com.</p>
                     <p>Thank you for visiting!</p>
                 </div>
             </Card.Content>
@@ -250,27 +260,17 @@
     </div>
 </div>
 
+
 <style>
     p {
         font-family: Roboto;
-        font-size: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-bottom: 12px;
     }
 
     h2 {
         font-family: Fontin-Bold;
-        font-size: 24px;
-        font-weight: 500;
-        margin-top: 15px;
-        margin-bottom: 12px;
     }
 
     h1 {
         font-family: Trajan;
-        font-size: 40px;
-        margin-top: 20px;
-        margin-bottom: 20px;
     }
 </style>

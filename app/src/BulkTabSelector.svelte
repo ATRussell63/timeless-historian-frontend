@@ -25,7 +25,7 @@
     flattenStashes,
     getAccountStashes,
     getJewelsFromStashTab,
-    getAccountLeagues
+    getAccountLeagues,
   } from "$lib/api";
   import {
     account_leagues,
@@ -34,9 +34,13 @@
     bulk_result,
     search_result,
     waiting_on_api,
+    size_breakpoint,
+    cells_per_side
   } from "./store";
+  import { isMobile } from "$lib/breakpoints";
 
   // clear any previous search data
+  bulk_result.set(null);
   search_result.set(null);
 
   const current_leagues = $derived(
@@ -52,7 +56,6 @@
 
   let selected_league = $state("");
   let stashes = $state("");
-  let selected_stash_size = $state(0);
   let open = $state(false);
   let selected_stash = $state("");
   let triggerRef = $state(null);
@@ -162,7 +165,7 @@
 
   async function selectStashTrigger(stash, force = false) {
     forceHidden.set(true);
-    selected_stash_size = stash.type === "QuadStash" ? 24 : 12;
+    cells_per_side.set(stash.type === "QuadStash" ? 24 : 12);
     const s_id = stash.id;
 
     if (!safe_getter($api_jewel_data, selected_league + "." + s_id) || force) {
@@ -209,23 +212,24 @@
   onMount(async () => {
     if ($account_leagues.length === 0) {
       let acc_leagues = await getAccountLeagues();
-      console.log("Account leagues: ");
-      console.log(acc_leagues);
       account_leagues.set(acc_leagues);
     }
 
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem("selected_league");
-    console.log($account_leagues)
-    if (prevSelectedLeague && $account_leagues.map((l) => l.name).includes(prevSelectedLeague)) {
+    if (
+      prevSelectedLeague &&
+      $account_leagues.map((l) => l.name).includes(prevSelectedLeague)
+    ) {
       selected_league = prevSelectedLeague;
       selectLeagueTrigger();
     }
   });
 </script>
 
-<div class="flex flex-row space-x-5">
-  <div class="flex flex-col gap-4 px-0 mt-10 mx-auto">
+{#if !isMobile($size_breakpoint) && $size_breakpoint !== 'lg'}
+<div class="flex flex-row lg:space-x-5 mx-6">
+  <div class="flex flex-col gap-4 px-0 ml-6 mt-6 items-center">
     <Card.Root class="transparentBackground">
       <Card.Content class="flex flex-col gap-2">
         <Select.Root
@@ -327,18 +331,115 @@
       </Card.Content>
     </Card.Root>
   </div>
-
-  <div class="mx-auto">
-    <StashBrowser sideLen={800} cellsPerSide={selected_stash_size} {mode} />
+  <div class="ml-auto mr-6 xl:w-[420px] 2xl:w-[800px]">
+    <StashBrowser />
   </div>
 </div>
+{:else}
+<div class="flex flex-col gap-4 items-center">
+  <Card.Root class="transparentBackground w-full max-w-[300px]">
+    <Card.Content class="flex flex-col gap-2">
+      <Select.Root
+        type="single"
+        value={selected_league}
+        onValueChange={(v) => {
+          selected_league = v;
+          localStorage.setItem("selected_league", v);
+          selectLeagueTrigger();
+        }}
+      >
+        <Select.Trigger class="w-full">
+          {leagueTrigger}
+        </Select.Trigger>
+        <Select.Content>
+          {#if current_leagues.length > 0}
+            <Select.Group>
+              <Select.Label>Current League</Select.Label>
+              {#each current_leagues as league}
+                <Select.Item value={league.value} label={league.label}>
+                  {league.label}
+                </Select.Item>
+              {/each}
+            </Select.Group>
+          {/if}
+          {#if current_leagues.length > 0}
+            <Select.Group>
+              <Select.Label>Others</Select.Label>
+              {#each other_leagues as league}
+                <Select.Item value={league.value} label={league.label}>
+                  {league.label}
+                </Select.Item>
+              {/each}
+            </Select.Group>
+          {/if}
+        </Select.Content>
+      </Select.Root>
+      <div class="flex flex-row gap-4">
+        <Popover.Root bind:open>
+          <Popover.Trigger bind:ref={triggerRef}>
+            {#snippet child({ props })}
+              <Button
+                {...props}
+                variant="outline"
+                class="w-full lg:w-[250px] justify-between"
+                role="combobox"
+                aria-expanded={open}
+                disabled={selected_league === ""}
+              >
+                {selected_stash || "Select a stash..."}
+                <!-- <ChevronsUpDownIcon class="opacity-50" /> -->
+              </Button>
+            {/snippet}
+          </Popover.Trigger>
+          <Popover.Content class="w-[250px] p-0">
+            <Command.Root>
+              <Command.Input placeholder="Search stashes..." />
+              <Command.List>
+                <Command.Empty>No stashes found.</Command.Empty>
+                <Command.Group value="stashes" class="py-0 px-0">
+                  {#each stashes as stash}
+                    <Command.Item
+                      class="rounded-none"
+                      style="
+                            --stashColor: {stash.color};
+                            --stashColorLight: {lightenColor(stash.color)};
+                            color: {isBright(stash.color)
+                        ? 'black'
+                        : 'white'}"
+                      value={stash.value}
+                      onSelect={() => {
+                        selected_stash = stash.label;
+                        selectStashTrigger(stash.stash_obj);
+                        stashMetadata.set({
+                          name: stash.label,
+                          color: stash.color,
+                        });
+                        closeAndFocusTrigger();
+                      }}
+                    >
+                      <CheckIcon
+                        class={cn(
+                          selected_stash !== stash.value &&
+                            "text-transparent",
+                        )}
+                      />
+                      {stash.label}
+                    </Command.Item>
+                  {/each}
+                </Command.Group>
+              </Command.List>
+            </Command.Root>
+          </Popover.Content>
+        </Popover.Root>
+        <Button class='min-w-[40px] px-1 py-0' onclick={refreshStashData}>
+          <RefreshCw />
+        </Button>
+      </div>
+    </Card.Content>
+  </Card.Root>
+</div>
+<StashBrowser />
 
-{#if $search_result && !$forceHidden}
-  <div class="flex flex-row">
-    <span class="pageTitle mt-5">Search Results</span>
-  </div>
 {/if}
 
-<div class="flex flex-row w-[1618px]">
-  <ResultsBrowser totalW={1618} />
-</div>
+

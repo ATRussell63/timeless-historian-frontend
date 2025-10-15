@@ -2,16 +2,46 @@
     import * as Card from "$lib/components/ui/card";
     import { Button } from "$lib/components/ui/button/index.js";
     import Separator from "$lib/components/ui/separator/separator.svelte";
+    import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
     import * as Select from "$lib/components/ui/select";
     import ChevronLeft from "lucide-svelte/icons/chevron-left";
     import ResultChart from "../../../ResultChart.svelte";
     import KaruiSymbol from "$lib/images/KaruiSymbol.svg";
     import { cn } from "$lib/utils";
+    import { derived } from "svelte/store";
     import { mode } from "mode-watcher";
     import ResultsBrowser from "../../../ResultsBrowser.svelte";
     import { forceHidden, clearSelection } from "../../../resultsBrowserStore";
+    import { size_breakpoint } from "../../../store";
+    import { isMobile } from "$lib/breakpoints";
+    import { MF_MOD_ABBREVIATIONS } from "../../../drawingConstants";
 
-    let backgroundStyle = `background-size: 110% 110%; background-image: url(${KaruiSymbol});`;
+    let backgroundStyle = $derived.by(() => {
+        let bg_size;
+        let bg_position;
+
+        switch($size_breakpoint) {
+            case 'xxs':
+            case 'xs':
+            case 'sm':
+            case 'md':
+                bg_size = "700px 700px"
+                bg_position = "top 300px left -150px"
+                break;
+            case 'lg':
+                bg_size = '120% 120%'
+                bg_position = ''
+                break;
+            case 'xl':
+            case '2xl':
+                bg_size = '110% 110%'
+                bg_position = ''
+        }
+
+        return `background-repeat: no-repeat; background-size: ${bg_size}; background-position: ${bg_position}; background-image: url(${KaruiSymbol});`;
+    });
+
+    // let backgroundStyle = `background-size: 110% 110%; background-image: url(${KaruiSymbol});`;
 
     let { data } = $props();
     // reset force flag if it was set by bulk search
@@ -30,6 +60,15 @@
         // TODO - this doesn't matter, right?
         selectedTradeLeague = "Settlers";
     }
+
+    const mf_abbrev = $derived.by(() => {
+        if (body.mf_mods.length > 0) {
+            return [MF_MOD_ABBREVIATIONS.get(body.mf_mods[0]),
+                    MF_MOD_ABBREVIATIONS.get(body.mf_mods[1])]
+        } else {
+            return []
+        }
+    })
 
     function totalResults(results) {
         let count = 0;
@@ -305,110 +344,403 @@
     <title>Timeless Historian - Search Results</title>
 </svelte:head>
 
-<div class="mb-2 px-10 py-8 min-w-[1700px]" style={backgroundStyle}>
+<div class="flex flex-col lg:gap-6 mb-2 px-4 sm:px-6 md:px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
     <!-- Title row -->
-    <div class="mb-4 flex flex-row items-center justify-between">
-        <div class="flex items-center">
-            <span class="contentTitle">Results Summary - </span>
-            <div class="flex flex-row gap-2 items-center">
-                <div class="queryDetail">
-                    <span class="queryHeaderLabel">Type: </span><span
-                        class="queryHeader">{body.jewel_type}</span
+    {#if ['lg', 'xl'].includes($size_breakpoint)}
+    <div class="flex flex-row items-center justify-between">
+        <span class="fontinSmallCaps lg:text-[26px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
+        <div class='flex flex-col grow gap-2'>
+            <div class='flex flex-row gap-10 items-center justify-center'>
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">Type: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
                     >
                 </div>
-                <div class="queryDetail">
-                    <span class="queryHeaderLabel">General: </span><span
-                        class="queryHeader">{body.general}</span
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">General: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
                     >
                 </div>
-                <div class="queryDetail">
-                    <span class="queryHeaderLabel">Seed: </span><span
-                        class="queryHeader">{body.seed}</span
+                <div class="flex flex-row items-center lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                    <span class="robotoBold mr-1">Seed: </span><span
+                        class="roboto lg:text-[14px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
                     >
                 </div>
-                {#if body.jewel_type === "Militant Faith"}
-                    <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
-                    <!-- if mf mods is very long split it into two rows -->
-                    {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
-                        <div class="queryDetail">
-                            <span class="queryHeaderLabel"
+            </div>
+            {#if body.jewel_type === "Militant Faith"}
+            <div class="flex flex-row items-center justify-center lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                            <span class="robotoBold mr-2 lg:text-[14px] xl:text-[14px] xl:ml-[10px]">
+                                Devotion Mods:
+                            </span>
+                            <!-- <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]">{mf_abbrev[0]}, {mf_abbrev[1]}</span> -->
+                             <div class="flex flex-col">
+                            <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[0]}</span
+                            >
+                            <span class="roboto lg:text-[14px] xl:text-[14px] xl:ml-[5px]"
+                                >&#9679 {mf_abbrev[1]}</span
+                            >
+                        </div>
+                        </div>
+            {/if}
+        </div>
+        <Button class="pl-0 pr-2" variant="ghost" href="/search">
+            <ChevronLeft class="h-5" />
+            <span style="text-decoration: underline; font-family: Roboto;">Back to Search</span>
+        </Button>
+    </div>
+    {:else if !isMobile($size_breakpoint)}
+    <div class="flex flex-row items-center justify-between">
+        <span class="fontinSmallCaps lg:text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
+        <div class="flex flex-row gap-2 items-center">
+            <div class="flex flex-row lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">Type: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
+                >
+            </div>
+            <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">General: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
+                >
+            </div>
+            <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">Seed: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
+                >
+            </div>
+            {#if body.jewel_type === "Militant Faith"}
+                <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
+                <!-- if mf mods is very long split it into two rows -->
+                {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px] text-right">
+                        <span class="robotoBold"
+                            >Devotion Mods:
+                        </span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >&#9679 {mf_abbrev[0]}</span
+                        >
+                        <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >&#9679 {mf_abbrev[1]}</span
+                        >
+                    </div>
+                {:else}
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                        <span class="robotoBold text-right"
+                            >Devotion Mods:
+                        </span><span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >{mf_abbrev[0]}, {mf_abbrev[1]}</span
+                        >
+                    </div>
+                {/if}
+            {/if}
+        </div>
+        <Button class="pl-0 pr-2 mr-1" variant="ghost" href="/search"
+        ><ChevronLeft class="h-5" /><span
+            style="text-decoration: underline; font-family: Roboto;"
+            >Back to Search</span
+        ></Button>  
+    </div>
+    {:else}
+        <div>
+            <span class="fontinSmallCaps text-[24px] sm:text-[28px] ">Results Summary</span>
+            <Card.Root class="transparentBackground my-4">
+                <Card.Content class="flex flex-col gap-1 p-4 sm:p-6 text-[11px] sm:text-[14px] md:text-[16px]">
+                    <div class='flex flex-row justify-between'>
+                    <div class="text-center basis-1/3">
+                        <span class="robotoBold mr-2">Type: </span><span
+                            class="roboto xl:ml-[5px]">{body.jewel_type}</span
+                        >
+                    </div>
+                    <div class="text-center basis-1/3">
+                        <span class="robotoBold mr-2">General: </span><span
+                            class="roboto xl:ml-[5px]">{body.general}</span
+                        >
+                    </div>
+                    <div class="text-center basis-1/3">
+                        <span class="robotoBold mr-2">Seed: </span><span
+                            class="roboto xl:ml-[5px]">{body.seed}</span
+                        >
+                    </div>
+                    </div>
+                    {#if body.jewel_type === "Militant Faith"}
+                        <div class="flex flex-row justify-between">
+                            <!-- <div class='flex basis-1/2 flex-col'> -->
+                            <span class="robotoBold basis-1/3 text-right pr-4"
                                 >Devotion Mods:
                             </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="queryHeader"
-                                >&#9679 {body.mf_mods[0]}</span
+                        <!-- </div> -->
+                            <!-- <div class='flex basis-1/2 flex-row'> -->
+                            <span class="roboto basis-2/3"
+                                >&#9679 {mf_abbrev[0]}</span
                             >
-                            <span class="queryHeader"
-                                >&#9679 {body.mf_mods[1]}</span
-                            >
+                            <!-- </div> -->
                         </div>
-                    {:else}
-                        <div class="queryDetail">
-                            <span class="queryHeaderLabel"
-                                >Devotion Mods:
-                            </span><span class="queryHeader"
-                                >{body.mf_mods[0]}, {body.mf_mods[1]}</span
+                        <div class="flex flex-row">
+                            <div class='basis-1/3'></div>
+                            <span class="roboto basis-2/3"
+                                >&#9679 {mf_abbrev[1]}</span
                             >
                         </div>
                     {/if}
-                {/if}
-            </div>
+                </Card.Content>
+            </Card.Root>
         </div>
-        <Button class="pl-1 ml-4" variant="ghost" href="/search"
-            ><ChevronLeft class="h-5" /><span
-                style="text-decoration: underline; font-family: Roboto;"
-                >Back to Search</span
-            ></Button
-        >
-    </div>
+    {/if}
 
     <!-- Results Summary -->
-    <Card.Root class="transparentBackground">
-        <Card.Content class="flex flex-row justify-start">
-            <div class="flex flex-col p-3 pr-6">
+    {#if !isMobile($size_breakpoint)}
+        <Card.Root class="transparentBackground lg:w-fit xl:w-full">
+            <Card.Content class="flex flex-row lg:justify-center xl:justify-start">
+                <div class="flex flex-col pl-3 pr-6">
+                    <div>
+                        <p class="fontinSmallCaps mb-3 lg:text-[24px] xl:text-[24px]">
+                            Breakdown
+                        </p>
+                        <Card.Root class="insetCard mb-4 xl:min-w-[180px]">
+                            <Card.Content>
+                                <p class="roboto mb-0 lg:text[14px] xl:text-[16px]">
+                                    Total Results: <b
+                                        >{totalResults(response)}</b
+                                    >
+                                </p>
+                                {#if body.seed !== "Any"}
+                                    <div class="ml-5 mt-4">
+                                        <p
+                                            class="roboto mb-2 lg:text[14px] xl:text-[16px]"
+                                        >
+                                            Of the search results:
+                                        </p>
+                                        <div class="flex flex-col gap-1">
+                                            {#if body.jewel_type === "Militant Faith"}
+                                                <p
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
+                                                >
+                                                    • &nbsp;<b
+                                                        >{topAttr(
+                                                            response,
+                                                            "general",
+                                                        ).count}</b
+                                                    >&nbsp; jewels had a
+                                                    matching general
+                                                </p>
+                                                <p
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
+                                                >
+                                                    • &nbsp;<b
+                                                        >{numMatchingDevoMods(
+                                                            1,
+                                                        )}</b
+                                                    >&nbsp; jewels had at least
+                                                    1 matching devotion modifier
+                                                </p>
+                                                <p
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
+                                                >
+                                                    • &nbsp;<b
+                                                        >{numMatchingDevoMods(
+                                                            2,
+                                                        )}</b
+                                                    >&nbsp; jewels matched both
+                                                    devotion modifiers
+                                                </p>
+                                                <p
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
+                                                >
+                                                    • &nbsp;<b
+                                                        >{numExactMatch()}</b
+                                                    >&nbsp; jewels were an exact
+                                                    match
+                                                </p>
+                                            {:else}
+                                                <p
+                                                    class="roboto lg:text[14px] xl:text-[16px]"
+                                                >
+                                                    • &nbsp;<b
+                                                        >{topAttr(
+                                                            response,
+                                                            "general",
+                                                        ).count}</b
+                                                    >&nbsp; jewels were an exact
+                                                    match
+                                                </p>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                {/if}
+                            </Card.Content>
+                        </Card.Root>
+                    </div>
+                    {#if body.seed !== "Any"}
+                        <div class="mt-auto mb-3">
+                            <p class="fontinSmallCaps lg:text-[18px] xl:text-[20px]">
+                                Search on the Official Trade Site:
+                            </p>
+                        </div>
+                        <div class="flex flex-row gap-3">
+                            <Button
+                                class="fontin xl:text-[16px] 2xl:text-[20px]"
+                                disabled={!selectedTradeLeague}
+                                onclick={() => openTradeLink("seed")}
+                                >Any General</Button
+                            >
+                            <Button
+                                class="fontin xl:text-[16px] 2xl:text-[20px]"
+                                disabled={!selectedTradeLeague}
+                                onclick={() => openTradeLink("general")}
+                                >Match General</Button
+                            >
+                            {#if body.jewel_type === "Militant Faith"}
+                                <Button
+                                    class="fontin xl:text-[16px] 2xl:text-[20px]"
+                                    disabled={!selectedTradeLeague}
+                                    onclick={() => openTradeLink("exact")}
+                                    >General + Devo Mods</Button
+                                >
+                            {/if}
+                        </div>
+                    {/if}
+                </div>
+                {#if !['lg'].includes($size_breakpoint)}
+                <Separator orientation="vertical" class="mr-4"></Separator>
+                <ScrollArea orientation='horizontal'>
+                <div class="flex flex-row w-max ml-3 mr-6 gap-6 items-center">
+                    {#if body.seed === "Any"}
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "jewel_type"),
+                            )}
+                            labels={Object.keys(
+                                getAttrCounts(response, "jewel_type"),
+                            )}
+                            theme="legion"
+                            title={"Top Jewel Type: " +
+                                topAttr(response, "jewel_type").name}
+                        />
+                    {/if}
+                    <ResultChart
+                        values={Object.values(
+                            getAttrCounts(response, "general"),
+                        )}
+                        labels={Object.keys(getAttrCounts(response, "general"))}
+                        theme="legion"
+                        title={"Top General: " +
+                            topAttr(response, "general").name}
+                    />
+                    <ResultChart
+                        values={Object.values(
+                            getAttrCounts(response, "ascendancy_name"),
+                        )}
+                        labels={Object.keys(
+                            getAttrCounts(response, "ascendancy_name"),
+                        )}
+                        theme="legion"
+                        title={"Top Ascendancy: " +
+                            topAttr(response, "ascendancy_name").name}
+                    />
+                    <ResultChart
+                        values={Object.values(getSocketCounts(response))}
+                        labels={Object.keys(getSocketCounts(response))}
+                        theme="legion"
+                        title={"Top Socket: " + topSocket(response).value.name}
+                    />
+                </div>
+                </ScrollArea>
+                {/if}
+            </Card.Content>
+        </Card.Root>
+        {#if ['lg'].includes($size_breakpoint)}
+        <Card.Root class='transparentBackground'>
+            <Card.Content>
+                <ScrollArea orientation='horizontal'>
+                    <div class="flex flex-row w-max ml-3 mr-6 gap-6 items-center">
+                        {#if body.seed === "Any"}
+                            <ResultChart
+                                values={Object.values(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                labels={Object.keys(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                theme="legion"
+                                title={"Top Jewel Type: " +
+                                    topAttr(response, "jewel_type").name}
+                            />
+                        {/if}
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "general"),
+                            )}
+                            labels={Object.keys(getAttrCounts(response, "general"))}
+                            theme="legion"
+                            title={"Top General: " +
+                                topAttr(response, "general").name}
+                        />
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            labels={Object.keys(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            theme="legion"
+                            title={"Top Ascendancy: " +
+                                topAttr(response, "ascendancy_name").name}
+                        />
+                        <ResultChart
+                            values={Object.values(getSocketCounts(response))}
+                            labels={Object.keys(getSocketCounts(response))}
+                            theme="legion"
+                            title={"Top Socket: " + topSocket(response).value.name}
+                        />
+                    </div>
+                </ScrollArea>
+            </Card.Content>
+        </Card.Root>
+        {/if}
+    {:else}
+        <Card.Root class="transparentBackground mb-4">
+            <Card.Content>
                 <div>
-                    <p class="resultsSummaryTitle mb-3">Breakdown</p>
+                    <p class="fontinSmallCaps mb-3 text-[24px]">
+                        Breakdown
+                    </p>
                     <Card.Root class="insetCard mb-4">
                         <Card.Content>
-                            <p class="resultsSummaryText mb-0">
+                            <p class="roboto mb-2 text-[16px]">
                                 Total Results: <b>{totalResults(response)}</b>
                             </p>
                             {#if body.seed !== "Any"}
-                                <div class="ml-5 mt-4">
-                                    <p class="resultsSummaryText mb-2">
-                                        Of the search results:
-                                    </p>
-                                    <div class="flex flex-col gap-1">
+                                <div class="ml-2">
+                                    <div class="flex flex-col gap-1 roboto text-[14px] sm:text-[16px]">
                                         {#if body.jewel_type === "Militant Faith"}
-                                            <p class="resultsSummaryText">
+                                            <p>
                                                 • &nbsp;<b
                                                     >{topAttr(
                                                         response,
                                                         "general",
                                                     ).count}</b
-                                                >&nbsp; jewels had a matching
-                                                general
+                                                >&nbsp; with matching general
                                             </p>
-                                            <p class="resultsSummaryText">
+                                            <p>
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(1)}</b
-                                                >&nbsp; jewels had at least 1
-                                                matching devotion modifier
+                                                >&nbsp; with at least 1 matching
+                                                devotion modifier
                                             </p>
-                                            <p class="resultsSummaryText">
+                                            <p>
                                                 • &nbsp;<b
                                                     >{numMatchingDevoMods(2)}</b
-                                                >&nbsp; jewels matched both
-                                                devotion modifiers
+                                                >&nbsp; matched both devotion
+                                                modifiers
                                             </p>
-                                            <p class="resultsSummaryText">
+                                            <p>
                                                 • &nbsp;<b>{numExactMatch()}</b
-                                                >&nbsp; jewels were an exact
-                                                match
+                                                >&nbsp; were an exact match
                                             </p>
                                         {:else}
-                                            <p class="resultsSummaryText">
+                                            <p>
                                                 • &nbsp;<b
                                                     >{topAttr(
                                                         response,
@@ -421,84 +753,98 @@
                                     </div>
                                 </div>
                             {/if}
+                            {#if body.seed !== "Any"}
+                                <div class="mt-auto mb-3">
+                                    <p
+                                        class="fontinSmallCaps mt-4 text-[16px] sm:text-[18px]"
+                                    >
+                                        Search on PoE Trade:
+                                    </p>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <Button
+                                        class="fontinSmallCaps text-[16px]"
+                                        disabled={!selectedTradeLeague}
+                                        onclick={() => openTradeLink("seed")}
+                                        >Any General</Button
+                                    >
+                                    <Button
+                                        class="fontin text-[16px]"
+                                        disabled={!selectedTradeLeague}
+                                        onclick={() => openTradeLink("general")}
+                                        >Match General</Button
+                                    >
+                                    {#if body.jewel_type === "Militant Faith"}
+                                        <Button
+                                            class="fontin text-[16px]"
+                                            disabled={!selectedTradeLeague}
+                                            onclick={() =>
+                                                openTradeLink("exact")}
+                                            >General + Devo Mods</Button
+                                        >
+                                    {/if}
+                                </div>
+                            {/if}
                         </Card.Content>
                     </Card.Root>
                 </div>
-                {#if body.seed !== "Any"}
-                    <div class="mt-auto mb-3">
-                        <p class="resultsSummaryTitle">
-                            Search on the Official Trade Site:
-                        </p>
-                    </div>
-                    <div class="flex flex-row gap-3">
-                        <Button
-                            class="tradeSearch"
-                            disabled={!selectedTradeLeague}
-                            onclick={() => openTradeLink("seed")}
-                            >Any General</Button
-                        >
-                        <Button
-                            class="tradeSearch"
-                            disabled={!selectedTradeLeague}
-                            onclick={() => openTradeLink("general")}
-                            >Match General</Button
-                        >
-                        {#if body.jewel_type === "Militant Faith"}
-                            <Button
-                                class="tradeSearch"
-                                disabled={!selectedTradeLeague}
-                                onclick={() => openTradeLink("exact")}
-                                >General + Devo Mods</Button
-                            >
+            </Card.Content>
+        </Card.Root>
+        <Card.Root class="transparentBackground"
+            ><Card.Content class="p-0">
+                <ScrollArea type="always" orientation="horizontal">
+                    <div class="flex flex-row w-max">
+                        {#if body.seed === "Any"}
+                            <ResultChart
+                                values={Object.values(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                labels={Object.keys(
+                                    getAttrCounts(response, "jewel_type"),
+                                )}
+                                theme="legion"
+                                title={"Jewel Type"}
+                            />
                         {/if}
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "general"),
+                            )}
+                            labels={Object.keys(
+                                getAttrCounts(response, "general"),
+                            )}
+                            theme="legion"
+                            title={"General"}
+                        />
+                        <ResultChart
+                            values={Object.values(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            labels={Object.keys(
+                                getAttrCounts(response, "ascendancy_name"),
+                            )}
+                            theme="legion"
+                            title={"Ascendancy"}
+                        />
+                        <ResultChart
+                            values={Object.values(getSocketCounts(response))}
+                            labels={Object.keys(getSocketCounts(response))}
+                            theme="legion"
+                            title={"Jewel Socket"}
+                        />
                     </div>
-                {/if}
-            </div>
-            <Separator orientation="vertical" class="mx-auto"></Separator>
-            <div class="flex flex-row ml-3 mr-6 gap-6 items-center">
-                {#if body.seed === "Any"}
-                    <ResultChart
-                        values={Object.values(
-                            getAttrCounts(response, "jewel_type"),
-                        )}
-                        labels={Object.keys(
-                            getAttrCounts(response, "jewel_type"),
-                        )}
-                        theme="legion"
-                        title={"Top Jewel Type: " +
-                            topAttr(response, "jewel_type").name}
-                    />
-                {/if}
-                <ResultChart
-                    values={Object.values(getAttrCounts(response, "general"))}
-                    labels={Object.keys(getAttrCounts(response, "general"))}
-                    theme="legion"
-                    title={"Top General: " + topAttr(response, "general").name}
-                />
-                <ResultChart
-                    values={Object.values(
-                        getAttrCounts(response, "ascendancy_name"),
-                    )}
-                    labels={Object.keys(
-                        getAttrCounts(response, "ascendancy_name"),
-                    )}
-                    theme="legion"
-                    title={"Top Ascendancy: " +
-                        topAttr(response, "ascendancy_name").name}
-                />
-                <ResultChart
-                    values={Object.values(getSocketCounts(response))}
-                    labels={Object.keys(getSocketCounts(response))}
-                    theme="legion"
-                    title={"Top Socket: " + topSocket(response).value.name}
-                />
-            </div>
-        </Card.Content>
-    </Card.Root>
+                </ScrollArea>
+            </Card.Content></Card.Root
+        >
+    {/if}
 
-    <div class="flex flex-row justify-start mt-5">
-        <p class="contentTitle">Results Browser</p>
+    <div class="flex flex-row justify-start">
+        {#if !isMobile($size_breakpoint)}
+            <p class="fontinSmallCaps lg:text-[26px] xl:text-[34px] xl:ml-[5px]">Results Browser</p>
+        {:else}
+            <p class="fontinSmallCaps my-4 text-[24px] xl:text-[34px] xl:ml-[5px]">Results</p>
+        {/if}
     </div>
 
-    <ResultsBrowser totalW={1618} />
+    <ResultsBrowser />
 </div>

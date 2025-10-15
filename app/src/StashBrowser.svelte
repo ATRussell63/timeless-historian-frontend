@@ -1,162 +1,211 @@
 <script>
-    import { onDestroy, onMount } from "svelte";
     import Konva from "konva";
-    import { searchDBThenScroll } from "$lib/api";
-    import { bulk_result, search_result } from "./store";
+    import { onDestroy, onMount } from "svelte";
+    import { base } from "$app/paths";
+    import { LEGION_COLORS, LEGION_ABBREV, LEGION_COLORS_DESAT, MF_MOD_ABBREVIATIONS } from "./drawingConstants";
+    import { Pointer } from "lucide-svelte";
+    import { bulk_result, cells_per_side } from "./store";
+    import { isBright } from "$lib/utils";
     import {
         clearSelection,
         forceHidden,
         stashMetadata,
     } from "./resultsBrowserStore";
-    import { isBright } from "$lib/utils";
-    import {
-        LEGION_COLORS,
-        LEGION_COLORS_DESAT,
-        MF_MOD_ABBREVIATIONS,
-    } from "./drawingConstants";
+    import { searchDB } from "$lib/api";
+    import { getBreakpoint } from "$lib/breakpoints";
+    import { SBTooltip } from "$lib/tooltip";
+    import { mode } from "mode-watcher";
+    import { tick } from "svelte";
 
-    let { sideLen, cellsPerSide, mode } = $props();
+    const ZOOM_SCALE = 1.15;
 
-    Konva.showWarnings = false;
-
+    // Konva.showWarnings = false;
     let stage = null;
-    const tabLabelH = 40;
-    const gridStrokeW = 2;
+    let container;
+    let observer;
+    let bp;
 
-    function drawBlankStage() {
-        clearSelection();
-        stage = new Konva.Stage({
-            container: "stashContainer",
-            width: sideLen + 4 * gridStrokeW,
-            height: sideLen + tabLabelH + 3 * gridStrokeW,
-        });
+    function selfCenter(el) {
+        el.offsetX(el.width() / 2);
+        el.offsetY(el.height() / 2);
     }
 
-    function stageCenterX(k) {
-        k.offsetX(k.width() / 2);
-        k.x(stage.width() / 2);
+    function stageCenterX(el) {
+        el.offsetX(el.width() / 2)
+        el.x(stage.width() / 2)
+    }
+
+    function resizeStage() {
+        if (!container || !stage) return;
+        const { width, height } = container.getBoundingClientRect();
+
+        try {
+            if (stage.width() !== width) {
+                // see if we need a new breakpoint
+                const newBreakpoint = getBreakpoint(width)
+                if (newBreakpoint.name !== bp.name) {
+                    console.log('new breakpoint: ' + newBreakpoint.name)
+                    bp = newBreakpoint
+                    drawStash()
+                }
+            }
+        } catch (e) {
+            return;
+        }
     }
 
     function drawStash() {
-        const cellSize = sideLen / cellsPerSide;
-        const numHitsFontSize = cellSize - 20;
-        const backgroundColor = mode.current === "dark" ? "#333333" : "#999999";
-        const gridColor = mode.current === "dark" ? "#999999" : "#CCCCCC";
-        const bodyFontSize = 18;
-        const mouseOverZoomScale = 1.15;
-
-        // TODO gonna need to make this reactive
-        const ttWidth = 300;
-        let ttHeight = 400;
 
         stage = new Konva.Stage({
             container: "stashContainer",
-            width: sideLen + 4 * gridStrokeW,
-            height: sideLen + tabLabelH + 3 * gridStrokeW,
+            width: bp.stageW,
+            height: bp.stageH,
         });
 
-        const tabLabelLayer = new Konva.Layer();
-        const baseLayer = new Konva.Layer();
-        const gridLines = new Konva.Layer();
-        const tileLayer = new Konva.Layer();
-        const zoomTileLayer = new Konva.Layer();
-        const ttLayer = new Konva.Layer();
-        const mouseoverLayer = new Konva.Layer();
+        const baseLayer = new Konva.Layer({ name: "base" }); // backdrop
+        const frameLayer = new Konva.Layer({ name: 'frame' }); // tab label and frame
+        frameLayer.offsetY(-bp.stageMargin)
+        
 
-        const allTilesGroup = new Konva.Group();
+        const gridGroup = new Konva.Group();
         const highlightTileGroup = new Konva.Group();
 
-        // draw tab label
+        const allTilesGroup = new Konva.Group({
+            clipFunc: function (ctx) {
+                ctx.roundRect(
+                    0,
+                    0,
+                    bp.stageW - bp.stageMargin,
+                    bp.stageH - bp.stageMargin,
+                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
+                )
+            }
+        });
+        const tileTargetsGroup = new Konva.Group()
+
+        // draw the 'frame'
         const tabLabelText = new Konva.Text({
             x: 0,
-            y: 0,
+            y: -bp.stageMargin + bp.stroke,
             text: $stashMetadata.name,
             fill: isBright($stashMetadata.color) ? "black" : "white",
             fontFamily: "Fontin-Regular",
-            fontSize: bodyFontSize,
-            lineHeight: 1.5,
+            fontSize: bp.tabLabelFontSize,
             align: "center",
         });
 
         stageCenterX(tabLabelText);
-        tabLabelText.offsetY(-tabLabelText.height() / 2 + 3);
 
+        const tabLabelHeight = tabLabelText.height() + 1.5 * bp.stroke
         const tabLabelRect = new Konva.Rect({
             x: 0,
-            y: 0,
-            width: tabLabelText.width() + 20,
-            height: tabLabelH - 4,
+            y: -bp.stageMargin,
+            height: tabLabelHeight,
+            width: tabLabelText.width() + 2 * bp.textMargin,
             fill: $stashMetadata.color,
-            cornerRadius: [10, 10, 0, 0],
+            cornerRadius: [2 * bp.borderRadius, 2 * bp.borderRadius, 0, 0],
         });
+        stageCenterX(tabLabelRect)
 
         const tabLabelStashFrame = new Konva.Rect({
-            x: gridStrokeW,
-            y: tabLabelH,
-            width: stage.width() - 2 * gridStrokeW,
-            height: stage.height() - tabLabelH - 1 * gridStrokeW,
+            x: 0,
+            y: tabLabelHeight,
+            width: bp.stageW - 2 * bp.stageMargin - bp.stroke,
+            height: bp.stageW - 2 * bp.stageMargin - bp.stroke,
+            // height: bp.stageH - tabLabelHeight - bp.stroke,
             stroke: $stashMetadata.color,
-            strokeWidth: gridStrokeW * 2,
-            cornerRadius: [2, 2, 2, 2],
+            strokeWidth: bp.stroke * 2,
+            cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
         });
 
-        stageCenterX(tabLabelRect);
-        tabLabelRect.offsetY(-5);
+        stageCenterX(tabLabelStashFrame)
 
-        stageCenterX(tabLabelStashFrame);
+        frameLayer.add(tabLabelStashFrame);
+        frameLayer.add(tabLabelRect);
+        frameLayer.add(tabLabelText);
 
-        tabLabelLayer.add(tabLabelStashFrame);
-        tabLabelLayer.add(tabLabelRect);
-        tabLabelLayer.add(tabLabelText);
-
-        // draw background color
+        const backdropFill = mode.current === "dark" ? "#333333" : "#999999";
+        // let backdropFill =
+        //     mode.current === "dark" ? "hsl(var(--inset))" : "hsl(var(--inset))";
+        let backdropOpacity = mode.current === "dark" ? 0.5 : 0.7;
         const backdrop = new Konva.Rect({
             x: 0,
             y: 0,
-            width: sideLen + 6,
-            height: sideLen,
-            fill: backgroundColor,
-            stroke: gridColor,
-            strokeWidth: 0,
-            opacity: 0.8,
+            width: tabLabelStashFrame.width() - (1/2) * bp.stroke,
+            height: tabLabelStashFrame.width() - (1/2) * bp.stroke,
+            fill: backdropFill,
+            opacity: backdropOpacity,
+            cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
         });
+        selfCenter(backdrop)
+        baseLayer.offsetX(-bp.stageW / 2);
+        baseLayer.offsetY(- (tabLabelStashFrame.width() / 2) - tabLabelHeight);
 
-        stageCenterX(backdrop);
+        const zoomTileLayer = new Konva.Layer({name: 'zoom'});
+        zoomTileLayer.offsetY(-tabLabelHeight)
+
+        const mouseoverLayer = new Konva.Layer({ name: "mouseover" });
+        mouseoverLayer.offsetX(-bp.stroke)
+        mouseoverLayer.offsetY(-tabLabelHeight);
+
         baseLayer.add(backdrop);
 
+        function alignWithBackdrop(el) {
+            if (el) {
+                el.offsetX(backdrop.width() / 2)
+                el.offsetY((backdrop.height() / 2))
+            }
+        }
+
         // draw the grid lines
-        for (let i = 0; i < cellsPerSide + 1; i++) {
+        const gridColor = mode.current === "dark" ? "#999999" : "#CCCCCC";
+        const cellSize = backdrop.width() / $cells_per_side;
+
+        for (let i = 1; i < $cells_per_side; i++) {
             const lineLat = new Konva.Line({
                 stroke: gridColor,
-                strokeWidth: gridStrokeW,
-                points: [0, i * cellSize, sideLen, i * cellSize],
+                strokeWidth: bp.stroke,
+                points: [0, i * cellSize, backdrop.width(), i * cellSize],
             });
 
             const lineLong = new Konva.Line({
                 stroke: gridColor,
-                strokeWidth: gridStrokeW,
-                points: [i * cellSize, 0, i * cellSize, sideLen],
+                strokeWidth: bp.stroke,
+                points: [i * cellSize, 0, i * cellSize, backdrop.height()],
             });
 
-            gridLines.add(lineLat);
-            gridLines.add(lineLong);
+            gridGroup.add(lineLat);
+            gridGroup.add(lineLong);
         }
+        alignWithBackdrop(gridGroup)
+        baseLayer.add(gridGroup)
 
-        // draw the jewels
-        $bulk_result.forEach((r) => {
+        const tooltip = new SBTooltip(bp)
+        baseLayer.add(tooltip.group);
+        stage.add(baseLayer);
+
+        $bulk_result.forEach((r) => {     
             const tile = new Konva.Rect({
+                name: 'tile',
                 x: r.x * cellSize + cellSize / 2,
                 y: r.y * cellSize + cellSize / 2,
                 width: cellSize,
                 height: cellSize,
-                stroke: gridColor,
-                strokeWidth: gridStrokeW,
                 fill: LEGION_COLORS.get(r.jewel_type),
-                zIndex: 0,
+                stroke: gridColor,
+                strokeWidth: bp.stroke,
             });
 
+            let numHitsFontSize = tile.height()
+            const digits = r.seed_match.toString().length
+            if (digits == 2) {
+                numHitsFontSize = numHitsFontSize * 0.8;
+            } else if (digits == 3) {
+                numHitsFontSize = numHitsFontSize * 0.6;
+            }
             // how many seed hits this jewel had
             const numHits = new Konva.Text({
+                name: 'numHits',
                 x: r.x * cellSize + cellSize / 2,
                 y: r.y * cellSize + cellSize / 2,
                 text: r.seed_match,
@@ -164,7 +213,6 @@
                 fontSize: numHitsFontSize,
                 fontFamily: "Fontin",
                 align: "center",
-                zIndex: 1,
             });
 
             const tileTarget = new Konva.Rect({
@@ -174,307 +222,157 @@
                 height: cellSize,
                 fill: LEGION_COLORS.get(r.jewel_type),
                 opacity: 0,
-                zIndex: 2,
             });
 
-            // go with smaller font size if the # of hits is large
-            // this works for 3 digits, good enough for 50 years of poe
-            if (numHits.width() > tile.width() - 12) {
-                numHits.fontSize(numHitsFontSize * 0.75);
-            }
-
-            // 'desaturate' the tile if hits is 0
             if (r.seed_match === 0) {
                 tile.opacity(0.5);
             } else {
-                // if there were hits, make the tile into a button and add a tooltip
-
-                // tooltip
-                const ttGroup = new Konva.Group();
-
-                const ttBackground = new Konva.Rect({
-                    x: 0,
-                    y: 0,
-                    width: ttWidth,
-                    height: ttHeight,
-                    fill: "black",
-                    opacity: 1,
-                    stroke: LEGION_COLORS_DESAT.get(r.jewel_type),
-                    strokeWidth: gridStrokeW,
-                    zIndex: 0,
-                });
 
                 function drawTooltip() {
                     try {
-                        ttLayer.destroyChildren();
-
-                        const mousePos = stage.getPointerPosition();
-                        const base_offset_x = 5;
-                        const base_offset_y = 5;
-                        let offset_x = base_offset_x;
-                        let offset_y = base_offset_y;
-                        let push_margin = 20;
-
-                        if (
-                            mousePos.x +
-                                ttBackground.width() +
-                                offset_x +
-                                push_margin >
-                            stage.width()
-                        ) {
-                            offset_x = -(ttBackground.width() + base_offset_x);
-                        }
-
-                        if (
-                            mousePos.y +
-                                ttBackground.height() +
-                                offset_y +
-                                push_margin >
-                            stage.height()
-                        ) {
-                            offset_y =
-                                stage.height() -
-                                (mousePos.y +
-                                    ttBackground.height() +
-                                    push_margin);
-                        }
-
-                        ttGroup.position({
-                            x: mousePos.x + offset_x,
-                            y: mousePos.y + offset_y,
-                        });
-
-                        // text content
-
-                        const margin_top = 8;
-                        // jewel name
-                        const ttJewelName = new Konva.Text({
-                            x: 0,
-                            y: margin_top,
-                            text: r.jewel_type,
-                            fill: LEGION_COLORS.get(r.jewel_type),
-                            fontFamily: "Fontin-SmallCaps",
-                            fontSize: 24,
-                            align: "center",
-                        });
-                        ttJewelName.offsetX(ttJewelName.width() / 2);
-                        ttJewelName.x(ttBackground.width() / 2);
-
-                        let y_accum = ttJewelName.height() + margin_top * 2;
-
-                        // general and seed
-                        const ttGenSeed = new Konva.Text({
-                            x: 0,
-                            y: y_accum,
-                            text: `${r.general} #${r.seed}`,
-                            fill: LEGION_COLORS.get(r.jewel_type),
-                            fontFamily: "Fontin-Regular",
-                            fontSize: bodyFontSize,
-                            align: "center",
-                        });
-                        ttGenSeed.offsetX(ttGenSeed.width() / 2);
-                        ttGenSeed.x(ttBackground.width() / 2);
-
-                        y_accum += ttGenSeed.height() + margin_top;
-
-                        // any mf mods
-                        // if (true) {
-                        let ttMfMods = null;
-                        if (r.jewel_type === "Militant Faith") {
-                            ttMfMods = new Konva.Text({
-                                x: 0,
-                                y: y_accum,
-                                text: `${MF_MOD_ABBREVIATIONS.get(r.mf_mods[0])}\n${MF_MOD_ABBREVIATIONS.get(r.mf_mods[1])}`,
-                                // text: 'borgus',
-                                fill: LEGION_COLORS.get(r.jewel_type),
-                                fontFamily: "Fontin-Regular",
-                                fontSize: bodyFontSize,
-                                // padding: 15,
-                                lineHeight: 1.5,
-                                align: "center",
-                            });
-                            ttMfMods.offsetX(ttMfMods.width() / 2);
-                            ttMfMods.x(ttBackground.width() / 2);
-                            // ttGroup.add(ttMfMods)
-                            y_accum += ttMfMods.height() + margin_top;
-                        }
-
-                        const sep_height = y_accum;
-                        y_accum += margin_top;
-
-                        // seed match
-                        // general match
-                        // exact matches (mf only)
-
-                        let matchText = `Matching Seed: ${r.seed_match}\nMatching General: ${r.general_match}`;
-
-                        if (r.jewel_type === "Militant Faith") {
-                            matchText += `\nExact Matches: ${r.exact_match}`;
-                        }
-
-                        const ttMatches = new Konva.Text({
-                            x: 0,
-                            y: y_accum,
-                            text: matchText,
-                            // fill: LEGION_COLORS.get(r.jewel_type),
-                            fill: "white",
-                            fontFamily: "Fontin-Regular",
-                            fontSize: 18,
-                            lineHeight: 1.5,
-                            align: "center",
-                        });
-                        ttMatches.offsetX(ttMatches.width() / 2);
-                        ttMatches.x(ttBackground.width() / 2);
-
-                        y_accum += ttMatches.height() + margin_top;
-                        ttBackground.height(y_accum);
-
-                        let ttWidest = Math.max(
-                            ttJewelName.width(),
-                            ttGenSeed.width(),
-                            ttMatches.width(),
-                        );
-                        if (ttMfMods) {
-                            ttWidest = Math.max(ttWidest, ttMfMods.width());
-                        }
-
-                        const separator = new Konva.Line({
-                            stroke: LEGION_COLORS_DESAT.get(r.jewel_type),
-                            strokeWidth: gridStrokeW,
-                            points: [0, sep_height, ttWidest + 40, sep_height],
-                        });
-
-                        ttBackground.width(ttWidest + 40);
-
-                        ttGroup.add(ttBackground);
-                        ttGroup.add(ttJewelName);
-                        ttGroup.add(ttGenSeed);
-                        ttGroup.add(separator);
-                        ttGroup.add(ttMatches);
-
-                        if (ttMfMods) {
-                            ttGroup.add(ttMfMods);
-                        }
-
-                        ttLayer.add(ttGroup);
-
-                        ttLayer.show();
+                        tooltip.formatText(bp, r)
+                        tooltip.updatePosition(bp, stage, tabLabelHeight, backdrop)
+                        tooltip.group.show();
                     } catch (e) {
+                        console.log(e)
                         return;
                     }
                 }
 
-                // zoom animation
+                const maxAnimTime = 1
+                let zoomInStart = null
+                let zoomOutStart = null
                 const jewelMouseoverZoomIn = new Konva.Animation(function (
                     frame,
                 ) {
+                    if (!zoomInStart) zoomInStart = frame.time
+
+                    tile.stroke(LEGION_COLORS.get(r.jewel_type))
                     tile.moveTo(highlightTileGroup);
                     numHits.moveTo(highlightTileGroup);
-                    const scale = mouseOverZoomScale;
+                    const scale = ZOOM_SCALE;
                     tile.scale({ x: scale, y: scale });
                     numHits.scale({ x: scale, y: scale });
+                    highlightTileGroup.moveToTop()
                     drawTooltip();
+
+                    if (frame.time - zoomInStart >= maxAnimTime) {
+                        jewelMouseoverZoomIn.stop()
+                    }
                 });
 
                 const jewelMouseoverZoomOut = new Konva.Animation(function (
                     frame,
                 ) {
+                    if (!zoomOutStart) zoomOutStart = frame.time
+
+                    tile.stroke(gridColor)
                     tile.moveTo(allTilesGroup);
                     numHits.moveTo(allTilesGroup);
                     const scale = 1;
                     tile.scale({ x: scale, y: scale });
                     numHits.scale({ x: scale, y: scale });
-                    ttLayer.hide();
+                    tooltip.group.hide();
+
+                    if (frame.time - zoomOutStart >= maxAnimTime) {
+                        jewelMouseoverZoomOut.stop()
+                    }
                 });
 
                 tileTarget.on("mousemove", function (e) {
                     e.target.getStage().container().style.cursor = "pointer";
+                    jewelMouseoverZoomOut.stop();
                     jewelMouseoverZoomIn.start();
                 });
                 tileTarget.on("mouseout", function (e) {
                     e.target.getStage().container().style.cursor = "default";
                     jewelMouseoverZoomOut.start();
+                    jewelMouseoverZoomIn.stop();
                 });
 
                 tileTarget.on("click", function (e) {
                     forceHidden.set(false);
                     clearSelection();
-                    searchDBThenScroll(r, "resultsScrollTarget");
+                    searchDB(r);
+                });
+
+                tileTarget.on("tap", async function (e) {
+                    forceHidden.set(false);
+                    clearSelection();
+                    await searchDB(r);
+                    await tick();
+                    document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
                 });
             }
 
-            tile.offsetX(tile.width() / 2);
-            tile.offsetY(tile.height() / 2);
-            tileTarget.offsetX(tile.width() / 2);
-            tileTarget.offsetY(tile.height() / 2);
-            numHits.offsetX(numHits.width() / 2);
-            numHits.offsetY(numHits.height() / 2);
+            selfCenter(tile)
+            selfCenter(tileTarget)
+            selfCenter(numHits)
 
             allTilesGroup.add(tile);
             allTilesGroup.add(numHits);
-            mouseoverLayer.add(tileTarget);
+            tileTargetsGroup.add(tileTarget)
         });
 
-        tileLayer.add(allTilesGroup);
-        zoomTileLayer.add(highlightTileGroup);
+        alignWithBackdrop(tooltip.group)
+        alignWithBackdrop(allTilesGroup)
+        alignWithBackdrop(highlightTileGroup)
 
-        function tabLabelNudge(layer) {
-            layer.offsetX(-2 * gridStrokeW);
-            layer.offsetY(-(gridStrokeW + tabLabelH));
-        }
+        baseLayer.add(highlightTileGroup)
+        alignWithBackdrop(zoomTileLayer)
 
-        const non_tab_label_layers = [
-            baseLayer,
-            gridLines,
-            tileLayer,
-            zoomTileLayer,
-            mouseoverLayer,
-        ];
-        non_tab_label_layers.forEach((l) => tabLabelNudge(l));
+        baseLayer.add(allTilesGroup)
+        mouseoverLayer.add(tileTargetsGroup)
 
-        // only draw anything if bulk_result exists
-        if ($bulk_result) {
-            // add layers to stage
-            stage.add(baseLayer);
-            stage.add(gridLines);
-            stage.add(tileLayer);
-            stage.add(tabLabelLayer);
-            stage.add(zoomTileLayer);
-            stage.add(ttLayer);
-            stage.add(mouseoverLayer);
-            ttLayer.hide();
-        }
+        stage.add(baseLayer);
+        stage.add(zoomTileLayer);
+        stage.add(frameLayer);
+        stage.add(mouseoverLayer);
+
+        observer = new ResizeObserver(resizeStage);
+        observer.observe(container);
     }
 
     onMount(() => {
+        container.style.position = "relative";
+        container.style.overflow = "hidden";
+        bp = getBreakpoint(container.getBoundingClientRect().width)
+
         if (!$bulk_result) {
-            drawBlankStage();
             return;
         }
-
         drawStash();
     });
 
     onDestroy(() => {
-        if (stage) {
-            stage.remove();
-            stage = null;
-        }
+        if (observer) observer?.disconnect();
+        if (stage) stage?.remove();
+        stage = null;
+        observer = null;
     });
 
-    // on update to props, re-render
     $effect(() => {
         if (stage) {
+            observer?.disconnect();
             stage.remove();
             stage = null;
+            observer = null;
         }
 
         if (!$bulk_result) {
-            drawBlankStage();
             return;
         }
         drawStash();
     });
 </script>
 
-<div id="stashContainer"></div>
+<div class="w-full min-h-[200px] mt-4 xl:mt-0">
+    <div
+        bind:this={container}
+        id="stashContainer"
+        class="flex flex-row justify-center items-center w-full h-full"
+    ></div>
+</div>
+
+<style>
+</style>

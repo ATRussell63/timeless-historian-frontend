@@ -5,6 +5,9 @@
     import MarakethSymbol from "$lib/images/MarakethSymbol.svg";
     import { afterNavigate } from "$app/navigation";
     import { data_summary } from "../store";
+    import { size_breakpoint } from "../store";
+    import { isMobile } from "$lib/breakpoints";
+    import { derived } from "svelte/store";
     const d = $data_summary.data.results;
 
     let tagLine = $state("");
@@ -42,7 +45,11 @@
         }
     });
 
-    let backgroundStyle = `background-size: 140% 140%; background-position: bottom 50% right 50%; background-image: url(${MarakethSymbol});`;
+    let backgroundStyle = $derived.by(() => {
+        const bg_size = isMobile($size_breakpoint) ? '750px 750px' : '140% 140%';
+        const bg_position = isMobile($size_breakpoint) ? 'top -10% right 50%' : 'bottom 50% right 50%';
+        return `background-repeat: no-repeat; background-size: ${bg_size}; background-position: ${bg_position}; background-image: url(${MarakethSymbol});`
+    });
 </script>
 
 <svelte:head>
@@ -50,22 +57,19 @@
 </svelte:head>
 
 <div
-    class="flex flex-col mb-2 px-6 pt-3 h-full gap-20 min-w-[1200px]"
+    class="flex flex-col px-2 lg:px-6 h-full pt-3 gap-20 lg:min-w-[800px]"
     style={backgroundStyle}
 >
-    <div class="flex flex-row justify-center mt-30">
+    <div class="flex flex-row justify-center mt-16 lg:mt-30">
         <div class="flex flex-col items-center">
             <Card.Root class="transparentBackground">
                 <Card.Content class="flex flex-col items-center mx-4 mt-2">
-                    <p style="font-family: Trajan; font-size: 60px;">
+                    <p class='underline underline-offset-12 text-[22px] sm:text-[32px] lg:text-[48px] xl:text-[60px]' style="font-family: Trajan;">
                         Timeless Historian
                     </p>
-                    <Separator
-                        class="h-1"
-                        style="margin-top: -8px; background-color: hsl(var(--foreground));"
-                    />
                     <p
-                        style="font-family: Fontin-Italic; font-size: 24px; margin-top: 8px;"
+                        class='text-[16px] sm:text-[16px] lg:text-[22px] xl:text-[24px] mt-3 text-center'
+                        style="font-family: Fontin-Italic;"
                     >
                         {tagLine}
                     </p>
@@ -73,31 +77,31 @@
             </Card.Root>
         </div>
     </div>
-    <div class="flex flex-row justify-center">
-        <Card.Root class="transparentBackground max-w-[800px]">
-            <Card.Content class="m-4">
+    <div class="flex flex-row justify-center lg:mb-20">
+        <Card.Root class="transparentBackground w-full max-w-[350px] sm:max-w-[400px] md:max-w-[460px] lg:max-w-[800px]">
+            <Card.Content class="m-0 lg:m-4">
                 <div class="flex flex-col items-center gap-2">
-                    <p class="dataHeader">Currently Indexing:</p>
+                    <p class="dataHeader text-[26px] lg:text-[32px]">Currently Indexing:</p>
                     <div class="flex flex-row">
-                        <p class="dataVal">{d?.total_jewels}</p>
-                        <p class="dataLabel">Total Timeless Jewels</p>
+                        <p class="dataVal text-[20px] lg:text-[24px]">{d?.total_jewels}</p>
+                        <p class="dataLabel text-[20px] lg:text-[24px]">Total Timeless Jewels</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="dataVal">{d?.total_characters}</p>
-                        <p class="dataLabel">Total Characters</p>
+                        <p class="dataVal text-[20px] lg:text-[24px]">{d?.total_characters}</p>
+                        <p class="dataLabel text-[20px] lg:text-[24px]">Total Characters</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="dataVal">{d?.unique_seeds}</p>
-                        <p class="dataLabel">Unique Jewel Seeds</p>
+                        <p class="dataVal text-[20px] lg:text-[24px]">{d?.unique_seeds}</p>
+                        <p class="dataLabel text-[20px] lg:text-[24px]">Unique Jewel Seeds</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="dataVal">{d?.unique_jewels}</p>
-                        <p class="dataLabel">Unique Timeless Jewels</p>
+                        <p class="dataVal text-[20px] lg:text-[24px]">{d?.unique_jewels}</p>
+                        <p class="dataLabel text-[20px] lg:text-[24px]">Unique Timeless Jewels</p>
                     </div>
                 </div>
-                <div class="flex flex-row justify-center mt-12">
-                    <Button class="w-[500px] h-[80px]" href="/search">
-                        <p class="homeSearchButton">Search the Database</p>
+                <div class="flex flex-row justify-center mt-8 lg:mt-12">
+                    <Button class="sm:w-[350px] md:w-[400px] lg:w-[500px] h-[80px]" href="/search">
+                        <p class="homeSearchButton text-[24px] lg:text-[30px]">Search the Database</p>
                     </Button>
                 </div>
             </Card.Content>
@@ -109,17 +113,14 @@
     .dataHeader {
         font-family: Fontin-SmallCaps;
         font-weight: 800;
-        font-size: 32px;
     }
 
     .dataVal {
         font-family: Fontin-Bold;
         margin-right: 8px;
-        font-size: 24px;
     }
 
     .dataLabel {
         font-family: Fontin-Regular;
-        font-size: 24px;
     }
 </style>
