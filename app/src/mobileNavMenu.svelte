@@ -9,6 +9,9 @@
     import { page } from "$app/stores";
     import { mode } from "mode-watcher";
     import MobileNavThemeSwitch from "./mobileNavThemeSwitch.svelte";
+    import { account_name } from "./store";
+    import { logout } from "./store";
+    import { LogOut } from "lucide-svelte";
 
     const pageTitle = $derived.by(() => {
         const title = $page.data.title ?? document.title
@@ -32,6 +35,11 @@
         { label: 'Search', href: '/search'},
         { label: 'Bulk', href: '/bulk'},
     ]
+
+    function logAndClose() {
+        logout()
+        isOpen = false
+    }
 </script>
 
 <div class="flex flex-row mb-2 h-12 bg-foreground">
@@ -60,7 +68,7 @@
                 </span>
             </div>
         </Drawer.Trigger>
-        <Drawer.Content>
+        <Drawer.Content class='flex flex-col'>
             <div class='flex flex-row rounded-none bg-background h-14 border-b-1 py-8 items-center justify-center'>
                 <span class='menuButton'>
                     Menu
@@ -74,6 +82,14 @@
             </Button>
             {/each}
             <MobileNavThemeSwitch />
+            {#if $account_name !== null}
+            <div class='flex flex-row justify-center mt-auto mb-30 bg-accent dark:bg-card py-6 border-y-1'>
+            <div class='flex flex-col items-center text-[20px]'>
+            <span class='fontin'>Logged in as {$account_name}</span>
+            <Button class='mt-6 fontinSmallCaps text-[20px] p-6' onclick={logAndClose}>Logout<LogOut class='ml-2' /></Button>
+            </div>
+            </div>
+            {/if}
         </Drawer.Content>
     </Drawer.Root>
 </div>

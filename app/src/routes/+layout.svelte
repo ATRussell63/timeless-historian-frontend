@@ -72,7 +72,7 @@
 		account_name.set(localStorage.getItem("account_name"));
 
 		return () => {
-			window.removeEventListener("resize", isMobile);
+			window.removeEventListener("resize", setBP);
 		};
 	});
 
