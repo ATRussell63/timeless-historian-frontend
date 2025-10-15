@@ -65,23 +65,6 @@
         const baseLayer = new Konva.Layer({ name: "base" }); // backdrop
         const frameLayer = new Konva.Layer({ name: 'frame' }); // tab label and frame
         frameLayer.offsetY(-bp.stageMargin)
-        
-
-        const gridGroup = new Konva.Group();
-        const highlightTileGroup = new Konva.Group();
-
-        const allTilesGroup = new Konva.Group({
-            clipFunc: function (ctx) {
-                ctx.roundRect(
-                    0,
-                    0,
-                    bp.stageW - bp.stageMargin,
-                    bp.stageH - bp.stageMargin,
-                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
-                )
-            }
-        });
-        const tileTargetsGroup = new Konva.Group()
 
         // draw the 'frame'
         const tabLabelText = new Konva.Text({
@@ -112,8 +95,8 @@
         const tabLabelStashFrame = new Konva.Rect({
             x: 0,
             y: tabLabelHeight,
-            width: bp.stageW - 2 * bp.stageMargin - bp.stroke,
-            height: bp.stageW - 2 * bp.stageMargin - bp.stroke,
+            width: bp.stageW - 2 * bp.stageMargin - 2 * bp.stroke,
+            height: bp.stageW - 2 * bp.stageMargin - 2 * bp.stroke,
             // height: bp.stageH - tabLabelHeight - bp.stroke,
             stroke: $stashMetadata.color,
             strokeWidth: bp.stroke * 2,
@@ -134,8 +117,8 @@
         const backdrop = new Konva.Rect({
             x: 0,
             y: 0,
-            width: tabLabelStashFrame.width() - (1/2) * bp.stroke,
-            height: tabLabelStashFrame.width() - (1/2) * bp.stroke,
+            width: tabLabelStashFrame.width(),
+            height: tabLabelStashFrame.width(),
             fill: backdropFill,
             opacity: backdropOpacity,
             cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
@@ -144,6 +127,25 @@
         selfCenter(backdrop)
         baseLayer.offsetX(-bp.stageW / 2);
         baseLayer.offsetY(- (tabLabelStashFrame.width() / 2) - tabLabelHeight);
+
+        function borderCrop (ctx) {
+            ctx.roundRect(
+                    0,
+                    0,
+                    tabLabelStashFrame.width(),
+                    tabLabelStashFrame.width(),
+                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
+                )
+        }
+        const allTilesGroup = new Konva.Group({
+            clipFunc: borderCrop
+        });
+        const highlightTileGroup = new Konva.Group({
+            clipFunc: borderCrop
+        });
+
+        const tileTargetsGroup = new Konva.Group()
+        const gridGroup = new Konva.Group();
 
         const zoomTileLayer = new Konva.Layer({name: 'zoom'});
         zoomTileLayer.offsetY(-tabLabelHeight)
