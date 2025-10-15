@@ -65,23 +65,6 @@
         const baseLayer = new Konva.Layer({ name: "base" }); // backdrop
         const frameLayer = new Konva.Layer({ name: 'frame' }); // tab label and frame
         frameLayer.offsetY(-bp.stageMargin)
-        
-
-        const gridGroup = new Konva.Group();
-        const highlightTileGroup = new Konva.Group();
-
-        const allTilesGroup = new Konva.Group({
-            clipFunc: function (ctx) {
-                ctx.roundRect(
-                    0,
-                    0,
-                    bp.stageW - bp.stageMargin,
-                    bp.stageH - bp.stageMargin,
-                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
-                )
-            }
-        });
-        const tileTargetsGroup = new Konva.Group()
 
         // draw the 'frame'
         const tabLabelText = new Konva.Text({
@@ -92,6 +75,7 @@
             fontFamily: "Fontin-Regular",
             fontSize: bp.tabLabelFontSize,
             align: "center",
+            preventDefault: false
         });
 
         stageCenterX(tabLabelText);
@@ -104,18 +88,20 @@
             width: tabLabelText.width() + 2 * bp.textMargin,
             fill: $stashMetadata.color,
             cornerRadius: [2 * bp.borderRadius, 2 * bp.borderRadius, 0, 0],
+            preventDefault: false
         });
         stageCenterX(tabLabelRect)
 
         const tabLabelStashFrame = new Konva.Rect({
             x: 0,
             y: tabLabelHeight,
-            width: bp.stageW - 2 * bp.stageMargin - bp.stroke,
-            height: bp.stageW - 2 * bp.stageMargin - bp.stroke,
+            width: bp.stageW - 2 * bp.stageMargin - 2 * bp.stroke,
+            height: bp.stageW - 2 * bp.stageMargin - 2 * bp.stroke,
             // height: bp.stageH - tabLabelHeight - bp.stroke,
             stroke: $stashMetadata.color,
             strokeWidth: bp.stroke * 2,
             cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
+            preventDefault: false
         });
 
         stageCenterX(tabLabelStashFrame)
@@ -131,15 +117,35 @@
         const backdrop = new Konva.Rect({
             x: 0,
             y: 0,
-            width: tabLabelStashFrame.width() - (1/2) * bp.stroke,
-            height: tabLabelStashFrame.width() - (1/2) * bp.stroke,
+            width: tabLabelStashFrame.width(),
+            height: tabLabelStashFrame.width(),
             fill: backdropFill,
             opacity: backdropOpacity,
             cornerRadius: [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius],
+            preventDefault: false
         });
         selfCenter(backdrop)
         baseLayer.offsetX(-bp.stageW / 2);
         baseLayer.offsetY(- (tabLabelStashFrame.width() / 2) - tabLabelHeight);
+
+        function borderCrop (ctx) {
+            ctx.roundRect(
+                    0,
+                    0,
+                    tabLabelStashFrame.width(),
+                    tabLabelStashFrame.width(),
+                    [bp.borderRadius, bp.borderRadius, bp.borderRadius, bp.borderRadius]
+                )
+        }
+        const allTilesGroup = new Konva.Group({
+            clipFunc: borderCrop
+        });
+        const highlightTileGroup = new Konva.Group({
+            clipFunc: borderCrop
+        });
+
+        const tileTargetsGroup = new Konva.Group()
+        const gridGroup = new Konva.Group();
 
         const zoomTileLayer = new Konva.Layer({name: 'zoom'});
         zoomTileLayer.offsetY(-tabLabelHeight)
@@ -166,12 +172,14 @@
                 stroke: gridColor,
                 strokeWidth: bp.stroke,
                 points: [0, i * cellSize, backdrop.width(), i * cellSize],
+                preventDefault: false
             });
 
             const lineLong = new Konva.Line({
                 stroke: gridColor,
                 strokeWidth: bp.stroke,
                 points: [i * cellSize, 0, i * cellSize, backdrop.height()],
+                preventDefault: false
             });
 
             gridGroup.add(lineLat);
@@ -211,7 +219,7 @@
                 text: r.seed_match,
                 fill: r.seed_match > 0 ? "black" : "#333333",
                 fontSize: numHitsFontSize,
-                fontFamily: "Fontin",
+                fontFamily: "Fontin, Fontin-Regular",
                 align: "center",
             });
 
@@ -226,6 +234,8 @@
 
             if (r.seed_match === 0) {
                 tile.opacity(0.5);
+                tile.preventDefault(false)
+                tileTarget.preventDefault(false)
             } else {
 
                 function drawTooltip() {
