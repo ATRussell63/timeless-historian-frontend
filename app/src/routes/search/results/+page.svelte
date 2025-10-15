@@ -344,7 +344,7 @@
     <title>Timeless Historian - Search Results</title>
 </svelte:head>
 
-<div class="flex flex-col gap-6 mb-2 px-4 sm:px-6 md:px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
+<div class="flex flex-col lg:gap-6 mb-2 px-4 sm:px-6 md:px-10 py-8 lg:min-w-[830px] xl:min-w-[900px]" style={backgroundStyle}>
     <!-- Title row -->
     {#if ['lg', 'xl'].includes($size_breakpoint)}
     <div class="flex flex-row items-center justify-between">
@@ -391,92 +391,96 @@
     </div>
     {:else if !isMobile($size_breakpoint)}
     <div class="flex flex-row items-center justify-between">
-        <div class="flex items-center">
-            <span class="fontinSmallCaps lg:text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
-            <div class="flex flex-row gap-2 items-center">
-                <div class="flex flex-row lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
-                    <span class="robotoBold">Type: </span><span
-                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
-                    >
-                </div>
-                <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
-                    <span class="robotoBold">General: </span><span
-                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
-                    >
-                </div>
-                <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
-                    <span class="robotoBold">Seed: </span><span
-                        class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
-                    >
-                </div>
-                {#if body.jewel_type === "Militant Faith"}
-                    <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
-                    <!-- if mf mods is very long split it into two rows -->
-                    {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
-                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px] text-right">
-                            <span class="robotoBold"
-                                >Devotion Mods:
-                            </span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
-                                >&#9679 {mf_abbrev[0]}</span
-                            >
-                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
-                                >&#9679 {mf_abbrev[1]}</span
-                            >
-                        </div>
-                    {:else}
-                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
-                            <span class="robotoBold text-right"
-                                >Devotion Mods:
-                            </span><span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
-                                >{mf_abbrev[0]}, {mf_abbrev[1]}</span
-                            >
-                        </div>
-                    {/if}
-                {/if}
+        <span class="fontinSmallCaps lg:text-[24px] xl:text-[34px] xl:ml-[5px]">Results Summary - </span>
+        <div class="flex flex-row gap-2 items-center">
+            <div class="flex flex-row lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">Type: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
+                >
             </div>
+            <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">General: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
+                >
+            </div>
+            <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <span class="robotoBold">Seed: </span><span
+                    class="roboto lg:text-[12px] lg:ml-[2px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
+                >
+            </div>
+            {#if body.jewel_type === "Militant Faith"}
+                <!-- TODO - I think I like the two bullet points better but I'm keeping the old version here for now -->
+                <!-- if mf mods is very long split it into two rows -->
+                {#if body.mf_mods[0].length + body.mf_mods[1].length > 10}
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px] text-right">
+                        <span class="robotoBold"
+                            >Devotion Mods:
+                        </span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >&#9679 {mf_abbrev[0]}</span
+                        >
+                        <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >&#9679 {mf_abbrev[1]}</span
+                        >
+                    </div>
+                {:else}
+                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                        <span class="robotoBold text-right"
+                            >Devotion Mods:
+                        </span><span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
+                            >{mf_abbrev[0]}, {mf_abbrev[1]}</span
+                        >
+                    </div>
+                {/if}
+            {/if}
         </div>
-        <Button class="pl-0 pr-2" variant="ghost" href="/search"
-            ><ChevronLeft class="h-5" /><span
-                style="text-decoration: underline; font-family: Roboto;"
-                >Back to Search</span
-            ></Button
-        >
+        <Button class="pl-0 pr-2 mr-1" variant="ghost" href="/search"
+        ><ChevronLeft class="h-5" /><span
+            style="text-decoration: underline; font-family: Roboto;"
+            >Back to Search</span
+        ></Button>  
     </div>
     {:else}
         <div>
-            <span class="fontinSmallCaps text-[24px] sm:text-[28px] xl:text-[34px] xl:ml-[5px]">Results Summary</span>
+            <span class="fontinSmallCaps text-[24px] sm:text-[28px] ">Results Summary</span>
             <Card.Root class="transparentBackground my-4">
-                <Card.Content class="flex flex-col gap-1 p-4 sm:p-6">
-                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                <Card.Content class="flex flex-col gap-1 p-4 sm:p-6 text-[11px] sm:text-[14px] md:text-[16px]">
+                    <div class='flex flex-row justify-between'>
+                    <div class="text-center basis-1/3">
                         <span class="robotoBold mr-2">Type: </span><span
-                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.jewel_type}</span
+                            class="roboto xl:ml-[5px]">{body.jewel_type}</span
                         >
                     </div>
-                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                    <div class="text-center basis-1/3">
                         <span class="robotoBold mr-2">General: </span><span
-                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.general}</span
+                            class="roboto xl:ml-[5px]">{body.general}</span
                         >
                     </div>
-                    <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
+                    <div class="text-center basis-1/3">
                         <span class="robotoBold mr-2">Seed: </span><span
-                            class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]">{body.seed}</span
+                            class="roboto xl:ml-[5px]">{body.seed}</span
                         >
+                    </div>
                     </div>
                     {#if body.jewel_type === "Militant Faith"}
-                        <div class="lg:text-[12px] xl:text-[14px] xl:ml-[10px]">
-                            <span class="robotoBold"
+                        <div class="flex flex-row justify-between">
+                            <!-- <div class='flex basis-1/2 flex-col'> -->
+                            <span class="robotoBold basis-1/3 text-right pr-4"
                                 >Devotion Mods:
                             </span>
-                        </div>
-                        <div class="flex flex-col px-3">
-                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
-                                >&#9679 {body.mf_mods[0]}</span
+                        <!-- </div> -->
+                            <!-- <div class='flex basis-1/2 flex-row'> -->
+                            <span class="roboto basis-2/3"
+                                >&#9679 {mf_abbrev[0]}</span
                             >
-                            <span class="roboto lg:text-[12px] xl:text-[14px] xl:ml-[5px]"
-                                >&#9679 {body.mf_mods[1]}</span
+                            <!-- </div> -->
+                        </div>
+                        <div class="flex flex-row">
+                            <div class='basis-1/3'></div>
+                            <span class="roboto basis-2/3"
+                                >&#9679 {mf_abbrev[1]}</span
                             >
                         </div>
                     {/if}
@@ -838,7 +842,7 @@
         {#if !isMobile($size_breakpoint)}
             <p class="fontinSmallCaps lg:text-[26px] xl:text-[34px] xl:ml-[5px]">Results Browser</p>
         {:else}
-            <p class="fontinSmallCaps text-[24px] xl:text-[34px] xl:ml-[5px]">Results</p>
+            <p class="fontinSmallCaps my-4 text-[24px] xl:text-[34px] xl:ml-[5px]">Results</p>
         {/if}
     </div>
 
