@@ -185,7 +185,26 @@
         baseLayer.add(tooltip.group);
         stage.add(baseLayer);
 
-        $bulk_result.forEach((r) => {     
+        let selectedTile = null;
+        let selectedNumHits = null
+
+        function updateSelectedTile (t, h) {
+            // recolor to purple with white text
+
+            t.oldFill = t.fill()
+            t.fill('#5a00b3') // 'legion purple'
+            h.fill('white')
+
+            if (selectedTile && selectedNumHits) {
+                selectedTile.fill(selectedTile.oldFill)
+                selectedNumHits.fill('black')
+            }
+
+            selectedTile = t
+            selectedNumHits = h
+        }
+
+        $bulk_result.forEach((r) => {
             const tile = new Konva.Rect({
                 name: 'tile',
                 x: r.x * cellSize + cellSize / 2,
@@ -294,12 +313,14 @@
                 tileTarget.on("click", function (e) {
                     forceHidden.set(false);
                     clearSelection();
+                    updateSelectedTile(tile, numHits)
                     searchDB(r);
                 });
 
                 tileTarget.on("tap", async function (e) {
                     forceHidden.set(false);
                     clearSelection();
+                    updateSelectedTile(tile, numHits)
                     await searchDB(r);
                     await tick();
                     document.getElementById('resultsScrollTarget').scrollIntoView({ block: 'end', behavior: 'smooth' });
