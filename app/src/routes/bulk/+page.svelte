@@ -6,7 +6,7 @@
     import BulkTabSelector from "../../BulkTabSelector.svelte";
     import ResultsBrowser from "../../ResultsBrowser.svelte";
     import { search_result } from "../../store";
-    import { forceHidden } from "../../resultsBrowserStore";
+    import { forceHidden, bulkSelectedJewel } from "../../resultsBrowserStore";
 
     let backgroundStyle = $derived.by(() => {
         const bg_size = isMobile($size_breakpoint) ? '700px 700px' : '140% 140%';
@@ -30,8 +30,9 @@
     {#if $account_name !== null}
         <BulkTabSelector />
         {#if $search_result && !$forceHidden}
-        <div class="flex flex-row">
-            <span class="fontinSmallCaps mt-4 mb-2 text-[24px] lg:text-[32px] xl:text-[40px] 2xl:text-[48px]">Search Results</span>
+        <div class="flex flex-row items-center">
+            <span class="fontinSmallCaps mt-4 mb-2 mr-2 text-[16px] sm:text-[20px] lg:text-[30px] xl:text-[32px] 2xl:text-[48px]">Search Results - </span>
+            <span class="fontinSmallCaps mt-4 mb-2 text-[14px] sm:text-[18px] lg:text-[28px] xl:text-[30px] 2xl:text-[40px]">{$bulkSelectedJewel.jewel_type} #{$bulkSelectedJewel.seed} at ({$bulkSelectedJewel.x}, {$bulkSelectedJewel.y})</span>
         </div>
         {/if}
         <ResultsBrowser />
