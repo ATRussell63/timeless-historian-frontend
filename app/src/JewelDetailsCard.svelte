@@ -138,13 +138,13 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_matches
+                            style={sampleMode || $hoverData.general_match
                                 ? "color: green;"
                                 : "color: red;"}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_matches}
+                        {#if sampleMode || $hoverData.general_match}
                             <Check style="color: green;" />
                         {:else}
                             <X style="color: red;" />
@@ -270,13 +270,13 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_matches
+                            style={sampleMode || $hoverData.general_match
                                 ? "color: green;"
                                 : "color: red;"}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_matches}
+                        {#if sampleMode || $hoverData.general_match}
                             <Check style="color: green;" />
                         {:else}
                             <X style="color: red;" />
@@ -402,13 +402,13 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_matches
+                            style={sampleMode || $hoverData.general_match
                                 ? "color: green;"
                                 : "color: red;"}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_matches}
+                        {#if sampleMode || $hoverData.general_match}
                             <Check style="color: green;" />
                         {:else}
                             <X style="color: red;" />
