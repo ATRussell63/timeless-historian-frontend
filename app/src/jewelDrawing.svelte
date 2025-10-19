@@ -46,7 +46,6 @@
 
         try {
             if (stage.width() !== width || stage.height() !== height) {
-                console.log('resize')
                 // ghetto breakpoint idea
                 let margin
                 if (width > 500) {

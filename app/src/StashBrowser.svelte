@@ -10,6 +10,7 @@
         clearSelection,
         forceHidden,
         stashMetadata,
+        bulkSelectedJewel
     } from "./resultsBrowserStore";
     import { searchDB } from "$lib/api";
     import { getBreakpoint } from "$lib/breakpoints";

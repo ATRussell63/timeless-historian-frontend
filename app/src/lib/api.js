@@ -212,6 +212,8 @@ function throwErrorToast(error_title, error_body) {
         })
 }
 
+import { bulkSelectedJewel } from '../resultsBrowserStore'
 export async function searchDB(jewel) {
+    bulkSelectedJewel.set(jewel)
     await searchDBForJewel(jewel)
 }

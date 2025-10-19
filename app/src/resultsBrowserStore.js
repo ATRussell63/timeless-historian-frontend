@@ -10,6 +10,8 @@ export const forceHidden = writable(false);
 
 export const stashMetadata = writable({});
 
+export const bulkSelectedJewel = writable(null); // on bulk page, jewel that we searched for. analagous to 'body' from /search results page
+
 export function clearSelection() {
     selectedJewel.set(null)
     selectedLeague.set(null)
