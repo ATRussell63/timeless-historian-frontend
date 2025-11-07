@@ -197,6 +197,7 @@
             </p>
             <div class="w-full">
                 <ScrollArea
+                    type='auto'
                     class="insetCard p-4 border rounded-md h-[200px] w-full"
                 >
                     {#each $hoverData.drawing.jewel_stats as stat}
@@ -329,6 +330,7 @@
             </p>
             <div class="w-full">
                 <ScrollArea
+                    type='auto'
                     class="insetCard p-4 border rounded-md h-[200px] w-full"
                 >
                     {#each $hoverData.drawing.jewel_stats as stat}
@@ -457,6 +459,7 @@
                 </p>
                 <div class="w-full">
                     <ScrollArea
+                        type='auto'
                         class="insetCard p-4 border rounded-md h-[120px] md:h-[150px] w-full"
                     >
                         {#each $hoverData.drawing.jewel_stats as stat}
