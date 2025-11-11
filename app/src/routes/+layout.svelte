@@ -5,7 +5,7 @@
 	import { page } from "$app/stores";
 	import { onMount } from "svelte";
 	import { derived } from "svelte/store";
-	import { data_summary, size_breakpoint } from "../store";
+	import { size_breakpoint } from "../store";
 	import { afterNavigate } from "$app/navigation";
 	import ThemeSelector from "../ThemeSelector.svelte";
 	import { mode, ModeWatcher } from "mode-watcher";
@@ -25,8 +25,7 @@
 	import { account_name, account_leagues, logout } from "../store";
 	import { getPageBreakpoint, isMobile } from "$lib/breakpoints";
 
-	let { children, data } = $props();
-	data_summary.set(data);
+	let { children } = $props();
 
 	let mounted = $state(false);
 
@@ -56,7 +55,7 @@
 		if (!import.meta.env.PROD) {
 			localStorage.setItem(
 				"access_token",
-				"8596c90907d3790e2b4946395080df3cadf419da",
+				"a29dde2ee00d4b9a958b6fc09343e5f74c4e0131",
 			);
 			localStorage.setItem("token_exp", Date.now() + 36000);
 		}
