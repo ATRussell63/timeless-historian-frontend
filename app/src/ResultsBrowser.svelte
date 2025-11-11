@@ -513,8 +513,8 @@
                     </Accordion.Root>
                 </ScrollArea>
                 {#if $hoverData}
-                <Card.Root class='mt-6'>
-                    <Card.Content>
+                <Card.Root class='mt-6 transparentBackground'>
+                    <Card.Content class='p-3 lg:p-0'>
                         <JewelDetailsCard sampleMode={body.seed === "Any"} />
                         <Separator class="mb-4" id='jewelSep'></Separator>
                          <!-- <div id='jewelDetails'></div> -->

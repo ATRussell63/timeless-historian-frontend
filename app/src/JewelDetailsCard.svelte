@@ -30,7 +30,7 @@
     import { size_breakpoint } from "./store";
     import { isMobile } from "$lib/breakpoints";
 
-    let { sampleMode } = $props();
+    let { sampleMode, latestMode } = $props();
 
     const imgMap = {
         Ascendant: Ascendant,
@@ -66,6 +66,23 @@
         return parts.slice(0, 4).join(' ');
     }
 
+    function displayGeneralMatch() {
+        // do we care about displaying whether the general matches the search value?
+        return !sampleMode && 'general_match' in $hoverData 
+    }
+
+    function generalMatchColor() {
+        if (displayGeneralMatch()) {
+            return $hoverData.general_match ? 'color: green;' : 'color: red;'
+        } else {
+            return ''
+        }
+    }
+
+    function displayMFMatch() {
+        return !sampleMode && 'mf_mods' in $hoverData
+    }
+
 </script>
 
 {#if !isMobile($size_breakpoint) && $size_breakpoint !== 'lg'}
@@ -73,11 +90,13 @@
     {#if $hoverData}
         <div class="flex flex-col grow-7">
             <div class="flex-row w-full flex overflow-hidden mt-4">
+                <div class='flex flex-col justify-center'>
                 <img
-                    class="border-2 border-black rounded-sm border-solid xl:h-24 2xl:h-28"
+                    class="border-2 border-black rounded-sm border-solid xl:h-24 2xl:h-28 max-w-none"
                     alt={$hoverData.ascendancy_name}
                     src={imgMap[$hoverData.ascendancy_name]}
                 />
+                </div>
                 <div class="flex flex-col ml-4 mb-2">
                     <div class="flex flex-row items-end overflow-hidden">
                         <a
@@ -132,40 +151,37 @@
                     {/if}
                 </div>
             </div>
-            <div class="flex flex-row mt-1 mb-4 xl:text-[14px] 2xl:text-[16px]">
+            <div class="flex flex-row my-auto xl:text-[16px] 2xl:text-[16px]">
                 <div class="flex flex-col ml-2">
                     <div class="flex flex-row items-center">
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_match
-                                ? "color: green;"
-                                : "color: red;"}
+                            style={generalMatchColor()}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_match}
-                            <Check style="color: green;" />
-                        {:else}
-                            <X style="color: red;" />
+                        {#if displayGeneralMatch()}
+                            {#if $hoverData.general_match}
+                                <Check style="color: green;" />
+                            {:else}
+                                <X style="color: red;" />
+                            {/if}
                         {/if}
                     </div>
 
-                    {#if $hoverData.mf_mods}
+                    {#if displayMFMatch() && $hoverData.jewel_type == 'Militant Faith'}
                         <div class="flex flex-row">
                             <p class="fontinBold mr-2">
                                 # Matching Devotion Modifiers:
                             </p>
                             <p
                                 class="fontin"
-                                style={sampleMode ||
-                                $hoverData.mf_mods_match_count == 2
+                                style={$hoverData.mf_mods_match_count == 2
                                     ? "color: green;"
                                     : "color: red;"}
                             >
-                                ({sampleMode
-                                    ? "2"
-                                    : $hoverData.mf_mods_match_count}/2)
+                                ({$hoverData.mf_mods_match_count}/2)
                             </p>
                         </div>
                     {/if}
@@ -191,7 +207,7 @@
         </div>
         <Separator orientation="vertical" />
         <div class="flex flex-col ml-2 grow-3 xl:basis-[250px] 2xl:basis-[300px] overflow-hidden my-4">
-            <p class="cardTitle pl-2 mb-3 mt-1 xl:text-[14px] 2xl:text-[16px]">
+            <p class="cardTitle pl-2 mb-3 mt-1 xl:text-[16px] 2xl:text-[16px]">
                 Stats Granted by {$hoverData.jewel_type}
                 {$hoverData.seed}
             </p>
@@ -200,7 +216,7 @@
                     class="insetCard p-4 border rounded-md h-[200px] w-full"
                 >
                     {#each $hoverData.drawing.jewel_stats as stat}
-                        <p class='roboto my-2 xl:text-[14px] 2xl:text-[16px]'>&#8226 {stat}</p>
+                        <p class='roboto my-2 xl:text-[16px] 2xl:text-[16px]'>&#8226 {stat}</p>
                     {/each}
                 </ScrollArea>
             </div>
@@ -208,15 +224,17 @@
     {/if}
 </div>
 {:else if $size_breakpoint == 'lg'}
-<div class="flex flex-row w-full h-full justify-between mb-4">
+<div class="flex flex-row w-full h-full justify-between">
     {#if $hoverData}
-        <div class="flex flex-col grow-7 basis-[700px]">
+        <div class="flex flex-col grow-7 basis-[700px] my-4 ml-4">
             <div class="flex-row w-full flex overflow-hidden">
+                <div class='flex flex-col justify-center'>
                 <img
-                    class="border-2 border-black rounded-sm border-solid h-24"
+                    class="border-2 border-black rounded-sm border-solid h-24 max-w-none"
                     alt={$hoverData.ascendancy_name}
                     src={imgMap[$hoverData.ascendancy_name]}
                 />
+                </div>
                 <div class="flex flex-col ml-4 mb-2">
                     <div class="flex flex-row items-end overflow-hidden">
                         <a
@@ -265,39 +283,36 @@
                 </div>
             </div>
             <div class="flex flex-row my-auto">
-                <div class="flex flex-col ml-2">
+                <div class="flex flex-col ml-1">
                     <div class="flex flex-row items-center">
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_match
-                                ? "color: green;"
-                                : "color: red;"}
+                            style={generalMatchColor()}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_match}
-                            <Check style="color: green;" />
-                        {:else}
-                            <X style="color: red;" />
+                        {#if displayGeneralMatch()}
+                            {#if $hoverData.general_match}
+                                <Check style="color: green;" />
+                            {:else}
+                                <X style="color: red;" />
+                            {/if}
                         {/if}
                     </div>
 
-                    {#if $hoverData.mf_mods}
+                    {#if displayMFMatch()}
                         <div class="flex flex-row">
                             <p class="fontinBold mr-2">
                                 # Matching Devotion Modifiers:
                             </p>
                             <p
                                 class="fontin"
-                                style={sampleMode ||
-                                $hoverData.mf_mods_match_count == 2
+                                style={$hoverData.mf_mods_match_count == 2
                                     ? "color: green;"
                                     : "color: red;"}
                             >
-                                ({sampleMode
-                                    ? "2"
-                                    : $hoverData.mf_mods_match_count}/2)
+                                ({$hoverData.mf_mods_match_count}/2)
                             </p>
                         </div>
                     {/if}
@@ -322,7 +337,7 @@
             </div>
         </div>
         <Separator orientation="vertical"></Separator>
-        <div class="flex flex-col px-6 grow-3 overflow-hidden">
+        <div class="flex flex-col px-6 grow-3 overflow-hidden my-4">
             <p class="cardTitle pl-2 mb-3 mt-1">
                 Stats Granted by {$hoverData.jewel_type}
                 {$hoverData.seed}
@@ -343,13 +358,15 @@
 <div class="flex flex-row w-full h-full justify-between mb-4">
     {#if $hoverData}
         <div class="flex flex-col grow-7 basis-[700px]">
-            <div class="flex-row w-full flex overflow-hidden">
+            <div class="flex-row w-full flex overflow-hidden mb-2">
+                <div class='flex flex-col justify-center'>
                 <img
-                    class="border-2 border-black rounded-sm border-solid h-24"
+                    class="border-2 border-black rounded-sm border-solid h-24 max-w-none"
                     alt={$hoverData.ascendancy_name}
                     src={imgMap[$hoverData.ascendancy_name]}
                 />
-                <div class="flex flex-col ml-4 mb-2">
+                </div>
+                <div class="flex flex-col ml-4 w-full">
                     <div class="flex flex-row items-center overflow-hidden">
                         <a
                             target="_blank"
@@ -372,6 +389,22 @@
                         >
                             {$hoverData.account_name}
                         </p>
+                        {#if $size_breakpoint !== 'xs'}
+                            {#if $hoverData.vip}
+                            <Badge style="margin-top: -3px;"
+                                >{$hoverData.vip}</Badge
+                            >
+                            {/if}
+                            {#if $hoverData.end_week == 1}
+                                <Badge
+                                    style="margin-top: -3px;"
+                                    variant="destructive">Early League</Badge
+                                >
+                            {/if}
+                        {/if}
+                    </div>
+                    {#if $size_breakpoint === 'xs'}
+                    <div class="flex flex-row w-fit">
                         {#if $hoverData.vip}
                             <Badge style="margin-top: -3px;"
                                 >{$hoverData.vip}</Badge
@@ -384,6 +417,7 @@
                             >
                         {/if}
                     </div>
+                    {/if}
                     <Separator class="my-1" />
                     <div class="flex flex-col text-[14px]">
                         <p class="fontin">
@@ -396,40 +430,38 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-row">
+            {#if !latestMode}
+            <div class="flex flex-row ml-1">
                 <div class="flex flex-col text-[14px]">
                     <div class="flex flex-row items-center">
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={sampleMode || $hoverData.general_match
-                                ? "color: green;"
-                                : "color: red;"}
+                            style={generalMatchColor}
                         >
                             {$hoverData.general}
                         </p>
-                        {#if sampleMode || $hoverData.general_match}
-                            <Check style="color: green;" />
-                        {:else}
-                            <X style="color: red;" />
+                        {#if displayGeneralMatch()}
+                            {#if $hoverData.general_match}
+                                <Check style="color: green;" />
+                            {:else}
+                                <X style="color: red;" />
+                            {/if}
                         {/if}
                     </div>
 
-                    {#if $hoverData.mf_mods}
+                    {#if displayMFMatch()}
                         <div class="flex flex-row">
                             <p class="fontinBold mr-2">
                                 # Matching Devotion Modifiers:
                             </p>
                             <p
                                 class="fontin"
-                                style={sampleMode ||
-                                $hoverData.mf_mods_match_count == 2
+                                style={$hoverData.mf_mods_match_count == 2
                                     ? "color: green;"
                                     : "color: red;"}
                             >
-                                ({sampleMode
-                                    ? "2"
-                                    : $hoverData.mf_mods_match_count}/2)
+                                ({$hoverData.mf_mods_match_count}/2)
                             </p>
                         </div>
                     {/if}
@@ -449,6 +481,19 @@
                     </div>
                 </div>
             </div>
+            {:else}
+            <div class='flex flex-row justify-between text-[14px] sm:mx-8 md:text-[16px]'>
+                <div class='flex flex-row gap-2 fontin'>
+                <b>Type: </b><p>{$hoverData.jewel_type}</p>
+                </div>
+                <div class='flex flex-row gap-2 fontin'>
+                <b>General: </b><p>{$hoverData.general}</p>
+                </div>
+                <div class='flex flex-row gap-2 fontin'>
+                <b>Seed: </b><p>{$hoverData.seed}</p>
+                </div>
+            </div>
+            {/if}
             <Separator class='my-2'/>
             <div class="flex flex-col grow-3 overflow-hidden">
                 <p class="cardTitle pl-2 mt-1 mb-2 text-[14px]">
