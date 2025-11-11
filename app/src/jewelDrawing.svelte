@@ -8,6 +8,8 @@
     import { size_breakpoint } from "./store";
     import { isMobile } from "$lib/breakpoints";
     import { mode } from "mode-watcher";
+    import THLogoBlack from "$lib/images/TH-Logo-Black.svg";
+    import THLogoWhite from "$lib/images/TH-Logo-White.svg";
 
     const darkImages = import.meta.glob("$lib/images/drawing/dark/*.svg", {
         eager: true,
@@ -17,8 +19,10 @@
     });
 
     const RADIUS_PADDING = 50;
+    const RADIUS_STROKE = 60;
     const SMALL_MARGIN = 5;
     const XL_MARGIN = 20;
+    const LOADER_DURATION = 250;
 
     Konva.showWarnings = false;
     let stage = null;
@@ -100,6 +104,58 @@
         const mouseoverLayer = new Konva.Layer({ name: "mouseover" }); // mouseover detectors
         const maskLayer = new Konva.Layer({ name: "mask" });
         const ttLayer = new Konva.Layer({ name: "tooltip" }); // tooltip
+        const loaderLayer = new Konva.Layer({name: "loader"})
+        stage.add(baseLayer);
+        stage.add(maskLayer);
+        stage.add(mouseoverLayer);
+        stage.add(ttLayer);
+        baseLayer.hide()
+        maskLayer.hide()
+        mouseoverLayer.hide()
+        ttLayer.hide();
+
+        stage.add(loaderLayer);
+
+        // immediately render the loader
+        const loaderArc = new Konva.Arc({
+            x: 0,
+            y: 0,
+            innerRadius: 800,
+            outerRadius: 840,
+            fill: mode.current === 'dark' ? 'white' : 'black',
+            angle: 0,
+            opacity: 1,
+            rotation: -90
+        });
+
+        const logoImage = new Image()
+        
+        logoImage.onload = () => {
+            const logoSize = 500;
+            const loaderLogo = new Konva.Image({
+                x: 0,
+                y: 0,
+                image: logoImage,
+                width: logoSize,
+                height: logoSize
+            })
+            loaderLogo.offsetX(logoSize / 2)
+            loaderLogo.offsetY(logoSize / 2)
+            loaderLayer.add(loaderLogo)
+        }
+        logoImage.src = mode.current === 'dark' ? THLogoWhite : THLogoBlack;
+        console.log(logoImage.src)
+        
+        loaderLayer.add(loaderArc);
+
+        const loaderTween = new Konva.Tween({
+            node: loaderArc,
+            duration: LOADER_DURATION * 0.001,
+            angle: 360,
+            easing: Konva.Easings.EaseOut
+        });
+
+        loaderTween.play();
 
         // clipping group that trims the overall radius and punches holes for each node
         const edgeCropper = new Konva.Group({
@@ -142,7 +198,7 @@
             y: 0,
             radius: $hoverData.drawing.radius + RADIUS_PADDING,
             stroke: LEGION_COLORS.get($hoverData.drawing.jewel_type),
-            strokeWidth: 60,
+            strokeWidth: RADIUS_STROKE,
             preventDefault: false
         });
 
@@ -485,15 +541,19 @@
 
         baseLayer.add(edgeCropper);
         maskLayer.add(timelessRadius);
-        stage.add(baseLayer);
-        stage.add(maskLayer);
-        stage.add(mouseoverLayer);
-        stage.add(ttLayer);
 
         resizeStage();
 
         observer = new ResizeObserver(resizeStage);
         observer.observe(container);
+
+        // hide the loader
+        setTimeout(() => {
+            loaderLayer.hide()
+            baseLayer.show()
+            maskLayer.show()
+            mouseoverLayer.show()
+        }, LOADER_DURATION);
     }
 
     onMount(() => {
