@@ -1,5 +1,4 @@
 name: Deploy Release
-
 on:
   push:
     tags:
@@ -11,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
     - name: Only process main branch
       run: |
           BRANCH=$(git branch --contains ${{ github.sha }} | grep "main" || true)
@@ -27,12 +27,14 @@ jobs:
 
     - name: Build image
       run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/myapp:${{ github.ref_name }}
-          docker build -t $IMAGE .
+          IMAGE=ghcr.io/${{ github.repository_owner }}/timeless-historian-frontend:${{ github.ref_name }}
+          docker build -t $IMAGE -f app/Dockerfile \
+            --build-arg PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }} \
+            PUBLIC_CURRENT_LEAGUE=${{ secrets.PUBLIC_CURRENT_LEAGUE }} .
 
     - name: Push image
       run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/myapp:${{ github.ref_name }}
+          IMAGE=ghcr.io/${{ github.repository_owner }}/timeless-historian-frontend:${{ github.ref_name }}
           docker push $IMAGE
 
     - name: Deploy to server
@@ -47,4 +49,22 @@ jobs:
             docker pull $IMAGE
             docker stop timeless-historian-frontend || true
             docker rm timeless-historian-frontend || true
-            docker run -d --restart unless-stopped --name timeless-historian-frontend -p 3000:3000 $IMAGE
+            docker run -d --restart unless-stopped --name timeless-historian-frontend -e CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} -p 3000:3000 $IMAGE
+
+name: Cleanup GHCR
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'  # weekly
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cleanup old images
+        uses: crazy-max/ghaction-github-package-cleanup@v2
+        with:
+          package: timeless-historian-frontend
+          keep-last: 5
+          token: ${{ secrets.GITHUB_TOKEN }}
