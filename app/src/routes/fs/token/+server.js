@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { CLIENT_SECRET } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 const tokenURL = 'https://www.pathofexile.com/oauth/token'
 
@@ -11,7 +11,7 @@ export async function POST({ request }) {
     try {
         const request_body = new URLSearchParams({
             'client_id': 'timelesshistorian',
-            'client_secret': CLIENT_SECRET,
+            'client_secret': env.CLIENT_SECRET,
             'grant_type': 'authorization_code',
             'code': r.oauth_code,
             'redirect_uri': 'https://www.timelesshistorian.xyz/',
