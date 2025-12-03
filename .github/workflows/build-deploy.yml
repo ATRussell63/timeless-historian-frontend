@@ -23,7 +23,8 @@ jobs:
           IMAGE=ghcr.io/${{ github.repository_owner }}/timeless-historian-frontend:${{ github.ref_name }}
           docker build -t $IMAGE -f app/Dockerfile \
             --build-arg PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }} \
-            PUBLIC_CURRENT_LEAGUE=${{ secrets.PUBLIC_CURRENT_LEAGUE }} .
+            --build-arg PUBLIC_CURRENT_LEAGUE=${{ secrets.PUBLIC_CURRENT_LEAGUE }} \
+            .
 
     - name: Push image
       run: |
