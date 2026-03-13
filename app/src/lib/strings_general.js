@@ -15,7 +15,10 @@ export const LATIN_GENERAL_NAMES = [
     'Rakiata',
     'Avarius',
     'Dominus',
-    'Maxarius']
+    'Maxarius',
+    'Vorana',
+    'Uhtred',
+    'Medved']
 
 const RUSSIAN_GENERAL_NAMES = [
     'Азенат',
@@ -32,7 +35,10 @@ const RUSSIAN_GENERAL_NAMES = [
     'Ракиаты',
     'Аварием',
     'Владыкой',
-    'Макерием'
+    'Макерием',
+    'Вораны',
+    'Утреда',
+    'Медведя'
 ]
 
 const THAI_GENERAL_NAMES = [
@@ -50,7 +56,10 @@ const THAI_GENERAL_NAMES = [
     'ราคียาตา',
     'อาวาริอุส',
     'โดมินัส',
-    'แม็กซาเรียส'
+    'แม็กซาเรียส',
+    'วอราน่า',
+    'เออห์เทร็ด',
+    'เม็ดเว็ด'
 ]
 
 export const KOREAN_GENERAL_NAMES = [
@@ -68,7 +77,10 @@ export const KOREAN_GENERAL_NAMES = [
     '라키아타',
     '고위 템플러 아배리우스가',
     '고위 템플러 도미누스가',
-    '고위 템플러 막사리우스가'   
+    '고위 템플러 막사리우스가',
+    '보라나',
+    '우트레드',
+    '메드베드'
 ]
 
 export const JAPANESE_GENERAL_NAMES = [
@@ -86,7 +98,10 @@ export const JAPANESE_GENERAL_NAMES = [
     'ラキアタ配下の',
     'ハイテンプラーアヴァリウスが改宗させた',
     'ハイテンプラードミナスが改宗させた',
-    'ハイテンプラーマクサリウスが改宗させた'
+    'ハイテンプラーマクサリウスが改宗させた',
+    'ヴォラナ',
+    'ウートレッド',
+    'メドヴェッド'
 ]
 
 export const ALL_GENERAL_NAMES = [...LATIN_GENERAL_NAMES, ...RUSSIAN_GENERAL_NAMES, ...THAI_GENERAL_NAMES]

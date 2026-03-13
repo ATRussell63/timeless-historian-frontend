@@ -21,6 +21,7 @@
     import Necromancer from "$lib/images/classes/Necromancer.png";
     import Occultist from "$lib/images/classes/Occultist.png";
     import Pathfinder from "$lib/images/classes/Pathfinder.png";
+    import Reliquarian from "$lib/images/classes/Reliquarian.png"
     import Saboteur from "$lib/images/classes/Saboteur.png";
     import Slayer from "$lib/images/classes/Slayer.png";
     import Trickster from "$lib/images/classes/Trickster.png";
@@ -48,6 +49,7 @@
         Necromancer: Necromancer,
         Occultist: Occultist,
         Pathfinder: Pathfinder,
+        Reliquarian: Reliquarian,
         Saboteur: Saboteur,
         Slayer: Slayer,
         Trickster: Trickster,
