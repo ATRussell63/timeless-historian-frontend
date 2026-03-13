@@ -8,6 +8,7 @@ const ENGLISH = [
     'Bathed', // GV
     'Carved', // LP
     'Commanded', // MF
+    'Remembrancing' // HT
 ]
 
 const FRENCH = [
@@ -16,6 +17,7 @@ const FRENCH = [
     'Imprégné', // GV
     'A fait', // LP
     'Gravé pour', // MF
+    'Commémore' // HT
 ]
 
 const GERMAN = [
@@ -24,6 +26,7 @@ const GERMAN = [
     'Gebadet', // GV
     'Übernahm', // LP
     'Im Namen', // MF
+    'In Erinnerung' // HT
 ]
 
 const PORTUGESE = [
@@ -32,6 +35,7 @@ const PORTUGESE = [
     'Banhado', // GV
     'Liderança', // LP
     'Talhado', // MF
+    'Lembrança' // HT
 ]
 
 const RUSSIAN = [
@@ -40,6 +44,7 @@ const RUSSIAN = [
     'Омыт в', // GV
     'Повелевает', // LP
     'Выточен во', // MF
+    'Воспоминает' // HT
 ]
 
 const SPANISH = [
@@ -48,6 +53,7 @@ const SPANISH = [
     'Bañada', // GV
     'Otorgada', // LP
     'Tallada', // MF
+    'Recordando' // HT
 ]
 
 const THAI = [
@@ -56,6 +62,7 @@ const THAI = [
     'อาบเลือดเครื่องสังเวยในนามแห่ง', // GV
     'นำทัพนักรบใต้บัญชาแห่ง', // LP
     'สลักไว้เพื่อเชิดชูผู้ถูกแปรพักตร์โดยเทมพลาร์ระดับสูง', // MF
+    'ระลึกถึง' // HT
 ]
 
 // seed line starts with general's name

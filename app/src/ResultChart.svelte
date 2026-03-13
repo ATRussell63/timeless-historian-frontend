@@ -30,6 +30,7 @@
             "#CC6633", // karui
             // '#CCCCCC',  // eternal
             "#FF9933", // maraketh
+            "#66CCFF" // kalguur
         ];
     }
 

@@ -4,6 +4,7 @@ export const LEGION_COLORS = new Map([
     ["Glorious Vanity", "#E02828"],
     ["Elegant Hubris", "#E6E7E8"],
     ["Lethal Pride", "#E55C24"],
+    ["Heroic Tragedy", "#66CCFF"]
 ]);
 
 export const LEGION_COLORS_DESAT = new Map([
@@ -12,6 +13,7 @@ export const LEGION_COLORS_DESAT = new Map([
     ["Glorious Vanity", "#993333"],
     ["Elegant Hubris", "#999999"],
     ["Lethal Pride", "#996633"],
+    ["Heroic Tragedy", "#6699CC"]
 ]);
 
 export const LEGION_ABBREV = new Map([
@@ -20,6 +22,7 @@ export const LEGION_ABBREV = new Map([
     ["Glorious Vanity", "GV"],
     ["Elegant Hubris", "EH"],
     ["Lethal Pride", "LP"],
+    ["Heroic Tragedy", "HT"]
 ]);
 
 export const MF_MOD_ABBREVIATIONS = new Map([
