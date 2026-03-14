@@ -58,6 +58,7 @@
 
 		if (!isExpired && hasAccount) {
 			account_name.set(localStorage.getItem("account_name"));
+			account_leagues.set(localStorage.getItem("account_leagues"));
 			return () => {
 				window.removeEventListener("resize", setBP);
 			};
@@ -80,6 +81,7 @@
 				localStorage.setItem("account_name", acc_name);
 				account_name.set(acc_name);
 				let leagues = await getAccountLeagues();
+				localStorage.setItem("account_leagues", leagues);
 				account_leagues.set(leagues);
 			} catch (e) {
 				console.error("Failed to fetch account name", e);
