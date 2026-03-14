@@ -79,6 +79,8 @@
 				let acc_name = await getAccountName();
 				localStorage.setItem("account_name", acc_name);
 				account_name.set(acc_name);
+				let leagues = await getAccountLeagues();
+				account_leagues.set(leagues);
 			} catch (e) {
 				console.error("Failed to fetch account name", e);
 			}

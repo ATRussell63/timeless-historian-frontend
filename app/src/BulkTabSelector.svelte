@@ -210,16 +210,11 @@
   }
 
   onMount(async () => {
-    if ($account_leagues.length === 0) {
-      let acc_leagues = await getAccountLeagues();
-      account_leagues.set(acc_leagues);
-    }
-
     // init league dropdown with user's last selection if there is any
     const prevSelectedLeague = localStorage.getItem("selected_league");
     if (
       prevSelectedLeague &&
-      $account_leagues.map((l) => l.name).includes(prevSelectedLeague)
+      $account_leagues.includes(prevSelectedLeague)
     ) {
       selected_league = prevSelectedLeague;
       selectLeagueTrigger();
