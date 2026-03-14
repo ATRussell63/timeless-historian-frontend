@@ -159,15 +159,14 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={generalMatchColor()}
                         >
                             {$hoverData.general}
                         </p>
                         {#if displayGeneralMatch()}
                             {#if $hoverData.general_match}
-                                <Check style="color: green;" />
+                                <Check class='ml-1' style="color: green;" />
                             {:else}
-                                <X style="color: red;" />
+                                <X class='ml-1' style="color: red;" />
                             {/if}
                         {/if}
                     </div>
@@ -291,20 +290,19 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={generalMatchColor()}
                         >
                             {$hoverData.general}
                         </p>
                         {#if displayGeneralMatch()}
                             {#if $hoverData.general_match}
-                                <Check style="color: green;" />
+                                <Check class='ml-1' style="color: green;" />
                             {:else}
-                                <X style="color: red;" />
+                                <X class='ml-1' style="color: red;" />
                             {/if}
                         {/if}
                     </div>
 
-                    {#if displayMFMatch()}
+                    {#if displayMFMatch() && $hoverData.jewel_type == 'Militant Faith'}
                         <div class="flex flex-row">
                             <p class="fontinBold mr-2">
                                 # Matching Devotion Modifiers:
@@ -441,20 +439,19 @@
                         <p class="fontinBold mr-2">General:</p>
                         <p
                             class="fontin"
-                            style={generalMatchColor}
                         >
                             {$hoverData.general}
                         </p>
                         {#if displayGeneralMatch()}
                             {#if $hoverData.general_match}
-                                <Check style="color: green;" />
+                                <Check class='ml-1' style="color: green;" />
                             {:else}
-                                <X style="color: red;" />
+                                <X class='ml-1' style="color: red;" />
                             {/if}
                         {/if}
                     </div>
 
-                    {#if displayMFMatch()}
+                    {#if displayMFMatch() && $hoverData.jewel_type == 'Militant Faith'}
                         <div class="flex flex-row">
                             <p class="fontinBold mr-2">
                                 # Matching Devotion Modifiers:
