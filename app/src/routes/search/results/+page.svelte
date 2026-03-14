@@ -197,6 +197,9 @@
             Avarius: "explicit.pseudo_timeless_jewel_avarius",
             Dominus: "explicit.pseudo_timeless_jewel_dominus",
             Maxarius: "explicit.pseudo_timeless_jewel_maxarius",
+            Vorana: "explicit.pseudo_timeless_jewel_vorana",
+            Uhtred: "explicit.pseudo_timeless_jewel_uhtred",
+            Medved: "explicit.pseudo_timeless_jewel_medved",
         };
 
         const typeToGeneralsMap = {
@@ -205,6 +208,7 @@
             Glorious_Vanity: ["Ahuana", "Doryani", "Xibaqua"],
             Lethal_Pride: ["Akoya", "Kaom", "Rakiata"],
             Militant_Faith: ["Avarius", "Dominus", "Maxarius"],
+            Heroic_Tragedy: ["Vorana", "Uhtred", "Medved"]
         };
 
         let seedFilter = {

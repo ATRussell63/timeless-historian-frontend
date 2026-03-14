@@ -87,6 +87,7 @@
         ['Glorious Vanity', ["Ahuana", "Doryani", "Xibaqua"]],
         ['Lethal Pride', ["Akoya", "Kaom", "Rakiata"]],
         ['Militant Faith', ["Avarius", "Dominus", "Maxarius"]],
+        ['Heroic Tragedy', ["Vorana", "Uhtred", "Medved"]]
     ]);
 
     const typeToSeedRangeMap = new Map([
@@ -95,6 +96,7 @@
         ['Glorious Vanity', [100, 8000]],
         ['Lethal Pride', [10000, 18000]],
         ['Militant Faith', [2000, 10000]],
+        ["Heroic Tragedy", [100, 8000]]
     ]);
 
     let selGenerals = $state([]);
@@ -323,6 +325,7 @@
                             <Select.Item value='Glorious Vanity'>Glorious Vanity</Select.Item>
                             <Select.Item value='Lethal Pride'>Lethal Pride</Select.Item>
                             <Select.Item value='Militant Faith'>Militant Faith</Select.Item>
+                            <Select.Item value='Heroic Tragedy'>Heroic Tragedy</Select.Item>
                         </Select.Content>
                     </Select.Root>
                     <Input bind:value={mobSeed} disabled={mobJewelType === null} aria-invalid={jewelSeedInvalid() ? 'true' : 'false'} placeholder='Jewel Seed #'></Input>
