@@ -24,7 +24,6 @@
 	} from "$lib/api";
 	import { account_name, account_leagues, logout } from "../store";
 	import { getPageBreakpoint, isMobile } from "$lib/breakpoints";
-    import { leagues } from "$lib/data/leagues";
 
 	let { children } = $props();
 
