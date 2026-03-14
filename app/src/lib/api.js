@@ -57,14 +57,10 @@ export async function getAccountLeagues() {
     // Get the character list and make a list of present leagues
     const acc_characters_response = await makeGGGAPIRequest(URLS.characters)
     const leagues = new Set(acc_characters_response.characters.map((c) => c.league))
-    console.log('leagues set from ggg:')
-    console.log(leagues)
 
     // Sometimes old private leagues get stuck in here so we cross reference the available leagues
     const avail_leagues_response = await makeGGGAPIRequest(URLS.leagues)
     const avail_leagues = avail_leagues_response.leagues
-    console.log('avail_leagues from ggg:')
-    console.log(avail_leagues)
 
     return avail_leagues.filter(l => leagues.has(l.name))
 }
