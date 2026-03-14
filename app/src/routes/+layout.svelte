@@ -59,7 +59,6 @@
 		if (!isExpired && hasAccount) {
 			account_name.set(localStorage.getItem("account_name"));
 			let leagues = localStorage.getItem("account_leagues");
-			console.log(leagues)
 			account_leagues.set(leagues);
 			return () => {
 				window.removeEventListener("resize", setBP);
@@ -87,8 +86,6 @@
 			}
 			try {
 				let leagues = await getAccountLeagues();
-				console.log('got leagues from getAccountLeagues')
-				console.log(leagues)
 				localStorage.setItem("account_leagues", leagues);
 				account_leagues.set(leagues);
 			} catch (e) {
