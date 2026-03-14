@@ -58,7 +58,7 @@
 
 		if (!isExpired && hasAccount) {
 			account_name.set(localStorage.getItem("account_name"));
-			account_leagues.set(localStorage.getItem("account_leagues"));
+			account_leagues.set(JSON.parse(localStorage.getItem("account_leagues")));
 			return () => {
 				window.removeEventListener("resize", setBP);
 			};
@@ -81,10 +81,12 @@
 				localStorage.setItem("account_name", acc_name);
 				account_name.set(acc_name);
 				let leagues = await getAccountLeagues();
-				localStorage.setItem("account_leagues", leagues);
+				console.log('got leagues from getAccountLeagues')
+				console.log(leagues)
+				localStorage.setItem("account_leagues", JSON.stringify(leagues));
 				account_leagues.set(leagues);
 			} catch (e) {
-				console.error("Failed to fetch account name", e);
+				console.error("Failed to fetch account details", e);
 			}
 		} else {
 			logout();
