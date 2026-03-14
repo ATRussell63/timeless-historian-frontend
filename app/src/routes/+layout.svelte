@@ -38,40 +38,53 @@
 		window.addEventListener("resize", setBP);
 		mounted = true;
 
-		const oauth_code = $page.url.searchParams.get("code");
-		const oauth_state = $page.url.searchParams.get("state");
-
-		// referred from ggg oauth authorization
-		if (oauth_code && oauth_state) {
-			if (oauth_state !== localStorage.getItem("oauth_state")) {
-				console.log(
-					`ERROR: oauth_state received does not match stored value. ${oauth_state} !== ${localStorage.getItem("oauth_state")}`,
-				);
-			} else {
-				await getAccessCode(oauth_code);
-			}
-		}
-
 		if (!import.meta.env.PROD) {
 			localStorage.setItem(
 				"access_token",
 				"a29dde2ee00d4b9a958b6fc09343e5f74c4e0131",
 			);
 			localStorage.setItem("token_exp", Date.now() + 36000);
+
+			return () => {
+				window.removeEventListener("resize", setBP);
+			};
 		}
 
-		// verify that token has not expired yet
-		if (localStorage.getItem("token_exp") < Date.now()) {
-			console.log("Access token is expired, logging out.");
+		const oauth_code = $page.url.searchParams.get("code");
+		const oauth_state = $page.url.searchParams.get("state");
+		const storedToken = localStorage.getItem("token_exp");
+		const isExpired = storedToken && parseInt(storedToken) < Date.now();
+		const hasAccount = localStorage.getItem("account_name") !== null;
+
+		if (!isExpired && hasAccount) {
+			account_name.set(localStorage.getItem("account_name"));
+			return () => {
+				window.removeEventListener("resize", setBP);
+			};
+		}
+
+		if (oauth_code && oauth_state) {
+			if (oauth_state === localStorage.getItem("oauth_state")) {
+				await getAccessCode(oauth_code);
+			} else {
+				console.error("OAuth state mismatch");
+				return () => {
+					window.removeEventListener("resize", setBP);
+				};
+			}
+		}
+
+		if (!isExpired) {
+			try {
+				let acc_name = await getAccountName();
+				localStorage.setItem("account_name", acc_name);
+				account_name.set(acc_name);
+			} catch (e) {
+				console.error("Failed to fetch account name", e);
+			}
+		} else {
 			logout();
-		} else if (localStorage.getItem("account_name") === null) {
-			// token is not expired but we haven't populated the account data yet
-			let acc_name = await getAccountName();
-			// console.log("Account name received is " + acc_name);
-			localStorage.setItem("account_name", acc_name);
 		}
-
-		account_name.set(localStorage.getItem("account_name"));
 
 		return () => {
 			window.removeEventListener("resize", setBP);
