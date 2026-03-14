@@ -250,7 +250,7 @@
                 {/each}
               </Select.Group>
             {/if}
-            {#if current_leagues.length > 0}
+            {#if other_leagues.length > 0}
               <Select.Group>
                 <Select.Label>Others</Select.Label>
                 {#each other_leagues as league}
@@ -357,7 +357,7 @@
               {/each}
             </Select.Group>
           {/if}
-          {#if current_leagues.length > 0}
+          {#if other_leagues.length > 0}
             <Select.Group>
               <Select.Label>Others</Select.Label>
               {#each other_leagues as league}

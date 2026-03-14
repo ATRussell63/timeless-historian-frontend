@@ -29,4 +29,5 @@ export function logout() {
     localStorage.removeItem('account_name')
     localStorage.removeItem('code_verifier')
     localStorage.removeItem('oauth_state')
+    localStorage.removeItem('account_leagues')
 }
