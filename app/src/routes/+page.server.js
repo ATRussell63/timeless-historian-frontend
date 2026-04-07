@@ -4,7 +4,7 @@ export async function load({ fetch }) {
 	try {
 		let summary_url = '/api/data/summary';
             if (!import.meta.env.PROD) {
-                summary_url = 'http://localhost:5000' + summary_url.replace('/api', '');
+                summary_url = 'http://localhost:' + env.BACKEND_PORT + summary_url.replace('/api', '');
             }
 		const summary_res = await fetch(summary_url);
 		if (!summary_res.ok) throw new Error('Failed to fetch summary data');
@@ -12,7 +12,7 @@ export async function load({ fetch }) {
 
 		let latest_jewel_url = '/api/data/latest';
             if (!import.meta.env.PROD) {
-                latest_jewel_url = 'http://localhost:5000' + latest_jewel_url.replace('/api', '');
+                latest_jewel_url = 'http://localhost:' + env.BACKEND_PORT + latest_jewel_url.replace('/api', '');
             }
 		const latest_res = await fetch(latest_jewel_url);
 		if (!latest_res.ok) throw new Error('Failed to fetch latest jewel');
