@@ -38,6 +38,7 @@
     cells_per_side
   } from "./store";
   import { isMobile } from "$lib/breakpoints";
+  import { env } from "$env/dynamic/private";
 
   // clear any previous search data
   bulk_result.set(null);
@@ -143,7 +144,7 @@
 
     let url = "/api/search/bulk";
     if (!import.meta.env.PROD) {
-      url = "http://localhost:5000" + url.replace("/api", "");
+      url = "http://localhost:" + env.BACKEND_PORT + url.replace("/api", "");
     }
 
     try {

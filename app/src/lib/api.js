@@ -144,7 +144,7 @@ export async function searchDBForJewel(jewel, sample = false) {
     }
 
     if (!import.meta.env.PROD) {
-        url = 'http://localhost:5000' + url.replace('/api', '');
+        url = 'http://localhost:' + env.BACKEND_PORT + url.replace('/api', '');
     }
 
     let method = sample ? 'GET' : 'POST'
@@ -213,6 +213,7 @@ function throwErrorToast(error_title, error_body) {
 }
 
 import { bulkSelectedJewel } from '../resultsBrowserStore'
+import { env } from '$env/dynamic/private'
 export async function searchDB(jewel) {
     bulkSelectedJewel.set(jewel)
     await searchDBForJewel(jewel)
