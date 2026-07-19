@@ -14,7 +14,7 @@
     import { cn } from "$lib/utils";
 
     import JewelDetailsCard from "./JewelDetailsCard.svelte";
-    import JewelDrawing from "./jewelDrawing.svelte";
+    import JewelDrawing from "./JewelDrawing.svelte";
     import { search_result, size_breakpoint } from "./store";
     import {
         hoverData,

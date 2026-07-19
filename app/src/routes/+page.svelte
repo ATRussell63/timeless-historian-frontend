@@ -4,7 +4,7 @@
     import * as Card from "$lib/components/ui/card";
     import MarakethSymbol from "$lib/images/MarakethSymbol.svg";
     import JewelDetailsCard from "../JewelDetailsCard.svelte";
-    import JewelDrawing from "../jewelDrawing.svelte";
+    import JewelDrawing from "../JewelDrawing.svelte";
     import { afterNavigate } from "$app/navigation";
     import { data_summary, size_breakpoint } from "../store";
     import { hoverData } from "../resultsBrowserStore";
