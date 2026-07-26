@@ -203,7 +203,7 @@
     class="flex flex-col h-full lg:min-w-[830px] xl:min-w-[900px] px-10 py-10"
     style={backgroundStyle}
 >
-    <span class="searchPageTitle mb-4">Search</span>
+    <span class="pageTitle mb-4">Search</span>
     <div class="flex flex-row mt-2">
         <div class="mr-10 flex-1">
             <Card.Root class="transparentBackground">
@@ -395,11 +395,3 @@
     </div>
     </div>
     {/if}
-
-<style>
-    .searchPageTitle {
-        font-family: Fontin-SmallCaps;
-        font-size: 48px;
-        margin-left: 5px;
-    }
-</style>

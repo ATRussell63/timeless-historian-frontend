@@ -179,7 +179,7 @@
 		</footer>
 	{:else}
 		<footer class="flex flex-row justify-center gap-2">
-			<span>Copyright © 2025 Aaron Russell</span>
+			<span>Copyright © {new Date().getFullYear()} Aaron Russell</span>
 			<span>|</span>
 			<span>Contact: timeless_auditor@gmail.com</span>
 			<span>|</span>
