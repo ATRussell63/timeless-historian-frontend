@@ -1,5 +1,5 @@
 import { dev } from "$app/env"
-import { BACKEND_PORT } from "$env/static/private"
+import { env } from "$env/dynamic/private"
 import { json, error } from "@sveltejs/kit"
 
 
@@ -22,7 +22,7 @@ export async function POST({ request }) {
 
     let url = endpoints[r.func]
     if (dev) {
-        url = 'http://localhost:' + BACKEND_PORT + url.replace('/api', '')
+        url = 'http://localhost:' + env.BACKEND_PORT + url.replace('/api', '')
     }
 
     switch(r.func) {
