@@ -1,31 +1,24 @@
-// import 'dotenv/config';
+import { env } from '$env/dynamic/private';
 
 export async function load({ fetch }) {
 	try {
-		let summary_url = '/api/data/summary';
-            if (!import.meta.env.PROD) {
-                summary_url = 'http://localhost:' + env.BACKEND_PORT + summary_url.replace('/api', '');
-            }
-		const summary_res = await fetch(summary_url);
-		if (!summary_res.ok) throw new Error('Failed to fetch summary data');
-		const summary_data = await summary_res.json();
+		const summary_resp = await fetch('/api', { method: 'POST', body: JSON.stringify({ func: 'summary' })});
+		if (!summary_resp.ok) throw new Error('Failed to fetch summary data');
+		const summary_data = await summary_resp.json();
 
-		let latest_jewel_url = '/api/data/latest';
-            if (!import.meta.env.PROD) {
-                latest_jewel_url = 'http://localhost:' + env.BACKEND_PORT + latest_jewel_url.replace('/api', '');
-            }
-		const latest_res = await fetch(latest_jewel_url);
-		if (!latest_res.ok) throw new Error('Failed to fetch latest jewel');
-		const latest_jewel = await latest_res.json();
+		const latest_resp = await fetch('/api', { method: 'POST', body: JSON.stringify({ func: 'latest' })})
+		if (!latest_resp.ok) throw new Error('Failed to fetch latest jewel');
+		const latest_jewel = await latest_resp.json();
 
 		return {
-			'summary': summary_data,
-			'latest': latest_jewel
+			'summary': summary_data.body,
+			'latest': latest_jewel.body
 		}
 	} catch (error) {
 		console.error(error);
 		return {
-			data: null
+			summary: null,
+			latest: null
 		};
 	}
 }

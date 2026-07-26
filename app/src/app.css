@@ -7,6 +7,7 @@
 @layer base {
   :root {
     --inset: 0 0% 90%;
+    --inset-card: 0 0% 100%;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
  
@@ -42,6 +43,7 @@
  
   .dark {
     --inset: 0 0% 12%;
+    --inset-card: 222.2 0% 3%;
     --background: 222.2 0% 8%;
     --foreground: 210 40% 98%;
  
@@ -291,27 +293,44 @@ black: #0D0D0D
 
 /* TODO - font subsetting? */
 
-.topNavButton {
+.topNav {
   font-family: Fontin-SmallCaps;
-  /* font-size: 32px; */
-  color: hsl(var(--foreground));
-  background-color: hsl(var(--background));
   border-bottom-width: 0px;
 }
 
-.topNavButton:hover {
-  color: hsl(var(--background));
-  background-color: hsl(var(--foreground));
+.topNav.parent {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
 }
 
-.TopNavActive:hover {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
+.topNav.child {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--inset-card));
 }
 
-.dark .TopNavActive:hover {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
+.topNav.parent.active:hover {
+    color: hsl(var(--foreground)) !important;
+    background-color: hsl(var(--background)) !important;
+}
+
+.topNav.child:hover {
+    color: hsl(var(--foreground)) !important;
+    background-color: hsl(var(--background)) !important;
+}
+
+.dark .topNav:hover {
+	color: hsl(var(--background)) !important;
+  	background-color: hsl(var(--foreground)) !important;
+}
+
+.dark .topNav.child.active:hover {
+	color: hsl(var(--foreground)) !important;
+  	background-color: hsl(var(--inset-card)) !important;
+}
+
+.dark .topNav.active:hover {
+	color: hsl(var(--foreground)) !important;
+  	background-color: hsl(var(--background)) !important;
 }
 
 .trajan {
@@ -451,4 +470,8 @@ black: #0D0D0D
     font-family: Fontin-SmallCaps;
     font-size: 48px;
     margin-left: 5px;
+}
+
+.dataInsetCard {
+  background-color: hsl(var(--inset-card))
 }

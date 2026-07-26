@@ -98,7 +98,7 @@ export function flattenStashes(stashes) {
 export function filterUnsupportedStashTypes(stashes) {
     // only include stashes that we can render easily
     // I'm not going to crawl the fossil tab just because there's 1 jewel in it!
-    return stashes.filter(s => SUPPORTED_STASH_TYPES.includes(s.type))
+    return stashes.filter(s => SUPPORTED_STASH_TYPES.includes(s.type) && !s.name.includes('Remove-only'))
 }
 
 export async function getJewelsFromStashTab(league, stash_id) {
@@ -122,45 +122,46 @@ export async function searchDBForJewel(jewel, sample = false) {
     waiting_on_api.set(true)
 
     let redirectAfter = false
+    let body
+    let search_params
 
-    let request_body = {
-        "jewel_type": 'Any',
-        "seed": 'Any',
-        "general": 'Any',
-        "mf_mods": null
-    }
-
-    const limit = getRandomInt(15, 20)
-    let url = `/api/data/sample?limit=${limit}`;
-
-    if (!sample) {
-        request_body = {
+    if (sample) {
+        search_params = {
+            "jewel_type": 'Any',
+            "seed": 'Any',
+            "general": 'Any',
+            "mf_mods": null
+        }
+        const limit = getRandomInt(15, 20)
+        const func = 'sample'
+        body = JSON.stringify({
+            func,
+            limit
+        })
+    } else {
+        search_params = {
             "jewel_type": jewel.jewel_type,
             "seed": jewel.seed,
             "general": jewel.general,
             "mf_mods": jewel.mf_mods
         }
-        url = '/api/search';
+        const func = 'search'
+        body = JSON.stringify({
+            search_params,
+            func
+        })
     }
-
-    if (!import.meta.env.PROD) {
-        url = 'http://localhost:' + env.BACKEND_PORT + url.replace('/api', '');
-    }
-
-    let method = sample ? 'GET' : 'POST'
 
     try {
-        let req_obj = {
-            method: method,
+        const response = await fetch('/api', { 
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-        }
-        if (method === 'POST') {
-            req_obj['body'] = JSON.stringify(request_body)
-        }
-        const response = await fetch(url, req_obj);
-        const data = { body: request_body, response: await response.json() };
+            body
+        });
+        const response_json = await response.json()
+        const data = { body: search_params, response: response_json.body };
         search_result.set(data);
         if (response.ok && Object.keys(data.response.results).length > 0) {
             redirectAfter = true
@@ -170,7 +171,8 @@ export async function searchDBForJewel(jewel, sample = false) {
         }
 
     } catch (err) {
-        parseRequestError(await response.status, await response.headers);
+        console.log(err)
+        throwErrorToast('Server Error', 'Failed to contact the DB')
         redirectAfter = false
     } finally {
         waiting_on_api.set(false);
@@ -213,7 +215,6 @@ function throwErrorToast(error_title, error_body) {
 }
 
 import { bulkSelectedJewel } from '../resultsBrowserStore'
-import { env } from '$env/dynamic/private'
 export async function searchDB(jewel) {
     bulkSelectedJewel.set(jewel)
     await searchDBForJewel(jewel)

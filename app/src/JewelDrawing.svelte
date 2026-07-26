@@ -144,7 +144,6 @@
             loaderLayer.add(loaderLogo)
         }
         logoImage.src = mode.current === 'dark' ? THLogoWhite : THLogoBlack;
-        console.log(logoImage.src)
         
         loaderLayer.add(loaderArc);
 

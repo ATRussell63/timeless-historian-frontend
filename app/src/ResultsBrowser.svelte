@@ -14,7 +14,7 @@
     import { cn } from "$lib/utils";
 
     import JewelDetailsCard from "./JewelDetailsCard.svelte";
-    import JewelDrawing from "./jewelDrawing.svelte";
+    import JewelDrawing from "./JewelDrawing.svelte";
     import { search_result, size_breakpoint } from "./store";
     import {
         hoverData,
@@ -60,6 +60,7 @@
         return true;
     }
 
+    // TODO - sort by league
     let displayedResults = $derived.by(() => {
         if (results) {
             // first filter out leagues if hardcore only is toggled
