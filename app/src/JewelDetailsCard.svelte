@@ -18,6 +18,7 @@
     import Hierophant from "$lib/images/classes/Hierophant.png";
     import Inquisitor from "$lib/images/classes/Inquisitor.png";
     import Juggernaut from "$lib/images/classes/Juggernaut.png";
+    import Luminary from '$lib/images/classes/Luminary.png';
     import Necromancer from "$lib/images/classes/Necromancer.png";
     import Occultist from "$lib/images/classes/Occultist.png";
     import Pathfinder from "$lib/images/classes/Pathfinder.png";
@@ -46,6 +47,7 @@
         Hierophant: Hierophant,
         Inquisitor: Inquisitor,
         Juggernaut: Juggernaut,
+        Luminary: Luminary,
         Necromancer: Necromancer,
         Occultist: Occultist,
         Pathfinder: Pathfinder,
