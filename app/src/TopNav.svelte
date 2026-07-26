@@ -8,8 +8,9 @@
     <div class='grow-2'></div>
     <TopNavButton label="Search" url="/search" parent=true />
     <TopNavButton label="Bulk Search" url="/bulk" parent=true />
-    <div class='grow-[0.1]'></div>
-    <TopNavButton label="Data" url="/data/joats" parent=true />
+    <!-- TODO - Temp hide these until they're ready -->
+    <!-- <div class='grow-[0.1]'></div>
+    <TopNavButton label="Data" url="/data/joats" parent=true /> -->
     <div class='grow-1'></div>
     <TopNavLoginButton />
   </div>

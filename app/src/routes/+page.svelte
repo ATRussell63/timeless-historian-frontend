@@ -13,8 +13,6 @@
 
     let { data } = $props();
 
-    console.log(data)
-
     data_summary.set(data.summary);
     hoverData.set(Object.values(data.latest.results)[0]['jewels'][0])
 

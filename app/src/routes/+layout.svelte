@@ -13,6 +13,7 @@
 	import KofiIcon from "$lib/images/Ko-fi_icon.png";
 	import { getAccessCode } from "$lib/oauth";
 	import { SvelteToast } from "@zerodevx/svelte-toast";
+	import { dev } from "$app/env";
 	import Sidebar from "../Sidebar.svelte";
 	import TopNav from "../TopNav.svelte";
 	import MobileNavMenu from "../mobileNavMenu.svelte";
@@ -38,16 +39,12 @@
 		window.addEventListener("resize", setBP);
 		mounted = true;
 
-		if (!import.meta.env.PROD) {
+		if (dev) {
 			localStorage.setItem(
 				"access_token",
-				"a29dde2ee00d4b9a958b6fc09343e5f74c4e0131",
+				"c50676d3d343f7e4864a043858a4c58bc271454f",
 			);
 			localStorage.setItem("token_exp", Date.now() + 36000);
-
-			return () => {
-				window.removeEventListener("resize", setBP);
-			};
 		}
 
 		const oauth_code = $page.url.searchParams.get("code");
@@ -58,7 +55,7 @@
 
 		if (!isExpired && hasAccount) {
 			account_name.set(localStorage.getItem("account_name"));
-			let leagues = localStorage.getItem("account_leagues");
+			let leagues = JSON.parse(localStorage.getItem("account_leagues"));
 			account_leagues.set(leagues);
 			return () => {
 				window.removeEventListener("resize", setBP);
@@ -86,7 +83,7 @@
 			}
 			try {
 				let leagues = await getAccountLeagues();
-				localStorage.setItem("account_leagues", leagues);
+				localStorage.setItem("account_leagues", JSON.stringify(leagues));
 				account_leagues.set(leagues);
 			} catch (e) {
 				console.error("failed to fetch leagues", e)

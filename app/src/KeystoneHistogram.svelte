@@ -25,8 +25,6 @@
 
     let { histogram_data, hardcore } = $props()
 
-    console.log(LEGION_COLORS.get('Brutal Restraint'))
-
     let hardcore_label = $derived(hardcore ? 'hardcore' : 'softcore')
 
     let legionColorVariants = {

@@ -98,7 +98,7 @@ export function flattenStashes(stashes) {
 export function filterUnsupportedStashTypes(stashes) {
     // only include stashes that we can render easily
     // I'm not going to crawl the fossil tab just because there's 1 jewel in it!
-    return stashes.filter(s => SUPPORTED_STASH_TYPES.includes(s.type))
+    return stashes.filter(s => SUPPORTED_STASH_TYPES.includes(s.type) && !s.name.includes('Remove-only'))
 }
 
 export async function getJewelsFromStashTab(league, stash_id) {

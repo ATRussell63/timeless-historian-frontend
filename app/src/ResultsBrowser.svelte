@@ -60,6 +60,7 @@
         return true;
     }
 
+    // TODO - sort by league
     let displayedResults = $derived.by(() => {
         if (results) {
             // first filter out leagues if hardcore only is toggled

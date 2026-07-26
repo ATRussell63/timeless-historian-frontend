@@ -38,21 +38,20 @@
 	cells_per_side
 	} from "./store";
 	import { isMobile } from "$lib/breakpoints";
-	import { env } from "$env/dynamic/private";
 
 	// clear any previous search data
 	bulk_result.set(null);
 	search_result.set(null);
 
 	const current_leagues = $derived(
-	$account_leagues
-		.filter((l) => l?.category?.id === PUBLIC_CURRENT_LEAGUE)
-		.map((l) => ({ value: l.name, label: l.name })),
+		$account_leagues
+			.filter((l) => l?.category?.id === PUBLIC_CURRENT_LEAGUE)
+			.map((l) => ({ value: l.name, label: l.name }))
 	);
 	const other_leagues = $derived(
-	$account_leagues
-		.filter((l) => l?.category?.id !== PUBLIC_CURRENT_LEAGUE)
-		.map((l) => ({ value: l.name, label: l.name })),
+		$account_leagues
+			.filter((l) => l?.category?.id !== PUBLIC_CURRENT_LEAGUE)
+			.map((l) => ({ value: l.name, label: l.name }))
 	);
 
 	let selected_league = $state("");
@@ -129,31 +128,33 @@
 
 	async function bulkSearch(jewels) {
 		let counter = 0;
-		let search_params = jewels.map((j) => ({
-			i: counter++,
-			x: j.x,
-			y: j.y,
-			jewel_type: j.name,
-			seed: parse_jewel_seed(j.explicitMods[0]),
-			general: parse_jewel_general(j.explicitMods[0]),
-			mf_mods:
-			j.explicitMods.length == 4
-				? [j.explicitMods[1], j.explicitMods[2]]
-				: [],
-		}));
+		let search_params = {
+			'jewels': jewels.map((j) => ({
+				i: counter++,
+				x: j.x,
+				y: j.y,
+				jewel_type: j.name,
+				seed: parse_jewel_seed(j.explicitMods[0].description),
+				general: parse_jewel_general(j.explicitMods[0].description),
+				mf_mods:
+				j.explicitMods.length == 4
+					? [j.explicitMods[1].description, j.explicitMods[2].description]
+					: [],
+			}))
+		};
 
 		try {
 			const body = JSON.stringify({
-			search_params,
-			func: 'bulk'
+				search_params,
+				func: 'bulk'
 			})
 
 			const response = await fetch('/api', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body
 			})
 
 			const response_body = await response.json()
