@@ -20,10 +20,12 @@ export async function POST({ request }) {
 
     const r = await request.json()
 
-    let url =  '/api' + endpoints[r.func]
+    let url
 
     if (dev) {
         url = 'http://localhost:' + env.BACKEND_PORT + url.replace('/api', '')
+    } else {
+        url = 'https://timelesshistorian.xyz/api' + endpoints[r.func]
     }
 
     switch(r.func) {
