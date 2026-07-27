@@ -50,7 +50,7 @@
 		const oauth_code = $page.url.searchParams.get("code");
 		const oauth_state = $page.url.searchParams.get("state");
 		const storedToken = localStorage.getItem("token_exp");
-		const isExpired = storedToken && parseInt(storedToken) < Date.now();
+		const isExpired = storedToken == null || parseInt(storedToken) >= Date.now();
 		const hasAccount = localStorage.getItem("account_name") !== null;
 
 		if (!isExpired && hasAccount) {
