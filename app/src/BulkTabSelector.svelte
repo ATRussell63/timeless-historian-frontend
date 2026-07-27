@@ -149,7 +149,7 @@
 				func: 'bulk'
 			})
 
-			const response = await fetch('/api', {
+			const response = await fetch('/r', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

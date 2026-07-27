@@ -6,7 +6,7 @@ export async function load({ fetch }) {
         let search_params = {
             leagues: [ PUBLIC_CURRENT_LEAGUE ]
         }
-        const vips_resp = await fetch('/api', { method: 'POST', body: JSON.stringify({ func: 'vips', search_params })})
+        const vips_resp = await fetch('/r', { method: 'POST', body: JSON.stringify({ func: 'vips', search_params })})
         if (!vips_resp.ok) throw new Error('Failed to fetch data')
         const vips_data = await vips_resp.json()
         console.log(vips_data)
