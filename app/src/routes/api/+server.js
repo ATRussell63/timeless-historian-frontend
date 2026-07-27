@@ -20,10 +20,9 @@ export async function POST({ request }) {
 
     const r = await request.json()
 
-    let url = endpoints[r.func]
-    if (dev) {
-        url = 'http://localhost:' + env.BACKEND_PORT + url.replace('/api', '')
-    }
+    let protocol = dev ? 'http' : 'https'
+
+    let url =  protocol + '://localhost:' + env.BACKEND_PORT + endpoints[r.func]
 
     switch(r.func) {
         case 'latest':

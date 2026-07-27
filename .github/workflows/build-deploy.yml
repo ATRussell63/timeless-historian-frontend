@@ -44,4 +44,4 @@ jobs:
             docker pull $IMAGE
             docker stop timeless-historian-frontend || true
             docker rm timeless-historian-frontend || true
-            docker run -d --restart unless-stopped --name timeless-historian-frontend -e CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} -p 3000:3000 $IMAGE
+            docker run -d --restart unless-stopped --name timeless-historian-frontend -e CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} -e BACKEND_PORT=8080 -p 3000:3000 $IMAGE
