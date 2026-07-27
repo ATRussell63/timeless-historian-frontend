@@ -153,7 +153,7 @@ export async function searchDBForJewel(jewel, sample = false) {
     }
 
     try {
-        const response = await fetch('/api', { 
+        const response = await fetch('/r', { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
